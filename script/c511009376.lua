@@ -124,6 +124,7 @@ function c511009376.indtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.SelectTarget(tp,c511009376.indfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
 end
 function c511009376.indop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
 	if tc:IsRelateToEffect(e) then
 		local e1=Effect.CreateEffect(c)
