@@ -25,7 +25,7 @@ function c511004111.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 function c511004111.activate(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc and tc:IsRelateToEffect(e) Duel.Destroy(tc,REASON_EFFECT)~=0 then
+	if tc and tc:IsRelateToEffect(e) and Duel.Destroy(tc,REASON_EFFECT)~=0 then
 		local p=tc:GetPreviousControler()
 		local g=Duel.GetMatchingGroup(c511004111.setfilter,p,LOCATION_HAND,0,nil)
 		if g:GetCount()>0 and Duel.SelectYesNo(p,aux.Stringid(511004111,0)) then

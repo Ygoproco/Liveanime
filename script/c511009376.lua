@@ -1,8 +1,9 @@
 --Destiny HERO - Duskutopiaguy
+--fixed by MLD
 function c511009376.initial_effect(c)
 	--fusion material
 	c:EnableReviveLimit()
-	aux.AddFusionProcCodeFun(c,90579153,aux.FilterBoolFunction(Card.IsFusionSetCard,0xc008),1,true,false)
+	aux.AddFusionProcCodeFun(c,90579153,aux.FilterBoolFunction(Card.IsFusionSetCard,0xc008),1,true,true)
 	--summon success
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_SINGLE)
@@ -10,48 +11,47 @@ function c511009376.initial_effect(c)
 	e1:SetCondition(c511009376.regcon)
 	e1:SetOperation(c511009376.regop)
 	c:RegisterEffect(e1)
-	-- Protection1
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(67754901,0))
-	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e1:SetType(EFFECT_TYPE_QUICK_O)
-	e1:SetRange(LOCATION_MZONE)
-	e1:SetCountLimit(1)
-	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetTarget(c511009376.indtg)
-	e1:SetOperation(c511009376.indop)
-	c:RegisterEffect(e1)
-	-- Protection2
-	--Negate
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(12298909,0))
-	e1:SetCategory(CATEGORY_NEGATE+CATEGORY_DESTROY)
-	e1:SetType(EFFECT_TYPE_QUICK_O)
-	e1:SetCode(EVENT_CHAINING)
-	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
-	e1:SetRange(LOCATION_MZONE)
-	e1:SetCondition(c511009376.condition)
-	-- e1:SetCost(c511009376.cost)
-	e1:SetTarget(c511009376.target)
-	e1:SetOperation(c511009376.activate)
-	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(42878636,1))
+	e2:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_FUSION_SUMMON)
+	e2:SetType(EFFECT_TYPE_IGNITION)
+	e2:SetRange(LOCATION_MZONE)
+	e2:SetCondition(c511009376.fuscon)
+	e2:SetTarget(c511009376.fustg)
+	e2:SetOperation(c511009376.fusop)
+	c:RegisterEffect(e2)
+	--Protection
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(33883834,0))
+	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	e3:SetType(EFFECT_TYPE_QUICK_O)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetCountLimit(1)
+	e3:SetCode(EVENT_FREE_CHAIN)
+	e3:SetTarget(c511009376.indtg)
+	e3:SetOperation(c511009376.indop)
+	c:RegisterEffect(e3)
+	--
+	local e4=Effect.CreateEffect(c)
+	e4:SetDescription(aux.Stringid(40945356,0))
+	e4:SetType(EFFECT_TYPE_QUICK_O)
+	e4:SetCode(EVENT_CHAINING)
+	e4:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_CARD_TARGET)
+	e4:SetRange(LOCATION_MZONE)
+	e4:SetCountLimit(1)
+	e4:SetCondition(c511009376.prcon)
+	e4:SetTarget(c511009376.prtg)
+	e4:SetOperation(c511009376.prop)
+	c:RegisterEffect(e4)
 end
 function c511009376.regcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():GetSummonType()==SUMMON_TYPE_FUSION
 end
 function c511009376.regop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	--spsummon
-	local e3=Effect.CreateEffect(c)
-	e3:SetDescription(aux.Stringid(42878636,1))
-	e3:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_FUSION_SUMMON)
-	e3:SetType(EFFECT_TYPE_IGNITION)
-	e3:SetRange(LOCATION_MZONE)
-	e3:SetCountLimit(1)
-	e3:SetTarget(c511009376.fustarg)
-	e3:SetOperation(c511009376.fusop)
-	e3:SetReset(RESET_EVENT+0x1ff0000+RESET_PHASE+PHASE_END)
-	c:RegisterEffect(e3)
+	e:GetHandler():RegisterFlagEffect(511009376,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,1)
+end
+function c511009376.fuscon(e,tp,eg,ep,ev,re,r,rp)
+	return e:GetHandler():GetFlagEffect(511009376)~=0
 end
 function c511009376.filter1(c,e)
 	return c:IsCanBeFusionMaterial() and not c:IsImmuneToEffect(e)
@@ -60,7 +60,7 @@ function c511009376.filter2(c,e,tp,m,f,chkf)
 	return c:IsType(TYPE_FUSION) and (not f or f(c))
 		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_FUSION,tp,false,false) and c:CheckFusionMaterial(m,nil,chkf)
 end
-function c511009376.fustarg(e,tp,eg,ep,ev,re,r,rp,chk)
+function c511009376.fustg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		local chkf=Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and PLAYER_NONE or tp
 		local mg1=Duel.GetMatchingGroup(Card.IsCanBeFusionMaterial,tp,LOCATION_HAND+LOCATION_MZONE,0,nil)
@@ -111,22 +111,16 @@ function c511009376.fusop(e,tp,eg,ep,ev,re,r,rp)
 		tc:CompleteProcedure()
 	end
 end
-
-
-----------------protection1------------------
-function c511009376.indfilter(c)
-	return c:IsFaceup() 
-end
 function c511009376.indtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_MZONE) and c511009376.indfilter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(c511009376.indfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-	Duel.SelectTarget(tp,c511009376.indfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) end
+	if chk==0 then return Duel.IsExistingTarget(aux.TRUE,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
+	Duel.SelectTarget(tp,aux.TRUE,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
 end
 function c511009376.indop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) then
+	if tc and tc:IsRelateToEffect(e) then
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)
@@ -138,48 +132,33 @@ function c511009376.indop(e,tp,eg,ep,ev,re,r,rp)
 		tc:RegisterEffect(e3)
 	end
 end
------------------------protection2------------------
 function c511009376.filter(c)
     return c:IsType(TYPE_MONSTER) and c:IsOnField()
 end
-function c511009376.condition(e,tp,eg,ep,ev,re,r,rp)
-    local ex,tg,tc=Duel.GetOperationInfo(ev,CATEGORY_DESTROY)
-    if ex and tg~=nil and tc+tg:FilterCount(c511009376.filter,nil)-tg:GetCount()>0 then
-    e:SetLabelObject(tg)
-    return true end
+function c511009376.prcon(e,tp,eg,ep,ev,re,r,rp)
+	if e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) then return false end
+	local ex,tg,tc=Duel.GetOperationInfo(ev,CATEGORY_DESTROY)
+	if ex and tg~=nil and tc+tg:FilterCount(c511009376.filter,nil)-tg:GetCount()>0 then
+		e:SetLabelObject(tg)
+		return true end
+	return false
 end
-function c511009376.filter2(c,e,tp)
-    return c:IsType(TYPE_MONSTER) and c:IsOnField() and c:IsCanBeEffectTarget(e)
+function c511009376.prtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	local g=e:GetLabelObject()
+    if chkc then return g:IsContains(chkc) end
+	if chk==0 then return g and eg:IsExists(Card.IsCanBeEffectTarget,1,nil,e) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
+    local sg=g:FilterSelect(tp,Card.IsCanBeEffectTarget,1,1,nil,e)
+	Duel.SetTargetCard(sg)
 end
-function c511009376.target(e,tp,eg,ep,ev,re,r,rp,chk)
-    if chk==0 then return true end
-    local g=e:GetLabelObject():FilterSelect(tp,c511009376.filter2,1,1,nil,e,tp)
-    Duel.SetTargetCard(g)
-end
-function c511009376.activate(e,tp,eg,ep,ev,re,r,rp)
-    local cid=Duel.GetChainInfo(ev,CHAININFO_CHAIN_ID)
+function c511009376.prop(e,tp,eg,ep,ev,re,r,rp)
     local tc=Duel.GetFirstTarget()
-    local e1=Effect.CreateEffect(e:GetHandler())
-    e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-    e1:SetCode(EFFECT_DESTROY_REPLACE)
-    e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-    e1:SetRange(LOCATION_MZONE)
-    e1:SetTarget(c511009376.reptg)
-    local i=0    
-    local ct=Group.CreateGroup()
-    while i<ev do
-    ct:AddCard(Duel.CreateToken(tp,0))
-    i=i+1
-    end
-    ct:KeepAlive()
-    e1:SetLabelObject(ct)
-    e1:SetLabel(cid)
-    tc:RegisterEffect(e1)
-end
-function c511009376.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
-    if chk==0 then return true end
-    local ct=e:GetLabelObject():GetCount()
-    if Duel.GetChainInfo(ct,CHAININFO_CHAIN_ID)==e:GetLabel() then
-        Duel.Hint(HINT_CARD,0,511009376)
-        return true end
+	if tc and tc:IsRelateToEffect(e) then
+		local e1=Effect.CreateEffect(e:GetHandler())
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_INDESTRUCTABLE_EFFECT)
+		e1:SetValue(1)
+		e1:SetReset(RESET_CHAIN)
+		tc:RegisterEffect(e1)
+	end
 end
