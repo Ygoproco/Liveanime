@@ -67,6 +67,7 @@ function c511000192.initial_effect(c)
 		Duel.RegisterEffect(ge2,0)
 	end
 end
+c511000192.xyz_number=0
 function c511000192.ovfilter(c,xyz)
 	if c:IsLocation(LOCATION_GRAVE) and not c:IsHasEffect(511002793) then return false end
 	if c:IsOnField() and c:IsFacedown() then return false end

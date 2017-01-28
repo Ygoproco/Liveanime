@@ -48,11 +48,11 @@ function c511000433.filter(c,e,tp)
 end
 function c511000433.eqcon(e,tp,eg,ep,ev,re,r,rp)
 	local eq=e:GetHandler():GetEquipTarget()
-	return ep~=tp and eq:IsCode(511000431) and eg:GetFirst()==eq
+	return ep~=tp and eq and eq:IsCode(511000431) and eg:GetFirst()==eq
 end
 function c511000433.atkcon(e)
 	local eq=e:GetHandler():GetEquipTarget()
-	return eq:GetControler()~=e:GetHandlerPlayer()
+	return eq and eq:GetControler()~=e:GetHandlerPlayer()
 end
 function c511000433.eqtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingTarget(Card.IsFaceup,0,0,LOCATION_MZONE,1,nil) end

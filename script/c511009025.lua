@@ -3,7 +3,7 @@
 function c511009025.initial_effect(c)
 	--fusion
 	c:EnableReviveLimit()
-	aux.AddFusionProcFunRep(c,c511009025.mat_filter,2,true)
+	aux.AddFusionProcFunRep(c,aux.FilterBoolFunction(Card.IsFusionAttribute,ATTRIBUTE_DARK),2,true)
 	--material
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
@@ -42,13 +42,6 @@ function c511009025.initial_effect(c)
 	e4:SetTarget(c511009025.destg)
 	e4:SetOperation(c511009025.desop)
 	c:RegisterEffect(e4)
-end
-function c511009025.mat_filter(c)
-	if Card.IsFusionAttribute then
-		return c:IsFusionAttribute(ATTRIBUTE_DARK)
-	else
-		return c:IsAttribute(ATTRIBUTE_DARK)
-	end
 end
 function c511009025.effcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

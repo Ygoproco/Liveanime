@@ -38,9 +38,13 @@ function c511001122.filter(c,e,tp,eg,ep,ev,re,r,rp,chain)
 				if not a then return false end
 				return (not condition or condition(te,tp,a,p,0,nil,0,p)) and (not cost or cost(te,tp,a,p,0,nil,0,p,0)) 
 					and (not target or target(te,tp,a,p,0,nil,0,p,0))
-			else
+			elseif te:GetCode()==EVENT_FREE_CHAIN then
 				return (not condition or condition(te,tp,eg,ep,ev,re,r,rp)) and (not cost or cost(te,tp,eg,ep,ev,re,r,rp,0))
 					and (not target or target(te,tp,eg,ep,ev,re,r,rp,0))
+			else
+				local res,teg,tep,tev,tre,tr,trp=Duel.CheckEvent(te:GetCode(),true)
+				return res and (not condition or condition(te,tp,teg,tep,tev,tre,tr,trp)) and (not cost or cost(te,tp,teg,tep,tev,tre,tr,trp,0))
+					and (not target or target(te,tp,teg,tep,tev,tre,tr,trp,0))
 			end
 		else
 			return c:IsSSetable()
@@ -110,9 +114,13 @@ function c511001122.operation(e,tp,eg,ep,ev,re,r,rp)
 				local p=Duel.GetTurnPlayer()
 				if co then co(te,tp,a,p,0,nil,0,p,1) end
 				if tg then tg(te,tp,a,p,0,nil,0,p,1) end
-			else
+			elseif te:GetCode()==EVENT_FREE_CHAIN then
 				if co then co(te,tp,eg,ep,ev,re,r,rp,1) end
 				if tg then tg(te,tp,eg,ep,ev,re,r,rp,1) end
+			else
+				local res,teg,tep,tev,tre,tr,trp=Duel.CheckEvent(te:GetCode(),true)
+				if co then co(te,tp,teg,tep,tev,tre,tr,trp,1) end
+				if tg then tg(te,tp,teg,tep,tev,tre,tr,trp,1) end
 			end
 			Duel.BreakEffect()
 			local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
@@ -134,8 +142,11 @@ function c511001122.operation(e,tp,eg,ep,ev,re,r,rp)
 				local a=Duel.GetAttacker()
 				local p=Duel.GetTurnPlayer()
 				if op then op(te,tp,a,p,0,nil,0,p) end
-			else
+			elseif te:GetCode()==EVENT_FREE_CHAIN then
 				if op then op(te,tp,eg,ep,ev,re,r,rp) end
+			else
+				local res,teg,tep,tev,tre,tr,trp=Duel.CheckEvent(te:GetCode(),true)
+				if op then op(te,tp,teg,tep,tev,tre,tr,trp) end
 			end
 			if g and tc:IsType(TYPE_EQUIP) and not tc:GetEquipTarget() then
 				Duel.Equip(tp,tc,g:GetFirst())

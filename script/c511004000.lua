@@ -8,7 +8,7 @@ function c511004000.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_PREDRAW)
 	e1:SetCountLimit(1)
-	e1:SetRange(0xff)
+	e1:SetRange(0x5f)
 	e1:SetOperation(c511004000.op)
 	c:RegisterEffect(e1)
 	--Destiny Draw
