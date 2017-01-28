@@ -19,6 +19,7 @@ function c810000002.filter(c,e,tp)
 	if e:GetHandler():IsLocation(LOCATION_HAND) then
 		ft=ft-1
 	end
+	if c:GetCode()==810000002 then return false end
 	return c:IsType(TYPE_SPELL) and c:CheckActivateEffect(false,false,false)~=nil 
 		and (ft>0 or c:IsType(TYPE_FIELD))
 end
