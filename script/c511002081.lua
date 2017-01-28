@@ -28,6 +28,7 @@ function c511002081.initial_effect(c)
 	c:RegisterEffect(e5)
 	--material effect
 	local e3=Effect.CreateEffect(c)
+	e3:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 	e3:SetCode(EVENT_BE_MATERIAL)
 	e3:SetCondition(c511002081.atkcon)
