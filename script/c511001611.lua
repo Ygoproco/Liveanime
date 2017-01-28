@@ -9,47 +9,47 @@ function c511001611.initial_effect(c)
 	e1:SetOperation(c511001611.activate)
 	c:RegisterEffect(e1)
 end
-function c511001611.numfilter(c)
-	return c.xyz_number
+function c511001611.notchk(c,xyz)
+	return not c:IsCanBeXyzMaterial(xyz)
 end
-function c511001611.spfilterchk(c,e,tp,ntg)
+function c511001611.numfilter(c,g,matg,e,tp,ct)
+	local mg=g:Clone()
+	local tg=matg:Clone()
+	mg:RemoveCard(c)
+	tg:AddCard(c)
+	local ctc=ct+c.xyz_number
+	return Duel.IsExistingMatchingCard(c511001611.spfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp,tg,ctc) 
+		or mg:IsExists(c511001611.numfilter,1,nil,mg,tg,e,tp,ctc)
+end
+function c511001611.spfilter(c,e,tp,mg,ct)
+	if mg:GetCount()==0 or mg:IsExists(c511001611.notchk,1,nil,c) or mg:IsContains(c) then return false end
 	return c:IsSetCard(0x48) and c:IsType(TYPE_XYZ) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
-		and ntg:CheckWithSumEqual(c511001611.numfilter,c.xyz_number,1,99)
+		and c.xyz_number and c.xyz_number==ct
 end
-function c511001611.numfilter2(c)
-	return c.xyz_number and c.xyz_number==0
-end
-function c511001611.spfilterchk(c,e,tp,ntg)
-	return c:IsSetCard(0x48) and c:IsType(TYPE_XYZ) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
-		and c.xyz_number and c.xyz_number==0 and ntg:IsExists(c511001611.numfilter2,1,c)
-end
-function c511001611.afilter(c)
-	return c:IsSetCard(0x48) and c:IsType(TYPE_XYZ)
-end
-function c511001611.spfilter(c,e,tp,g,ct)
-	return c:IsType(TYPE_XYZ) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
-		and c.xyz_number==ct and not g:IsContains(c)
+function c511001611.filter(c)
+	return c:IsSetCard(0x48) and c:IsType(TYPE_XYZ) and c.xyz_number
 end
 function c511001611.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	local nt=Duel.GetMatchingGroup(c511001611.afilter,tp,LOCATION_EXTRA,0,nil)
+	local g=Duel.GetMatchingGroup(c511001611.filter,tp,LOCATION_EXTRA,0,nil)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and	(Duel.IsExistingMatchingCard(c511001611.spfilterchk,tp,LOCATION_EXTRA,0,1,nil,e,tp,nt) 
-		or Duel.IsExistingMatchingCard(c511001611.spfilterchk2,tp,LOCATION_EXTRA,0,1,nil,e,tp,nt)) end
+		and	g:IsExists(c511001611.numfilter,1,nil,g,Group.CreateGroup(),e,tp,0) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,0,LOCATION_EXTRA)
 end
 function c511001611.activate(e,tp,eg,ep,ev,re,r,rp)
-	local nt=Duel.GetMatchingGroup(c511001611.afilter,tp,LOCATION_EXTRA,0,nil)
-	local spg=Duel.GetMatchingGroup(c511001611.spfilterchk,tp,LOCATION_EXTRA,0,nil,e,tp,nt)
-	local spg2=Duel.GetMatchingGroup(c511001611.spfilterchk2,tp,LOCATION_EXTRA,0,nil,e,tp,nt)
-	if spg:GetCount()<=0 and spg2:GetCount()<=0 then return end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
-	local sg=nt:Select(tp,1,99,nil)
-	while not Duel.IsExistingMatchingCard(c511001611.spfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp,sg,sg:GetSum(c511001611.numfilter)) do
+	local g=Duel.GetMatchingGroup(c511001611.filter,tp,LOCATION_EXTRA,0,nil)
+	local sg=Group.CreateGroup()
+	local ct=0
+	if not g:IsExists(c511001611.numfilter,1,nil,g,sg,e,tp,ct) then return end
+	while not Duel.IsExistingMatchingCard(c511001611.spfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp,sg,ct) 
+		or (g:IsExists(c511001611.numfilter,1,nil,g,sg,e,tp,ct) and Duel.SelectYesNo(tp,513)) do
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
-		sg=nt:Select(tp,1,99,nil)
+		local tg=g:FilterSelect(tp,c511001611.numfilter,1,1,nil,g,sg,e,tp,ct)
+		sg:Merge(tg)
+		g:Sub(tg)
+		ct=ct+tg:GetFirst().xyz_number
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectMatchingCard(tp,c511001611.spfilter,tp,LOCATION_EXTRA,0,1,1,nil,e,tp,sg,sg:GetSum(c511001611.numfilter))
+	local g=Duel.SelectMatchingCard(tp,c511001611.spfilter,tp,LOCATION_EXTRA,0,1,1,nil,e,tp,sg,ct)
 	local tc=g:GetFirst()
 	if tc then
 		tc:SetMaterial(sg)
