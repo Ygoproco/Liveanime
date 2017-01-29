@@ -1,4 +1,4 @@
---CNo.6 先史遺産カオス・アトランタル
+--Number C6: Chronomaly Chaos Atlandis (Anime)
 function c511001781.initial_effect(c)
 	--xyz summon
 	aux.AddXyzProcedure(c,nil,7,3)
@@ -33,8 +33,7 @@ function c511001781.rumfilter(c)
 end
 function c511001781.rankupregcon(e,tp,eg,ep,ev,re,r,rp)
 	local rc=re:GetHandler()
-	return e:GetHandler():IsSummonType(SUMMON_TYPE_XYZ) and re 
-		and (rc:IsSetCard(0x95) or rc:IsCode(100000581) or rc:IsCode(111011002) or rc:IsCode(511000580) or rc:IsCode(511002068) or rc:IsCode(511002164) or rc:IsCode(93238626)) 
+	return re and e:GetHandler():IsSummonType(SUMMON_TYPE_XYZ) and (rc:IsSetCard(0x95) or rc:IsCode(100000581,111011002,511000580,511002068,511002164,93238626)) 
 		and e:GetHandler():GetMaterial():IsExists(c511001781.rumfilter,1,nil)
 end
 function c511001781.rankupregop(e,tp,eg,ep,ev,re,r,rp)
@@ -108,7 +107,7 @@ function c511001781.rankupregop(e,tp,eg,ep,ev,re,r,rp)
 	c:RegisterEffect(e6)
 end
 function c511001781.eqfilter(c,tp)
-	return c:IsSetCard(0x7f) and (c:IsAbleToChangeControler() or c:IsControler(tp))
+	return c:IsSetCard(0x48) and (c:IsAbleToChangeControler() or c:IsControler(tp))
 end
 function c511001781.eqtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and c511001781.eqfilter(chkc,tp) end
@@ -177,9 +176,13 @@ function c511001781.disop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Destroy(eg,REASON_EFFECT)
 	end
 end
+function c511001781.lptg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.GetLP(1-tp)~=1 end
+end
 function c511001781.lpcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():CheckRemoveOverlayCard(tp,3,REASON_COST) and Duel.GetActivityCount(tp,ACTIVITY_ATTACK)==0 end
-	e:GetHandler():RemoveOverlayCard(tp,3,3,REASON_COST)
+	local c=e:GetHandler()
+	if chk==0 then return c:CheckRemoveOverlayCard(tp,3,REASON_COST) and Duel.GetActivityCount(tp,ACTIVITY_ATTACK)==0 end
+	c:RemoveOverlayCard(tp,3,3,REASON_COST)
 	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetCode(EFFECT_CANNOT_ATTACK_ANNOUNCE)
@@ -188,14 +191,12 @@ function c511001781.lpcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e1:SetReset(RESET_PHASE+PHASE_END)
 	Duel.RegisterEffect(e1,tp)
 end
-function c511001781.lptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.GetLP(1-tp)~=1 end
-end
 function c511001781.lpop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SetLP(1-tp,1)
 end
 function c511001781.spcon(e,tp,eg,ep,ev,re,r,rp)
-	return tp==Duel.GetTurnPlayer() and e:GetHandler():GetOverlayCount()==0
+	local c=e:GetHandler()
+	return tp==Duel.GetTurnPlayer() and c:GetOverlayCount()==0
 end
 function c511001781.spfilter(c,e,tp,mc)
 	return c:IsCode(9161357) and mc:IsCanBeXyzMaterial(c) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,true)
