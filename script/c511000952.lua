@@ -9,12 +9,21 @@ function c511000952.initial_effect(c)
 	e1:SetOperation(c511000952.activate)
 	c:RegisterEffect(e1)
 end
-function c511000952.filter(c,tp)
+function c511000952.filter(c,e,tp,chk,chain)
 	local te,eg,ep,ev,re,r,rp=c:CheckActivateEffect(true,true,true)
-	if te==nil then return false end
-	local cost=te:GetCost()
+	if not te and chk==1 then
+		te=c:GetActivateEffect()
+	end
+	if te==nil or not c:IsType(TYPE_TRAP) or not c:IsAbleToRemoveAsCost() then return false end
 	local target=te:GetTarget()
-	return c:IsType(TYPE_TRAP) and c:IsAbleToRemoveAsCost() and (not target or target(te,tp,eg,ep,ev,re,r,rp,0))
+	if te:GetCode()==EVENT_CHAINING and chk==1 then
+		if chain<=0 then return false end
+		local te2,p=Duel.GetChainInfo(chain,CHAININFO_TRIGGERING_EFFECT,CHAININFO_TRIGGERING_PLAYER)
+		local tc=te2:GetHandler()
+		local g=Group.FromCards(tc)
+		eg,ep,ev,re,r,rp=g,p,chain,te2,REASON_EFFECT,p
+	end
+	return not target or target(e,tp,eg,ep,ev,re,r,rp,0)
 end
 function c511000952.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e:SetLabel(1)
@@ -22,15 +31,17 @@ function c511000952.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c511000952.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
+	local chain=Duel.GetCurrentChain()
 	if chk==0 then
 		if e:GetLabel()~=1 then return false end
 		e:SetLabel(0)
 		return Duel.IsExistingMatchingCard(Card.IsAbleToRemoveAsCost,tp,LOCATION_MZONE,0,1,nil)
-			and Duel.IsExistingMatchingCard(c511000952.filter,tp,LOCATION_GRAVE,0,1,nil,tp,eg,ep,ev,re,r,rp) end
+			and Duel.IsExistingMatchingCard(c511000952.filter,tp,LOCATION_GRAVE,0,1,e:GetHandler(),e,tp,chk,chain) end
+	chain=chain-1
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 	local g1=Duel.SelectMatchingCard(tp,Card.IsAbleToRemoveAsCost,tp,LOCATION_MZONE,0,1,1,nil)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local g2=Duel.SelectMatchingCard(tp,c511000952.filter,tp,LOCATION_GRAVE,0,1,1,nil)
+	local g2=Duel.SelectMatchingCard(tp,c511000952.filter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp,chk,chain)
 	g1:Merge(g2)
 	Duel.Remove(g1,POS_FACEUP,REASON_COST)
 	local tc=g2:GetFirst()
@@ -40,13 +51,22 @@ function c511000952.target(e,tp,eg,ep,ev,re,r,rp,chk)
 		if Duel.IsDuelType(DUEL_OBSOLETE_RULING) then
 			if fc then Duel.Destroy(fc,REASON_RULE) end
 			fc=Duel.GetFieldCard(tp,LOCATION_SZONE,5)
-			if fc and Duel.Destroy(fc,REASON_RULE)==0 then Duel.SendtoGrave(tc,REASON_RULE) end
+			if fc and Duel.Destroy(fc,REASON_RULE)==0 then Duel.SendtoGrave(c,REASON_RULE) end
 		else
 			fc=Duel.GetFieldCard(tp,LOCATION_SZONE,5)
-			if fc and Duel.SendtoGrave(fc,REASON_RULE)==0 then Duel.SendtoGrave(tc,REASON_RULE) end
+			if fc and Duel.SendtoGrave(fc,REASON_RULE)==0 then Duel.SendtoGrave(c,REASON_RULE) end
 		end
 	end
 	local te,teg,tep,tev,tre,tr,trp=tc:CheckActivateEffect(true,true,true)
+	if not te then te=tc:GetActivateEffect() end
+	if te:GetCode()==EVENT_CHAINING then
+		if chain<=0 then return false end
+		local te2,p=Duel.GetChainInfo(chain,CHAININFO_TRIGGERING_EFFECT,CHAININFO_TRIGGERING_PLAYER)
+		local tc=te2:GetHandler()
+		local g=Group.FromCards(tc)
+		teg,tep,tev,tre,tr,trp=g,p,chain,te2,REASON_EFFECT,p
+		g:KeepAlive()
+	end
 	c511000952[Duel.GetCurrentChain()]=te
 	Duel.ClearTargetCard()
 	local tg=te:GetTarget()

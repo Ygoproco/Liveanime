@@ -11,32 +11,33 @@ function c511002131.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function c511002131.condition(e,tp,eg,ep,ev,re,r,rp)
-	return re:GetHandler():IsType(TYPE_COUNTER) and re:IsHasType(EFFECT_TYPE_ACTIVATE)
+	return re:GetHandler():IsType(TYPE_COUNTER) and re:IsHasType(EFFECT_TYPE_ACTIVATE) and rp~=tp
 end
 function c511002131.filter(c,e,tp,eg,ep,ev,re,r,rp)
 	local ft=Duel.GetLocationCount(tp,LOCATION_SZONE)
 	if e:GetHandler():IsLocation(LOCATION_HAND) then
 		ft=ft-1
 	end
+	if ft<=0 and not c:IsType(TYPE_FIELD) then return false end
 	local te=c:GetActivateEffect()
-	if not te then return false end
+	if not c:IsType(TYPE_COUNTER) or not te then return false end
 	local condition=te:GetCondition()
 	local cost=te:GetCost()
 	local target=te:GetTarget()
-	return c:IsType(TYPE_COUNTER) and (not condition or condition(te,tp,eg,ep,ev,re,r,rp)) 
-		and (not cost or cost(te,tp,eg,ep,ev,re,r,rp,0))
-		and (not target or target(te,tp,eg,ep,ev,re,r,rp,0))
-		and (ft>0 or c:IsType(TYPE_FIELD))
+	if te:GetCode()==EVENT_CHAINING or te:GetCode()==EVENT_FREE_CHAIN then
+		return (not condition or condition(te,tp,eg,ep,ev,re,r,rp)) and (not cost or cost(te,tp,eg,ep,ev,re,r,rp,0))
+			and (not target or target(te,tp,eg,ep,ev,re,r,rp,0))
+	else
+		local res,teg,tep,tev,tre,tr,trp=Duel.CheckEvent(te:GetCode(),true)
+		return res and (not condition or condition(te,tp,teg,tep,tev,tre,tr,trp)) and (not cost or cost(te,tp,teg,tep,tev,tre,tr,trp,0))
+			and (not target or target(te,tp,teg,tep,tev,tre,tr,trp,0))
+	end
 end
 function c511002131.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	local ft=Duel.GetLocationCount(tp,LOCATION_SZONE)
-	if e:GetHandler():IsLocation(LOCATION_HAND) then
-		ft=ft-1
-	end
-	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(1-tp) and c511002131.filter(chkc,e,tp,eg,ep,ev,re,r,rp) end
-	if chk==0 then return Duel.IsExistingTarget(c511002131.filter,tp,0,LOCATION_GRAVE,1,nil,e,tp,eg,ep,ev,re,r,rp) end
+	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(1-tp) and chkc~=e:GetHandler() and c511002131.filter(chkc,e,tp,eg,ep,ev,re,r,rp) end
+	if chk==0 then return Duel.IsExistingTarget(c511002131.filter,tp,0,LOCATION_GRAVE,1,e:GetHandler(),e,tp,eg,ep,ev,re,r,rp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_EFFECT)
-	Duel.SelectTarget(tp,c511002131.filter,tp,0,LOCATION_GRAVE,1,1,nil,e,tp,eg,ep,ev,re,r,rp)
+	Duel.SelectTarget(tp,c511002131.filter,tp,0,LOCATION_GRAVE,1,1,e:GetHandler(),e,tp,eg,ep,ev,re,r,rp)
 end
 function c511002131.activate(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
@@ -69,8 +70,14 @@ function c511002131.activate(e,tp,eg,ep,ev,re,r,rp)
 		if bit.band(tpe,TYPE_EQUIP+TYPE_CONTINUOUS+TYPE_FIELD)==0 then
 			tc:CancelToGrave(false)
 		end
-		if co then co(te,tp,eg,ep,ev,re,r,rp,1) end
-		if tg then tg(te,tp,eg,ep,ev,re,r,rp,1) end
+		if te:GetCode()==EVENT_CHAINING or te:GetCode()==EVENT_FREE_CHAIN then
+			if co then co(te,tp,eg,ep,ev,re,r,rp,1) end
+			if tg then tg(te,tp,eg,ep,ev,re,r,rp,1) end
+		else
+			local res,teg,tep,tev,tre,tr,trp=Duel.CheckEvent(te:GetCode(),true)
+			if co then co(te,tp,teg,tep,tev,tre,tr,trp,1) end
+			if tg then tg(te,tp,teg,tep,tev,tre,tr,trp,1) end
+		end
 		Duel.BreakEffect()
 		local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
 		if g then
@@ -80,7 +87,18 @@ function c511002131.activate(e,tp,eg,ep,ev,re,r,rp)
 				etc=g:GetNext()
 			end
 		end
-		if op then op(te,tp,eg,ep,ev,re,r,rp) end
+		tc:SetStatus(STATUS_ACTIVATED,true)
+		if not tc:IsDisabled() then
+			if te:GetCode()==EVENT_CHAINING or te:GetCode()==EVENT_FREE_CHAIN then
+				if op then op(te,tp,eg,ep,ev,re,r,rp) end
+			else
+				local res,teg,tep,tev,tre,tr,trp=Duel.CheckEvent(te:GetCode(),true)
+				if op then op(te,tp,teg,tep,tev,tre,tr,trp) end
+			end
+		else
+			--insert negated animation here
+		end
+		Duel.RaiseEvent(Group.CreateGroup(tc),EVENT_CHAIN_SOLVED,te,0,tp,tp,Duel.GetCurrentChain())
 		if g and tc:IsType(TYPE_EQUIP) and not tc:GetEquipTarget() then
 			Duel.Equip(tp,tc,g:GetFirst())
 		end

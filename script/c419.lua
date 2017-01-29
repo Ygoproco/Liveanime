@@ -312,6 +312,7 @@ function c419.op5(e,tp,eg,ep,ev,re,r,rp)
 	--LVL = 585, prev LVL = 584
 	local c=e:GetHandler()
 	local g=Duel.GetMatchingGroup(aux.TRUE,tp,0xff,0xff,nil)
+	if not g then return end
 	local tc=g:GetFirst()
 	while tc do
 		if tc:GetFlagEffect(285)==0 and tc:GetFlagEffect(286)==0 and tc:GetFlagEffect(585)==0 then
