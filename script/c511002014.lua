@@ -25,8 +25,8 @@ c511002014.sky_collection={
 	[42431843]=true;[29146185]=true;[69992868]=true;[96470883]=true;[10028593]=true;
 }
 function c511002014.ffilter1(c)
-	return c:IsFusionSetCard(0x21f) or c:IsFusionSetCard(0x21) or c511002014.earth_collection[c:GetFusionCode()])
+	return c:IsFusionSetCard(0x21f) or c:IsFusionSetCard(0x21) or c511002014.earth_collection[c:GetFusionCode()]
 end
 function c511002014.ffilter2(c)
-	return c:IsFusionSetCard(0x407) or c:IsFusionSetCard(0xef) or c511002014.sky_collection[c:GetFusionCode()])
+	return c:IsFusionSetCard(0x407) or c:IsFusionSetCard(0xef) or c511002014.sky_collection[c:GetFusionCode()]
 end

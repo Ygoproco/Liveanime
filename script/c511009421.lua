@@ -1,61 +1,54 @@
 --Dragon Creeping Plant
+--fixed by MLD
 function c511009421.initial_effect(c)
-	--Activate
+	aux.AddPersistentProcedure(c,1,c511009421.filter,CATEGORY_CONTROL,nil,nil,nil,c511009421.condition,nil,c511009421.target)
+	--atk
 	local e1=Effect.CreateEffect(c)
-	e1:SetCategory(CATEGORY_CONTROL)
-	e1:SetType(EFFECT_TYPE_ACTIVATE)
-	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e1:SetTarget(c511009421.target)
-	e1:SetOperation(c511009421.operation)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetCode(EFFECT_SET_CONTROL)
+	e1:SetRange(LOCATION_SZONE)
+	e1:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
+	e1:SetTarget(c511009421.cttg)
+	e1:SetValue(c511009421.ctval)
 	c:RegisterEffect(e1)
 	--destroy2
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
 	e3:SetRange(LOCATION_SZONE)
 	e3:SetCode(EVENT_LEAVE_FIELD)
-	e3:SetCondition(c511009421.descon2)
-	e3:SetOperation(c511009421.desop2)
+	e3:SetCondition(c511009421.descon)
+	e3:SetOperation(c511009421.desop)
 	c:RegisterEffect(e3)
 end
+function c511009421.cfilter(c)
+	return c:IsFaceup() and c:IsRace(RACE_DRAGON)
+end
+function c511009421.condition(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.IsExistingMatchingCard(c511009421.cfilter,tp,LOCATION_MZONE,0,1,nil)
+end
 function c511009421.filter(c)
-	return c:IsRace(RACE_DRAGON) and c:IsControlerCanBeChanged() and not Duel.IsExistingMatchingCard(c34822850.lvlfilter,c:GetControler(),LOCATION_MZONE,0,1,nil,c:GetLevel())
+	local g=Duel.GetFieldGroup(c:GetControler(),LOCATION_MZONE,0)
+	if g:GetCount()<=0 then return false end
+	local sg=g:GetMaxGroup(Card.GetLevel)
+	if not sg then return false end
+	return c:IsFaceup() and c:IsRace(RACE_DRAGON) and c:IsControlerCanBeChanged() 
+		and (not sg:IsContains(c) or (c:IsType(TYPE_XYZ) and not c:IsHasEffect(EFFECT_RANK_LEVEL) and not c:IsHasEffect(EFFECT_RANK_LEVEL_S)))
 end
-function c34822850.lvlfilter(c,lv)
-	return c:IsFaceup() and c:GetLevel()>lv
+function c511009421.target(e,tp,eg,ep,ev,re,r,rp,tc)
+	Duel.SetOperationInfo(0,CATEGORY_CONTROL,tc,1,0,0)
 end
-function c511009421.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and c511009421.filter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(c511009421.filter,tp,0,LOCATION_MZONE,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CONTROL)
-	local g=Duel.SelectTarget(tp,c511009421.filter,tp,0,LOCATION_MZONE,1,1,nil)
-	Duel.SetOperationInfo(0,CATEGORY_CONTROL,g,1,0,0)
+function c511009421.cttg(e,c)
+	return e:GetHandler():IsHasCardTarget(c)
 end
-function c511009421.operation(e,tp,eg,ep,ev,re,r,rp)
+function c511009421.ctval(e,c)
+	return e:GetHandlerPlayer()
+end
+function c511009421.descon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) then return end
-	local tc=Duel.GetFirstTarget()
-	if tc:IsFaceup() and tc:IsRace(RACE_DRAGON) and tc:IsRelateToEffect(e) then
-		c:SetCardTarget(tc)
-		local e1=Effect.CreateEffect(c)
-		e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE+EFFECT_FLAG_OWNER_RELATE)
-		e1:SetRange(LOCATION_MZONE)
-		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetCode(EFFECT_SET_CONTROL)
-		e1:SetValue(tp)
-		e1:SetReset(RESET_EVENT+0x1fc0000)
-		e1:SetCondition(c511009421.con)
-		tc:RegisterEffect(e1)
-	end
+	if c:IsStatus(STATUS_DESTROY_CONFIRMED) then return false end
+	local tc=c:GetFirstCardTarget()
+	return tc and eg:IsContains(tc)
 end
-function c511009421.con(e)
-	return e:GetOwner():IsHasCardTarget(e:GetHandler())
-end
-
-function c511009421.descon2(e,tp,eg,ep,ev,re,r,rp)
-	local tc=e:GetHandler():GetFirstCardTarget()
-	return tc and eg:IsContains(tc) and tc:IsReason(REASON_DESTROY)
-end
-function c511009421.desop2(e,tp,eg,ep,ev,re,r,rp)
+function c511009421.desop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Destroy(e:GetHandler(),REASON_EFFECT)
 end
