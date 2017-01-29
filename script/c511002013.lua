@@ -31,7 +31,7 @@ function c511002013.ffilter1(c)
 	return c:IsFusionSetCard(0x21f) or c:IsFusionSetCard(0x21) or c511002013.earth_collection[c:GetFusionCode()]
 end
 function c511002013.ffilter2(c)
-	return c:IsFusionSetCard(0x407) or c:IsFusionSetCard(0xef) or c511002013.sky_collection[c:GetFusionCode()])
+	return c:IsFusionSetCard(0x407) or c:IsFusionSetCard(0xef) or c511002013.sky_collection[c:GetFusionCode()]
 end
 function c511002013.atkcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
