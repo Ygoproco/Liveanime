@@ -32,6 +32,7 @@ function c511010105.initial_effect(c)
 		ge3:SetOperation(c511010105.numchk)
 		Duel.RegisterEffect(ge3,0)
 	end
+end
 c511010105.xyz_number=105
 function c511010105.condition(e,tp,eg,ep,ev,re,r,rp)
 	local a=Duel.GetAttacker()
