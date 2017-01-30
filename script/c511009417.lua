@@ -5,35 +5,35 @@ function c511009417.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	c:RegisterEffect(e1)
-		--spsummon
-	local e3=Effect.CreateEffect(c)
-	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e3:SetType(EFFECT_TYPE_IGNITION)
-	e3:SetRange(LOCATION_MZONE)
-	e3:SetCountLimit(1)
-	e3:SetTarget(c511009417.target)
-	e3:SetOperation(c511009417.operation)
-	c:RegisterEffect(e3)
-	--level
+	-- spsummon
 	local e2=Effect.CreateEffect(c)
+	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e2:SetType(EFFECT_TYPE_IGNITION)
-	e2:SetRange(LOCATION_PZONE)
-	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	e2:SetRange(LOCATION_SZONE)
 	e2:SetCountLimit(1)
-	e2:SetTarget(c511009417.lvtg)
-	e2:SetOperation(c511009417.lvop)
+	e2:SetTarget(c511009417.target)
+	e2:SetOperation(c511009417.operation)
 	c:RegisterEffect(e2)
-	--damage
+	-- level
 	local e3=Effect.CreateEffect(c)
-	e3:SetCategory(CATEGORY_DAMAGE)
-	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
+	e3:SetType(EFFECT_TYPE_IGNITION)
 	e3:SetRange(LOCATION_SZONE)
-	e3:SetCode(EVENT_PHASE+PHASE_STANDBY)
+	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e3:SetCountLimit(1)
-	e3:SetCondition(c511009417.damcon)
-	e3:SetTarget(c511009417.damtg)
-	e3:SetOperation(c511009417.damop)
+	e3:SetTarget(c511009417.lvtg)
+	e3:SetOperation(c511009417.lvop)
 	c:RegisterEffect(e3)
+	-- damage
+	local e4=Effect.CreateEffect(c)
+	e4:SetCategory(CATEGORY_DAMAGE)
+	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
+	e4:SetRange(LOCATION_SZONE)
+	e4:SetCode(EVENT_PHASE+PHASE_STANDBY)
+	e4:SetCountLimit(1)
+	e4:SetCondition(c511009417.damcon)
+	e4:SetTarget(c511009417.damtg)
+	e4:SetOperation(c511009417.damop)
+	c:RegisterEffect(e4)
 end
 function c511009417.filter1(c,e)
 	return c:IsCanBeFusionMaterial() and not c:IsImmuneToEffect(e)
@@ -94,7 +94,6 @@ function c511009417.operation(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 
---------------------------------------
 function c511009417.filter(c)
 	return c:IsFaceup() and c:GetLevel()>0 and c:IsSetCard(0xaf)
 end
@@ -117,7 +116,6 @@ function c511009417.lvop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 
---------------------------------------
 function c511009417.damcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnPlayer()==tp
 end
