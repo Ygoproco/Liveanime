@@ -4,16 +4,8 @@ function c511009415.initial_effect(c)
 	--pendulum summon
 	aux.EnablePendulumAttribute(c,false)
 	--fusion material
-	--aux.AddFusionProcFunRep(c,c511009415.ffilter,2,false)
-	c:EnableReviveLimit()
-	local e0=Effect.CreateEffect(c)
-	e0:SetType(EFFECT_TYPE_SINGLE)
-	e0:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
-	e0:SetCode(EFFECT_FUSION_MATERIAL)
-	e0:SetCondition(c511009415.funcon)
-	e0:SetOperation(c511009415.funop)
-	c:RegisterEffect(e0)
-		--no damage
+	aux.AddFusionProcFunRep(c,aux.FilterBoolFunction(Card.IsFusionAttribute,ATTRIBUTE_DARK),2,true)
+	--no damage
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(511001684,0))
 	e1:SetType(EFFECT_TYPE_QUICK_O+EFFECT_TYPE_FIELD)
@@ -34,65 +26,17 @@ function c511009415.initial_effect(c)
 	e2:SetOperation(c511009415.copyop)
 	c:RegisterEffect(e2)
 	--pendulum
-	local e7=Effect.CreateEffect(c)
-	e7:SetDescription(aux.Stringid(90036274,0))
-	e7:SetCategory(CATEGORY_DESTROY)
-	e7:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e7:SetCode(EVENT_DESTROYED)
-	e7:SetProperty(EFFECT_FLAG_DELAY)
-	e7:SetCondition(c511009415.pencon)
-	e7:SetTarget(c511009415.pentg)
-	e7:SetOperation(c511009415.penop)
-	c:RegisterEffect(e7)
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(90036274,0))
+	e3:SetCategory(CATEGORY_DESTROY)
+	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e3:SetCode(EVENT_DESTROYED)
+	e3:SetProperty(EFFECT_FLAG_DELAY)
+	e3:SetCondition(c511009415.pencon)
+	e3:SetTarget(c511009415.pentg)
+	e3:SetOperation(c511009415.penop)
+	c:RegisterEffect(e3)
 end
-
-function c511009415.ffilter(c,fc)
-	if Card.IsFusionAttribute then
-		return c:IsFusionAttribute(ATTRIBUTE_DARK,fc) and c:IsLocation(LOCATION_MZONE) and not c:IsType(TYPE_TOKEN)
-	else
-		return c:IsAttribute(ATTRIBUTE_DARK) and c:IsLocation(LOCATION_MZONE) and not c:IsType(TYPE_TOKEN)
-	end
-end
-function c511009415.funcon(e,g,gc,chkfnf)
-	if g==nil then return false end
-	local c=e:GetHandler()
-	local chkf=bit.band(chkfnf,0xff)
-	local mg=g:Filter(Card.IsCanBeFusionMaterial,nil,e:GetHandler())
-	if gc then
-		if not gc:IsCanBeFusionMaterial(e:GetHandler()) then return false end
-		return c511009415.ffilter(gc,c) and mg:IsExists(c511009415.ffilter,1,gc,c) end
-	local g1=mg:Filter(c511009415.ffilter,nil,c)
-	if chkf~=PLAYER_NONE then
-		return g1:FilterCount(Card.IsOnField,nil)~=0 and g1:GetCount()>=2
-	else return g1:GetCount()>=2 end
-end
-function c511009415.funop(e,tp,eg,ep,ev,re,r,rp,gc,chkfnf)
-	local chkf=bit.band(chkfnf,0xff)
-	local c=e:GetHandler()
-	local g=eg:Filter(Card.IsCanBeFusionMaterial,nil,e:GetHandler())
-	if gc then
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FMATERIAL)
-		local g1=g:FilterSelect(tp,c511009415.ffilter,1,1,gc,c)
-		Duel.SetFusionMaterial(g1)
-		return
-	end
-	local sg=g:Filter(c511009415.ffilter,nil,c)
-	if chkf==PLAYER_NONE or sg:GetCount()==2 then
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FMATERIAL)
-		local g1=sg:Select(tp,2,2,nil)
-		Duel.SetFusionMaterial(g1)
-		return
-	end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FMATERIAL)
-	local g1=sg:FilterSelect(tp,Auxiliary.FConditionCheckF,1,1,nil,chkf)
-	if 2>1 then
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FMATERIAL)
-		local g2=sg:Select(tp,2-1,2-1,g1:GetFirst())
-		g1:Merge(g2)
-	end
-	Duel.SetFusionMaterial(g1)
-end
-------------------------------------------------
 function c511009415.con(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetBattleDamage(tp)>0
 end
@@ -107,9 +51,6 @@ end
 function c511009415.damop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.ChangeBattleDamage(ep,0)
 end
-
-
--------------------------------------------------
 function c511009415.copyfilter(c)
 	return c:IsFaceup() 
 end
@@ -128,8 +69,7 @@ function c511009415.copyop(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_DISABLE)
 		e1:SetReset(RESET_EVENT+0x1fe0000)
-		tc:RegisterEffect(e1,true)
-		
+		tc:RegisterEffect(e1,true)		
 		if not tc:IsType(TYPE_TRAPMONSTER) then
 			local cid=c:CopyEffect(code,RESET_EVENT+0x1fe0000,1)
 			local e1=Effect.CreateEffect(e:GetHandler())
@@ -143,8 +83,6 @@ function c511009415.copyop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Damage(1-tp,500,REASON_EFFECT)
 	end
 end
-
-
 function c511009415.pencon(e,tp,eg,ep,ev,re,r,rp)
 	return bit.band(r,REASON_EFFECT+REASON_BATTLE)~=0 and e:GetHandler():IsPreviousLocation(LOCATION_MZONE)
 end
