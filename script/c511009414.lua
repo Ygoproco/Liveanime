@@ -28,14 +28,14 @@ end
 function c511009414.filter(c)
 	return c:IsFaceup() and c:IsSetCard(0x9f)
 end
-function c511009414.destg(e,tp,eg,ep,ev,re,r,rp,chk)
+function c511009414.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	local g=eg:Filter(c24348804.filter,nil)
 	local ct=g:GetCount()
 	if chk==0 then return ct>0 and Duel.IsPlayerCanDraw(tp,ct)  end
 	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,ct)
 end
-function c511009414.desop(e,tp,eg,ep,ev,re,r,rp)
+function c511009414.op(e,tp,eg,ep,ev,re,r,rp)
 	local ct=eg:GetCount()
 	Duel.Draw(tp,ct,REASON_EFFECT)
 end
