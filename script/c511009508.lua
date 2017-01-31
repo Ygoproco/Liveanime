@@ -1,9 +1,9 @@
 --Supreme King Servant Dragon Dark Rebellion
 function c511009508.initial_effect(c)
 	--xyz summon
-	aux.AddXyzProcedure(c,nil,4,2)
+		aux.AddXyzProcedure(c,aux.FilterBoolFunction(Card.IsAttribute,ATTRIBUTE_DARK),4,2)
 	c:EnableReviveLimit()
-		--special summon
+	--special summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(511000369,0))
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
@@ -64,8 +64,6 @@ function c511009508.mfilter(c)
 end
 function c511009508.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	-- local g=Duel.GetMatchingGroup(c511009508.mfilter,tp,LOCATION_MZONE,0,nil)
-	-- if chk==0 then return c:IsXyzSummonable(g) end
 	if chk==0 then return c:IsXyzSummonable(nil) end
 	if chk==0 then return true end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,c,1,0,0)
@@ -76,11 +74,9 @@ function c511009508.spop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.XyzSummon(tp,c,nil)
 	end
 end
-------------------------------------
 function c511009508.atlimit(e,c)
 	return c:IsFaceup() and c:IsType(TYPE_XYZ) and c~=e:GetHandler()
 end
----------------------------------
 function c511009508.atkcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():CheckRemoveOverlayCard(tp,1,REASON_COST) end
 	e:GetHandler():RemoveOverlayCard(tp,1,1,REASON_COST)
@@ -101,7 +97,6 @@ function c511009508.atktg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if c:IsHasEffect(511009518) then
 	e.SetProperty(e,0)
 	end
-	-- local g=Group.FromCards(c,bc)
 end
 function c511009508.atkfilter(c)
 	return c:IsFaceup() and c:GetAttack()>0
@@ -153,10 +148,6 @@ function c511009508.atkop(e,tp,eg,ep,ev,re,r,rp)
 	end
 	e.SetProperty(e,EFFECT_FLAG_CARD_TARGET)
 end
-
-	
-
------------------------------
 function c511009508.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToExtraAsCost() end
 	Duel.SendtoDeck(e:GetHandler(),nil,0,REASON_COST)
@@ -173,8 +164,8 @@ function c511009508.sptg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local g=Duel.SelectTarget(tp,c511009508.spfilter,tp,LOCATION_GRAVE,0,2,2,nil,e,tp)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,2,0,0)
 end
-function c511009517.filter(c)
-	return c:IsFaceup() and c:IsType(TYPE_SYNCHRO)
+function c511009508.filter(c)
+	return c:IsFaceup() and c:IsType(TYPE_XYZ)
 end
 function c511009508.spop2(e,tp,eg,ep,ev,re,r,rp)
 	local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
@@ -184,7 +175,7 @@ function c511009508.spop2(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()==0 then return end
 	if g:GetCount()<=ft then
 		if Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP) then 
-			local g=Duel.GetMatchingGroup(c511009517.filter,tp,0,LOCATION_MZONE,nil)
+			local g=Duel.GetMatchingGroup(c511009508.filter,tp,0,LOCATION_MZONE,nil)
 			local tc=g:GetFirst()
 			while tc do
 				local e2=Effect.CreateEffect(e:GetHandler())
