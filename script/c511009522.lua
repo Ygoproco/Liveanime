@@ -71,7 +71,6 @@ function c511009522.spfilter(c)
 	return c:IsSetCard(0x20f8)
 end
 function c511009522.spcon(e,tp,eg,ep,ev,re,r,rp)
-	Debug.Message(eg:IsExists(c511009522.filter,1,nil,tp))
 	return Duel.CheckReleaseGroup(tp,Card.IsSetCard,2,nil,0x20f8)
 	and Duel.IsExistingMatchingCard(c511009522.cfilter,tp,LOCATION_ONFIELD,0,1,nil)
 	and eg:IsExists(c511009522.filter,1,nil,tp) 
