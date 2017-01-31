@@ -14,9 +14,8 @@ function c511009523.filter(c)
 	return c:IsFaceup() and c:IsSetCard(0xf8)
 end
 function c511009523.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	-- local ct=Duel.GetMatchingGroupCount(c511009523.filter,tp,LOCATION_MZONE,0,e:GetHandler())
 	if chk==0 then return Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)>0 
-	and Duel.IsExistingMatchingCard(c41142615.filter,tp,LOCATION_ONFIELD,0,1,e:GetHandler()) end
+	and Duel.IsExistingMatchingCard(c511009523.filter,tp,LOCATION_ONFIELD,0,1,e:GetHandler()) end
 	Duel.SetTargetPlayer(tp)
 	Duel.SetOperationInfo(0,CATEGORY_HANDES,nil,0,1-tp,1)
 	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,0)
