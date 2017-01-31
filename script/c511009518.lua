@@ -14,22 +14,9 @@ function c511009518.initial_effect(c)
 	e3:SetValue(c511009518.eqlimit)
 	c:RegisterEffect(e3)
 end
-c511009518.collection={
--- Odd-Eyes Raging Dragon 
--- Odd-Eyes Rebellion Dragon
--- Supreme King Dragon Zarc
--- Number C80: Requiem in Berserk
--- Number 80: Rhapsody in Berserk
--- D/D/D Supreme King Kaiser
--- King of Yamimakai
-[86238081]=true;[45627618]=true;[13331639]=true;
-[69455834]=true;[20563387]=true;[93568288]=true;
-[44186624]=true;
-}
 function c511009518.eqlimit(e,c)
-	return (c:IsSetCard(0x1fb) or c511009518.collection[c:GetCode()]) 
+	return c:IsSetCard(0xf8) 
 end
 function c511009518.filter(c)
-	return (c:IsSetCard(0x1fb) or c511009518.collection[c:GetCode()]) 
-		and c:IsFaceup() 
+	return c:IsSetCard(0xf8) and c:IsFaceup() 
 end
