@@ -33,7 +33,7 @@ function c511009522.initial_effect(c)
 	--double damage
 	local e4=Effect.CreateEffect(c)
 	e4:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
-	e4:SetRange(LOCATION_SZONE)
+	e4:SetRange(LOCATION_MZONE)
 	e4:SetCode(EVENT_PRE_BATTLE_DAMAGE)
 	e4:SetCondition(c511009522.condition)
 	e4:SetOperation(c511009522.operation)
