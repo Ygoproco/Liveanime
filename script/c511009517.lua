@@ -3,7 +3,7 @@ function c511009517.initial_effect(c)
 	--synchro summon
 	aux.AddSynchroProcedure(c,aux.FilterBoolFunction(Card.IsAttribute,ATTRIBUTE_DARK),aux.NonTuner(nil),1)
 	c:EnableReviveLimit()
-		--special summon
+	--special summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(511000369,0))
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
@@ -31,7 +31,7 @@ function c511009517.initial_effect(c)
 	e3:SetCode(EFFECT_CANNOT_SELECT_BATTLE_TARGET)
 	e3:SetValue(c511009517.atlimit)
 	c:RegisterEffect(e3)
-	--tohand
+	--Destroy and damage
 	local e4=Effect.CreateEffect(c)
 	e4:SetCategory(CATEGORY_TOHAND+CATEGORY_EQUIP)
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
@@ -83,8 +83,6 @@ function c511009517.spop(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 end
-
-------------------------------------------
 function c511009517.effcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():GetSummonType()==SUMMON_TYPE_SYNCHRO
 end
@@ -109,16 +107,14 @@ function c511009517.disop(e,tp,eg,ep,ev,re,r,rp)
 	end
 	Duel.Destroy(g,REASON_EFFECT)
 end
--------------------------------------------
 function c511009517.atlimit(e,c)
 	return c:IsFaceup() and c:IsType(TYPE_SYNCHRO) and c~=e:GetHandler()
 end
---------------------------------------------
 function c511009517.condition(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local a=Duel.GetAttacker()
 	local d=Duel.GetAttackTarget()
-	if d and a:GetControler()~=d:GetControler() then
+	if d and a:GetControler()~=d:GetControler() and (a==c or d==c) then
 		if d==c then e:SetLabelObject(a)
 		else e:SetLabelObject(d) end
 		return true
@@ -130,7 +126,6 @@ function c511009517.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc==tc end
 	if chk==0 and not c:IsHasEffect(511009518) then return tc:IsOnField() and tc:IsCanBeEffectTarget(e) end
 	if chk==0 and c:IsHasEffect(511009518)  then return tc end
-	-- Duel.SetTargetCard(tc)
 	if not c:IsHasEffect(511009518) then
 	e.SetProperty(e,EFFECT_FLAG_CARD_TARGET)
 	Duel.SetTargetCard(tc)
@@ -146,7 +141,6 @@ function c511009517.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 function c511009517.operation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-
 	if not c:IsHasEffect(511009518) then
 		local tc=Duel.GetFirstTarget()
 		if Duel.NegateAttack() and Duel.Destroy(tc,REASON_EFFECT)>0 then
@@ -177,9 +171,6 @@ function c511009517.operation(e,tp,eg,ep,ev,re,r,rp)
 	end
 	e.SetProperty(e,EFFECT_FLAG_CARD_TARGET)
 end
-
-
------------------------------
 function c511009517.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToExtraAsCost() end
 	Duel.SendtoDeck(e:GetHandler(),nil,0,REASON_COST)
