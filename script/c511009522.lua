@@ -89,7 +89,6 @@ function c511009522.spop(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 end
------------------------------------------
 function c511009522.indfilter(c,tp)
 	return c:IsFaceup() and c:IsControler(tp) and c:IsOnField() and c:IsType(TYPE_PENDULUM) 
 end
@@ -100,19 +99,16 @@ end
 function c511009522.indval(e,c)
 	return c511009522.indfilter(c,e:GetHandlerPlayer())
 end
-------------------------------------------
 function c511009522.atlimit(e,c)
 	return c:IsFaceup() and c:IsType(TYPE_PENDULUM) and c~=e:GetHandler()
 end
----------------------------------------
-
 function c511009522.condition(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetAttacker():IsControler(tp) and Duel.GetAttacker():IsType(TYPE_PENDULUM)
+	return (Duel.GetAttacker():IsControler(tp) and Duel.GetAttacker():IsType(TYPE_PENDULUM)) or
+	(Duel.GetAttackTarget():IsControler(tp) and Duel.GetAttackTarget():IsType(TYPE_PENDULUM))
 end
 function c511009522.operation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.ChangeBattleDamage(1-tp,ev*2)
 end
----------------------------------------
 function c511009522.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToExtraAsCost() end
 	Duel.SendtoExtraP(e:GetHandler(),tp,REASON_COST)
@@ -153,7 +149,6 @@ function c511009522.spop2(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 end
----------------------
 function c511009522.Pcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckReleaseGroup(tp,Card.IsSetCard,1,nil,0x20f8) end
 	local g=Duel.SelectReleaseGroup(tp,Card.IsSetCard,1,1,nil,0x20f8)
