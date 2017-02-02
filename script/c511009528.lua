@@ -2,17 +2,16 @@
 function c511009528.initial_effect(c)
 	c:EnableReviveLimit()
 	aux.AddFusionProcFunRep(c,aux.FilterBoolFunction(Card.IsFusionAttribute,ATTRIBUTE_DARK),2,true)
-	
-		--special summon
+	--special summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(511000369,0))
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e1:SetRange(LOCATION_EXTRA)
-	e1:SetCondition(c511009508.spcon)
-	e1:SetTarget(c511009508.sptg)
-	e1:SetOperation(c511009508.spop)
+	e1:SetCondition(c511009528.spcon)
+	e1:SetTarget(c511009528.sptg)
+	e1:SetOperation(c511009528.spop)
 	c:RegisterEffect(e1)
 	--atk limit
 	local e2=Effect.CreateEffect(c)
@@ -20,13 +19,9 @@ function c511009528.initial_effect(c)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetTargetRange(0,LOCATION_MZONE)
 	e2:SetCode(EFFECT_CANNOT_SELECT_BATTLE_TARGET)
-	e2:SetValue(c511009508.atlimit)
+	e2:SetValue(c511009528.atlimit)
 	c:RegisterEffect(e2)
-	-- Once per turn, during your Main Phase or Battle Phase: 
-	-- You can target 1 monster on the field or Graveyard; until the end of this turn,
-	-- that target has its effects negated, 
-	-- and replace this effect with that monster's original effects. 
-		--copy
+	--copy
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(25793414,0))
 	e1:SetType(EFFECT_TYPE_QUICK_O)
@@ -53,31 +48,31 @@ function c511009528.initial_effect(c)
 	e5:SetCode(EVENT_FREE_CHAIN)
 	e5:SetHintTiming(0,TIMING_END_PHASE)
 	e5:SetRange(LOCATION_MZONE)
-	e5:SetCost(c511009508.spcost)
-	e5:SetTarget(c511009508.sptg2)
-	e5:SetOperation(c511009508.spop2)
+	e5:SetCost(c511009528.spcost)
+	e5:SetTarget(c511009528.sptg2)
+	e5:SetOperation(c511009528.spop2)
 	c:RegisterEffect(e5)
 end
 
-function c511009517.sfilter(c,tp)
+function c511009528.sfilter(c,tp)
 	return c:IsControler(1-tp) and c:IsType(TYPE_FUSION) and c:GetSummonType()==SUMMON_TYPE_FUSION
 end
-function c511009517.cfilter(c)
+function c511009528.cfilter(c)
 	return c:IsFaceup() and c:IsCode(13331639)
 end
-function c511009517.spfilter(c)
+function c511009528.spfilter(c)
 	return c:IsSetCard(0x20f8)
 end
-function c511009517.spcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(c511009517.sfilter,1,nil,tp) and Duel.IsExistingMatchingCard(c511009517.cfilter,tp,LOCATION_ONFIELD,0,1,nil)
+function c511009528.spcon(e,tp,eg,ep,ev,re,r,rp)
+	return eg:IsExists(c511009528.sfilter,1,nil,tp) and Duel.IsExistingMatchingCard(c511009528.cfilter,tp,LOCATION_ONFIELD,0,1,nil)
 	and Duel.CheckReleaseGroup(tp,Card.IsSetCard,2,nil,0x20f8)
 end
-function c511009517.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
+function c511009528.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then return c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_SYNCHRO,tp,false,false) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,c,1,0,0)
 end
-function c511009517.spop(e,tp,eg,ep,ev,re,r,rp)
+function c511009528.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) then
 		local g=Duel.SelectReleaseGroup(tp,Card.IsSetCard,2,2,nil,0x20f8)
@@ -86,15 +81,13 @@ function c511009517.spop(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 end
-
-------------------------------------------
-function c511009517.effcon(e,tp,eg,ep,ev,re,r,rp)
+function c511009528.effcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():GetSummonType()==SUMMON_TYPE_FUSION
 end
-function c511009517.distg(e,tp,eg,ep,ev,re,r,rp,chk)
+function c511009528.distg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsFaceup,tp,0,LOCATION_ONFIELD,1,nil) end
 end
-function c511009517.disop(e,tp,eg,ep,ev,re,r,rp)
+function c511009528.disop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_ONFIELD,nil)
 	local tc=g:GetFirst()
 	while tc do
@@ -112,11 +105,9 @@ function c511009517.disop(e,tp,eg,ep,ev,re,r,rp)
 	end
 	Duel.Destroy(g,REASON_EFFECT)
 end
--------------------------------------------
-function c511009517.atlimit(e,c)
+function c511009528.atlimit(e,c)
 	return c:IsFaceup() and c:IsType(TYPE_FUSION) and c~=e:GetHandler()
 end
---------------------------------------------
 function c511009528.cpcon(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetTurnPlayer()~=tp then return false end
 	local ph=Duel.GetCurrentPhase()
@@ -172,29 +163,26 @@ function c511009528.rstop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.HintSelection(Group.FromCards(c))
 	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 end
-
-
------------------------------
-function c511009517.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
+function c511009528.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToExtraAsCost() end
 	Duel.SendtoDeck(e:GetHandler(),nil,0,REASON_COST)
 end
-function c511009517.spfilter(c,e,tp)
+function c511009528.spfilter(c,e,tp)
 	return c:IsFaceup() and c:IsSetCard(0x20f8) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
-function c511009517.sptg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+function c511009528.sptg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return false end
 	if chk==0 then return not Duel.IsPlayerAffectedByEffect(tp,59822133)
 		and Duel.GetLocationCount(tp,LOCATION_MZONE)>1
-		and Duel.IsExistingTarget(c511009517.spfilter,tp,LOCATION_GRAVE,0,2,nil,e,tp) end
+		and Duel.IsExistingTarget(c511009528.spfilter,tp,LOCATION_GRAVE,0,2,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectTarget(tp,c511009517.spfilter,tp,LOCATION_GRAVE,0,2,2,nil,e,tp)
+	local g=Duel.SelectTarget(tp,c511009528.spfilter,tp,LOCATION_GRAVE,0,2,2,nil,e,tp)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,2,0,0)
 end
-function c511009517.filter(c)
+function c511009528.filter(c)
 	return c:IsFaceup() and c:IsType(TYPE_FUSION)
 end
-function c511009517.spop2(e,tp,eg,ep,ev,re,r,rp)
+function c511009528.spop2(e,tp,eg,ep,ev,re,r,rp)
 	local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
 	if ft<=1 then return end
 	if Duel.IsPlayerAffectedByEffect(tp,59822133) then return end
@@ -202,8 +190,7 @@ function c511009517.spop2(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()==0 then return end
 	if g:GetCount()<=ft then
 		if Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP) then 
-			-- local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
-			local g=Duel.GetMatchingGroup(c511009517.filter,tp,0,LOCATION_MZONE,nil)
+			local g=Duel.GetMatchingGroup(c511009528.filter,tp,0,LOCATION_MZONE,nil)
 			local tc=g:GetFirst()
 			while tc do
 				local e2=Effect.CreateEffect(e:GetHandler())
