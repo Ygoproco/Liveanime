@@ -30,7 +30,7 @@ function c511009523.activate(e,tp,eg,ep,ev,re,r,rp)
 		local sg=g:Select(p,1,ct,nil)
 		local dt=Duel.SendtoGrave(sg,REASON_EFFECT+REASON_DISCARD)
 		if dt~=0 then
-			Duel.Damage(1-p,dt*500,REASON_EFFECT)
+			Duel.Damage(1-p,dt*300,REASON_EFFECT)
 		end
 		Duel.ShuffleHand(1-p)
 	end

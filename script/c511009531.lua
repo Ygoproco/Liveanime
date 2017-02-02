@@ -10,7 +10,7 @@ function c511009531.initial_effect(c)
 	e1:SetCode(EVENT_SUMMON_SUCCESS)
 	e1:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DELAY)
 	e1:SetRange(LOCATION_MZONE)
-	e1:SetCountLimit(1)
+	e1:SetCountLimit(1,EFFECT_COUNT_CODE_SINGLE)
 	e1:SetCondition(c511009531.spcon)
 	e1:SetTarget(c511009531.sptg)
 	e1:SetOperation(c511009531.spop)
@@ -52,7 +52,7 @@ function c511009531.spop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c511009531.vfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0xaf)
+	return c:IsFaceup() and c:IsSetCard(0x10af)
 end
 function c511009531.valcon(e)
 	local c=e:GetHandler()

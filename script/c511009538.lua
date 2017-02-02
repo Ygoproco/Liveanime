@@ -1,5 +1,5 @@
 --D/D Savant Schrödinger
-function c511009539.initial_effect(c)
+function c511009538.initial_effect(c)
 	--pendulum summon
 	aux.EnablePendulumAttribute(c)
 	--no damage
