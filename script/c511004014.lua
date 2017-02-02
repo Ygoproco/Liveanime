@@ -46,13 +46,13 @@ function c511004014.initial_effect(c)
 	e4:SetCode(EFFECT_LIMIT_SUMMON_PROC)
 	e4:SetRange(LOCATION_REMOVED)
 	e4:SetTargetRange(0xff,0xff)
-	e4:SetTarget(function(e,c)return c:GetLevel()>=10 and not c:IsHasEffect(EFFECT_LIMIT_SUMMON_PROC) end)
+	e4:SetTarget(function(e,c)return c:GetLevel()>=10 and c:GetFlagEffect(511004015)==0 end)
 	e4:SetCondition(c511004014.ttcon)
 	e4:SetOperation(c511004014.ttop)
 	e4:SetValue(SUMMON_TYPE_ADVANCE)
 	c:RegisterEffect(e4)
 	local e5=e4:Clone()
-	e5:SetTarget(function(e,c)return c:GetLevel()>=10 and not c:IsHasEffect(EFFECT_LIMIT_SET_PROC) end)
+	e5:SetTarget(function(e,c)return c:GetLevel()>=10 and c:GetFlagEffect(511004017)==0 end)
 	e5:SetCode(EFFECT_LIMIT_SET_PROC)
 	c:RegisterEffect(e5)
 	--Cannot Attack
@@ -107,7 +107,7 @@ function c511004014.initial_effect(c)
 end
 function c511004014.ttcon(e,c)
 	if c==nil then return true end
-	return Duel.GetTributeCount(c)>=3
+	return Duel.GetTributeCount(c)>=count and c:GetLevel()>=10
 end
 function c511004014.ttop(e,tp,eg,ep,ev,re,r,rp,c)
 	local g=Duel.SelectTribute(tp,c,3,3)
@@ -127,6 +127,22 @@ function c511004014.op(e,tp,eg,ep,ev,re,r,rp)
 	end
 	if e:GetHandler():GetPreviousLocation()==LOCATION_HAND and Duel.IsPlayerCanDraw(e:GetHandlerPlayer(),1)then
 		Duel.Draw(tp,1,REASON_RULE)
+	end
+	local g=Duel.GetMatchingGroup(Card.IsHasEffect,tp,0xff,0xff,nil,EFFECT_LIMIT_SUMMON_PROC)
+	local g2=Duel.GetMatchingGroup(Card.IsHasEffect,tp,0xff,0xff,nil,EFFECT_LIMIT_SET_PROC)
+	local tc=g:GetFirst()
+	if tc then
+		while tc do
+			tc:RegisterFlagEffect(511004015,0,0,1)
+			tc=g:GetNext()
+		end
+	end
+	local tc2=g2:GetFirst()
+	if tc2 then
+		while tc2 do
+			tc2:RegisterFlagEffect(511004017,0,0,1)
+			tc2=g2:GetNext()
+		end
 	end
 end
 function c511004014.negop(e,tp,eg,ep,ev,re,r,rp)
