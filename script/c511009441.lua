@@ -57,13 +57,13 @@ function c511009441.initial_effect(c)
 	e6:SetOperation(c511009441.repop)
 	c:RegisterEffect(e6)
 	--immune to Fusion/Synchro/Xyz
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE)
-	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-	e1:SetRange(LOCATION_MZONE)
-	e1:SetCode(EFFECT_IMMUNE_EFFECT)
-	e1:SetValue(c511009441.efilter)
-	c:RegisterEffect(e1)
+	local e7=Effect.CreateEffect(c)
+	e7:SetType(EFFECT_TYPE_SINGLE)
+	e7:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e7:SetRange(LOCATION_MZONE)
+	e7:SetCode(EFFECT_IMMUNE_EFFECT)
+	e7:SetValue(c511009441.efilter)
+	c:RegisterEffect(e7)
 	--special summon SK dragon
 	local e8=Effect.CreateEffect(c)
 	e8:SetDescription(aux.Stringid(13331639,2))
@@ -118,7 +118,7 @@ function c511009441.damcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e1:SetCode(EFFECT_CANNOT_ATTACK)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_OATH)
 	e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
-	e:GetHandler():RegisterEffect(e1)
+	e:GetHandler():RegisterEffect(e1,true)
 end
 function c511009441.damtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return Duel.IsExistingMatchingCard(aux.TRUE,tp,0,LOCATION_MZONE,1,e:GetHandler()) end
@@ -172,7 +172,7 @@ end
 ---------------------------------
 -- summon SK dragons
 function c511009441.spfilter(c,e,tp)
-	return c:IsSetCard(0x21fb) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsSetCard(0x20f8) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function c511009441.sptg2(e,tp,eg,ep,ev,re,r,rp,chk)
 	local g=Duel.GetMatchingGroup(c511009441.spfilter,tp,LOCATION_EXTRA,0,nil,e,tp)
