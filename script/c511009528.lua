@@ -144,15 +144,15 @@ function c511009528.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoDeck(e:GetHandler(),nil,0,REASON_COST)
 end
 function c511009528.spfilter(c,e,tp)
-	return c:IsFaceup() and c:IsSetCard(0x20f8) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsFaceup() and c:IsSetCard(0x20f8) and c:IsType(TYPE_PENDULUM)  and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function c511009528.sptg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return false end
 	if chk==0 then return not Duel.IsPlayerAffectedByEffect(tp,59822133)
 		and Duel.GetLocationCount(tp,LOCATION_MZONE)>1
-		and Duel.IsExistingTarget(c511009528.spfilter,tp,LOCATION_GRAVE,0,2,nil,e,tp) end
+		and Duel.IsExistingTarget(c511009528.spfilter,tp,LOCATION_EXTRA,0,2,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectTarget(tp,c511009528.spfilter,tp,LOCATION_GRAVE,0,2,2,nil,e,tp)
+	local g=Duel.SelectTarget(tp,c511009528.spfilter,tp,LOCATION_EXTRA,0,2,2,nil,e,tp)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,2,0,0)
 end
 function c511009528.filter(c)
