@@ -11,6 +11,6 @@ end
 function c511004412.disop(e,tp,eg,ep,ev,re,r,rp)
 	if re:IsHasCategory(CATEGORY_ATKCHANGE) then
 		Duel.NegateEffect(ev)
-		Duel.Destroy(ev)
+		Duel.Destroy(ev,REASON_EFFECT)
 	end
 end
