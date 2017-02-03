@@ -52,7 +52,7 @@ function c511009531.spop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c511009531.vfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x10af)
+	return c:IsFaceup() and c:IsSetCard(0xaf)
 end
 function c511009531.valcon(e)
 	local c=e:GetHandler()
