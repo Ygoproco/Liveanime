@@ -69,7 +69,7 @@ function c511009528.spcon(e,tp,eg,ep,ev,re,r,rp)
 end
 function c511009528.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_SYNCHRO,tp,false,false) end
+	if chk==0 then return c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_FUSION,tp,false,false) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,c,1,0,0)
 end
 function c511009528.spop(e,tp,eg,ep,ev,re,r,rp)
@@ -80,30 +80,6 @@ function c511009528.spop(e,tp,eg,ep,ev,re,r,rp)
 			Duel.SpecialSummon(c,SUMMON_TYPE_FUSION,tp,tp,false,false,POS_FACEUP)
 		end
 	end
-end
-function c511009528.effcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():GetSummonType()==SUMMON_TYPE_FUSION
-end
-function c511009528.distg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsFaceup,tp,0,LOCATION_ONFIELD,1,nil) end
-end
-function c511009528.disop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_ONFIELD,nil)
-	local tc=g:GetFirst()
-	while tc do
-		local e1=Effect.CreateEffect(e:GetHandler())
-		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetCode(EFFECT_DISABLE)
-		e1:SetReset(RESET_EVENT+0x1fe0000)
-		tc:RegisterEffect(e1)
-		local e2=Effect.CreateEffect(e:GetHandler())
-		e2:SetType(EFFECT_TYPE_SINGLE)
-		e2:SetCode(EFFECT_DISABLE_EFFECT)
-		e2:SetReset(RESET_EVENT+0x1fe0000)
-		tc:RegisterEffect(e2)
-		tc=g:GetNext()
-	end
-	Duel.Destroy(g,REASON_EFFECT)
 end
 function c511009528.atlimit(e,c)
 	return c:IsFaceup() and c:IsType(TYPE_FUSION) and c~=e:GetHandler()
@@ -168,15 +144,15 @@ function c511009528.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoDeck(e:GetHandler(),nil,0,REASON_COST)
 end
 function c511009528.spfilter(c,e,tp)
-	return c:IsFaceup() and c:IsSetCard(0x20f8) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsFaceup() and c:IsSetCard(0x20f8) and c:IsType(TYPE_PENDULUM)  and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function c511009528.sptg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return false end
 	if chk==0 then return not Duel.IsPlayerAffectedByEffect(tp,59822133)
 		and Duel.GetLocationCount(tp,LOCATION_MZONE)>1
-		and Duel.IsExistingTarget(c511009528.spfilter,tp,LOCATION_GRAVE,0,2,nil,e,tp) end
+		and Duel.IsExistingTarget(c511009528.spfilter,tp,LOCATION_EXTRA,0,2,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectTarget(tp,c511009528.spfilter,tp,LOCATION_GRAVE,0,2,2,nil,e,tp)
+	local g=Duel.SelectTarget(tp,c511009528.spfilter,tp,LOCATION_EXTRA,0,2,2,nil,e,tp)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,2,0,0)
 end
 function c511009528.filter(c)

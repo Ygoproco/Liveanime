@@ -19,7 +19,6 @@ function c511009517.initial_effect(c)
 	e2:SetCategory(CATEGORY_DISABLE)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e2:SetCondition(c511009517.effcon)
 	e2:SetTarget(c511009517.distg)
 	e2:SetOperation(c511009517.disop)
 	c:RegisterEffect(e2)
@@ -176,15 +175,15 @@ function c511009517.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoDeck(e:GetHandler(),nil,0,REASON_COST)
 end
 function c511009517.spfilter(c,e,tp)
-	return c:IsFaceup() and c:IsSetCard(0x20f8) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsFaceup() and c:IsSetCard(0x20f8) and c:IsType(TYPE_PENDULUM) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function c511009517.sptg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return false end
 	if chk==0 then return not Duel.IsPlayerAffectedByEffect(tp,59822133)
 		and Duel.GetLocationCount(tp,LOCATION_MZONE)>1
-		and Duel.IsExistingTarget(c511009517.spfilter,tp,LOCATION_GRAVE,0,2,nil,e,tp) end
+		and Duel.IsExistingTarget(c511009517.spfilter,tp,LOCATION_EXTRA,0,2,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectTarget(tp,c511009517.spfilter,tp,LOCATION_GRAVE,0,2,2,nil,e,tp)
+	local g=Duel.SelectTarget(tp,c511009517.spfilter,tp,LOCATION_EXTRA,0,2,2,nil,e,tp)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,2,0,0)
 end
 function c511009517.filter(c)
@@ -198,7 +197,6 @@ function c511009517.spop2(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()==0 then return end
 	if g:GetCount()<=ft then
 		if Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP) then 
-			-- local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
 			local g=Duel.GetMatchingGroup(c511009517.filter,tp,0,LOCATION_MZONE,nil)
 			local tc=g:GetFirst()
 			while tc do
