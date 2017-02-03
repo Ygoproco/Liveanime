@@ -2,15 +2,15 @@
 function c511009443.initial_effect(c)
 	aux.EnablePendulumAttribute(c)
 	--splimit
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetRange(LOCATION_PZONE)
-	e1:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
-	e1:SetTargetRange(1,0)
-	e1:SetCondition(c511009443.splimcon)
-	e1:SetTarget(c511009443.splimit)
-	c:RegisterEffect(e1)
+	local e0=Effect.CreateEffect(c)
+	e0:SetType(EFFECT_TYPE_FIELD)
+	e0:SetRange(LOCATION_PZONE)
+	e0:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+	e0:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
+	e0:SetTargetRange(1,0)
+	e0:SetCondition(c511009443.splimcon)
+	e0:SetTarget(c511009443.splimit)
+	c:RegisterEffect(e0)
 	--avoid damage
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -65,7 +65,7 @@ end
 function c511009443.trig(e,tp,eg,ep,ev,re,r,rp)
 	local val=e:GetLabelObject():GetLabel()
 	if val~=0 then
-		Duel.RaiseEvent(e:GetHandler(),511009444,e,REASON_EFFECT,tp,tp,val)
+		Duel.RaiseEvent(e:GetHandler(),96227613,e,REASON_EFFECT,tp,tp,val)
 		e:GetLabelObject():SetLabel(0)
 	end
 end
