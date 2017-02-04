@@ -9,6 +9,19 @@ function c511009526.initial_effect(c)
 	e1:SetTarget(c511009526.target)
 	e1:SetOperation(c511009526.activate)
 	c:RegisterEffect(e1)
+	
+	--special summon
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(23051413,0))
+	e1:SetType(EFFECT_TYPE_QUICK_O)
+	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP)
+	e1:SetRange(LOCATION_GRAVE)
+	e1:SetCode(EVENT_CHAINING)
+	e1:SetCondition(c511009526.negcon)
+	e2:SetCost(c511009526.negcost)
+	e1:SetTarget(c511009526.negtg)
+	e1:SetOperation(c511009526.negop)
+	c:RegisterEffect(e1)
 end
 function c511009526.cfilter(c,e,tp)
 	return c:IsPreviousPosition(POS_FACEUP) and c:GetPreviousControler()==tp and c:IsPreviousLocation(LOCATION_MZONE) and c:IsReason(REASON_EFFECT+REASON_BATTLE)
@@ -26,5 +39,60 @@ function c511009526.activate(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc:IsRelateToEffect(e) then
 		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
+		local e1=Effect.CreateEffect(c)
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_DISABLE)
+		e1:SetReset(RESET_EVENT+0x1fe0000)
+		tc:RegisterEffect(e1)
+		local e2=Effect.CreateEffect(c)
+		e2:SetType(EFFECT_TYPE_SINGLE)
+		e2:SetCode(EFFECT_DISABLE_EFFECT)
+		e2:SetReset(RESET_EVENT+0x1fe0000)
+		tc:RegisterEffect(e2)
 	end
+end
+function c511009526.spcon(e,tp,eg,ep,ev,re,r,rp)
+	return rp~=tp and Duel.GetAttacker():IsSetCard(0x33)
+end
+function c511009526.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return e:GetHandler():IsAbleToRemoveAsCost() end
+	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_COST)
+end
+function c511009526.activate(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetCode(EFFECT_DISABLE)
+	e1:SetTargetRange(0,LOCATION_ONFIELD)
+	e1:SetTarget(c511009526.distg)
+	e1:SetReset(RESET_PHASE+PHASE_DAMAGE)
+	Duel.RegisterEffect(e1,tp)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e2:SetCode(EVENT_CHAIN_SOLVING)
+	e2:SetRange(LOCATION_SZONE)
+	e2:SetOperation(c511009526.disop)
+	e2:SetReset(RESET_PHASE+PHASE_DAMAGE)
+	Duel.RegisterEffect(e2,tp)
+	local e3=Effect.CreateEffect(e:GetHandler())
+	e3:SetType(EFFECT_TYPE_FIELD)
+	e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e3:SetCode(EFFECT_CANNOT_ACTIVATE)
+	e3:SetTargetRange(0,1)
+	e3:SetValue(c511009526.aclimit)
+	e3:SetReset(RESET_PHASE+PHASE_DAMAGE)
+	Duel.RegisterEffect(e3,tp)
+end
+function c511009526.distg(e,c)
+	return c~=e:GetHandler() and c:IsType(TYPE_SPELL)
+end
+function c511009526.disop(e,tp,eg,ep,ev,re,r,rp)
+	if ep==tp then return end
+	local tl=Duel.GetChainInfo(ev,CHAININFO_TRIGGERING_LOCATION)
+	if tl==LOCATION_SZONE and re:IsActiveType(TYPE_SPELL) then
+		Duel.NegateEffect(ev)
+	end
+end
+function c511009526.aclimit(e,re,tp)
+	return re:IsHasType(EFFECT_TYPE_ACTIVATE) and re:IsActiveType(TYPE_SPELL)
 end
