@@ -10,7 +10,7 @@ function c511004408.initial_effect(c)
 end
 function c511004408.tg(e,tp,eg,ev,ep,re,r,rp,chk)
 	local t1=Duel.CheckEvent(EVENT_ATTACK_ANNOUNCE) and Duel.GetAttacker() and Duel.GetAttacker():IsCanBeEffectTarget(e) and Duel.GetAttackTarget() and Duel.GetAttackTarget():IsAttribute(ATTRIBUTE_DARK)
-	local t2=not Duel.IsPlayerAffectedByEffect(tp,59822133) and Duel.GetLocationCount(tp,LOCATION_MZONE)>2 and Duel.IsPlayerCanSpecialSummonMonster(tp,123456789,0xf3,0x4011,0,0,1,RACE_PLANT,ATTRIBUTE_DARK)
+	local t2=not Duel.IsPlayerAffectedByEffect(tp,59822133) and Duel.GetLocationCount(tp,LOCATION_MZONE)>2 and Duel.IsPlayerCanSpecialSummonMonster(tp,123456789,0x10f3,0x4011,0,0,1,RACE_PLANT,ATTRIBUTE_DARK)
 	if chk==0 then return t1 or t2 end
 	local opt=0
 	if t1 and t2 then
@@ -45,7 +45,7 @@ function c511004408.op(e,tp,eg,ev,ep,re,r,rp)
 	end
 	if opt==1 or opt==2 then
 		if Duel.IsPlayerAffectedByEffect(tp,59822133) then return end
-		if Duel.GetLocationCount(tp,LOCATION_MZONE)>2 and Duel.IsPlayerCanSpecialSummonMonster(tp,123456789,0xf3,0x4011,0,0,1,RACE_PLANT,ATTRIBUTE_DARK) then
+		if Duel.GetLocationCount(tp,LOCATION_MZONE)>2 and Duel.IsPlayerCanSpecialSummonMonster(tp,123456789,0x10f3,0x4011,0,0,1,RACE_PLANT,ATTRIBUTE_DARK) then
 			for i=1,3 do
 				local token=Duel.CreateToken(tp,123456789)
 				Duel.SpecialSummonStep(token,0,tp,tp,false,false,POS_FACEUP)
