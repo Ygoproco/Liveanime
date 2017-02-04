@@ -2,15 +2,28 @@
 function c511004412.initial_effect(c)
 	--disable
 	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e1:SetCode(EVENT_CHAIN_SOLVING)
+	e1:SetCategory(CATEGORY_NEGATE+CATEGORY_DESTROY)
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_QUICK_O)
+	e1:SetCode(EVENT_CHAINING)
 	e1:SetRange(LOCATION_MZONE)
+	e1:SetCountLimit(1)
+	e1:SetCondition(c511004412.discon)
+	e1:SetTarget(c511004412.distg)
 	e1:SetOperation(c511004412.disop)
 	c:RegisterEffect(e1)
 end
+function c511004412.discon(e,tp,eg,ep,ev,re,r,rp)
+	return re:IsHasCategory(CATEGORY_ATKCHANGE)
+end
+function c511004412.distg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	Duel.SetOperationInfo(0,CATEGORY_NEGATE,eg,1,0,0)
+	if re:GetHandler():IsDestructable() and re:GetHandler():IsRelateToEffect(re) then
+		Duel.SetOperationInfo(0,CATEGORY_DESTROY,eg,1,0,0)
+	end
+end
 function c511004412.disop(e,tp,eg,ep,ev,re,r,rp)
-	if re:IsHasCategory(CATEGORY_ATKCHANGE) then
-		Duel.NegateEffect(ev)
-		Duel.Destroy(re:GetHandler(),REASON_EFFECT)
+	if Duel.NegateEffect(ev) then
+		Duel.Destroy(eg,REASON_EFFECT)
 	end
 end
