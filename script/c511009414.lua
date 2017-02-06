@@ -1,51 +1,50 @@
 --Performapal Dropgallop
---Fixed by TheOnePharaoh    
+--fixed by MLD
 function c511009414.initial_effect(c)
-	--draw
+	--tohand
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_DRAW)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-	e1:SetRange(LOCATION_MZONE)
+	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY+EFFECT_FLAG_PLAYER_TARGET)
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e1:SetCondition(c511009414.con)
-	e1:SetTarget(c511009414.tg)
-	e1:SetOperation(c511009414.op)
+	e1:SetRange(LOCATION_MZONE)
+	e1:SetCondition(c511009414.drcon)
+	e1:SetTarget(c511009414.drtg)
+	e1:SetOperation(c511009414.drop)
 	c:RegisterEffect(e1)
-		--lv change
+	--level
 	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(26082117,0))
 	e2:SetType(EFFECT_TYPE_IGNITION)
-	e2:SetCountLimit(1)
 	e2:SetRange(LOCATION_MZONE)
-	e2:SetCondition(c511009414.condition)
-	e2:SetTarget(c511009414.target)
-	e2:SetOperation(c511009414.operation)
+	e2:SetCondition(c511009414.lvcon)
+	e2:SetTarget(c511009414.lvtg)
+	e2:SetOperation(c511009414.lvop)
 	c:RegisterEffect(e2)
 end
-function c511009414.con(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():GetSummonType()==SUMMON_TYPE_PENDULUM and eg:IsContains(e:GetHandler()) and eg:IsExists(c511009414.filter,1,nil)
+function c511009414.cfilter(c)
+	return c:IsFaceup() and c:IsSetCard(0x9f) and c:GetSummonType()==SUMMON_TYPE_PENDULUM
 end
-function c511009414.filter(c)
-	return c:IsFaceup() and c:IsSetCard(0x9f)
+function c511009414.drcon(e,tp,eg,ep,ev,re,r,rp)
+	return eg:IsContains(e:GetHandler()) and eg:IsExists(c511009414.cfilter,1,nil)
 end
-function c511009414.tg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	local g=eg:Filter(c511009414.filter,nil)
-	local ct=g:GetCount()
-	if chk==0 then return ct>0 and Duel.IsPlayerCanDraw(tp,ct)  end
+function c511009414.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	local ct=eg:FilterCount(c511009414.cfilter,nil)
+	if chk==0 then return Duel.IsPlayerCanDraw(tp,ct) end
+	Duel.SetTargetPlayer(tp)
+	Duel.SetTargetParam(ct)
 	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,ct)
 end
-function c511009414.op(e,tp,eg,ep,ev,re,r,rp)
-	local ct=eg:GetCount()
-	Duel.Draw(tp,ct,REASON_EFFECT)
+function c511009414.drop(e,tp,eg,ep,ev,re,r,rp)
+	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
+	Duel.Draw(p,d,REASON_EFFECT)
 end
-function c511009414.cfilter(c)
-	return c:IsFaceup() and c:IsLevelAbove(5)  
+function c511009414.cfilter2(c)
+	return c:IsFaceup() and c:IsLevelAbove(5)
 end
-function c511009414.condition(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsExistingMatchingCard(c511009414.cfilter,tp,LOCATION_MZONE,0,1,e:GetHandler())
+function c511009414.lvcon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.IsExistingMatchingCard(c511009414.cfilter2,tp,LOCATION_MZONE,0,1,e:GetHandler())
 end
-function c511009414.target(e,tp,eg,ep,ev,re,r,rp,chk)
+function c511009414.lvtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	local t={}
 	local i=1
@@ -56,15 +55,16 @@ function c511009414.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 	t[p]=nil
 	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(26082117,1))
-	e:SetLabel(Duel.AnnounceNumber(tp,table.unpack(t)))
+	Duel.SetTargetParam(Duel.AnnounceNumber(tp,table.unpack(t)))
 end
-function c511009414.operation(e,tp,eg,ep,ev,re,r,rp)
+function c511009414.lvop(e,tp,eg,ep,ev,re,r,rp)
+	local lv=Duel.GetChainInfo(0,CHAININFO_TARGET_PARAM)
 	local c=e:GetHandler()
 	if c:IsFaceup() and c:IsRelateToEffect(e) then
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_CHANGE_LEVEL)
-		e1:SetValue(e:GetLabel())
+		e1:SetValue(lv)
 		e1:SetReset(RESET_EVENT+0x1ff0000+RESET_PHASE+PHASE_END)
 		c:RegisterEffect(e1)
 	end

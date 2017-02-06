@@ -1,4 +1,5 @@
 --Guidance to the Abyss
+--fixed by MLD
 function c511009181.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
@@ -11,13 +12,13 @@ function c511009181.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function c511009181.cfilter(c)
-	return c:IsSetCard(0x437) and c:IsType(TYPE_MONSTER)
+	return (c:IsSetCard(0x437) or c:IsCode(12538374,51534754)) and c:IsType(TYPE_MONSTER)
 end
 function c511009181.condition(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetMatchingGroupCount(c511009181.cfilter,e:GetHandler():GetControler(),LOCATION_GRAVE,0,nil)==2
+	return Duel.GetMatchingGroupCount(c511009181.cfilter,tp,LOCATION_GRAVE,0,nil)==2
 end
 function c511009181.filter(c,e,tp)
-	return c:IsSetCard(0x437) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return (c:IsSetCard(0x437) or c:IsCode(12538374,51534754)) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function c511009181.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c511009181.filter,tp,LOCATION_DECK,0,1,nil,e,tp) end

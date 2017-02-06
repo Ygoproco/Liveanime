@@ -1,5 +1,6 @@
 --Number 105: Battlin' Boxer Star Cestus (Anime)
 --No.105 BK 流星のセスタス (Anime)
+--cleaned up and fixed by MLD
 function c511010105.initial_effect(c)
 	--xyz summon
 	aux.AddXyzProcedure(c,nil,4,3)
@@ -37,36 +38,36 @@ c511010105.xyz_number=105
 function c511010105.condition(e,tp,eg,ep,ev,re,r,rp)
 	local a=Duel.GetAttacker()
 	local at=Duel.GetAttackTarget()
-	if at:IsControler(tp) then return false end
-	return (Duel.GetCurrentPhase()>=PHASE_BATTLE_START and Duel.GetCurrentPhase()<=PHASE_BATTLE) and a and at and 
-	(a:IsControler(tp) and a:IsOnField() and a==e:GetHandler() and at:IsControler(1-tp) and at:IsOnField() and at:GetAttack()>a:GetAttack())
+	if not at or at:IsControler(tp) then return false end
+	return a and a==e:GetHandler() and at:IsControler(1-tp) and at:GetAttack()>a:GetAttack()
 end
 function c511010105.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetFlagEffect(tp,511010105)==0 and e:GetHandler():CheckRemoveOverlayCard(tp,1,REASON_COST) end
 	e:GetHandler():RemoveOverlayCard(tp,1,1,REASON_COST)
-	Duel.RegisterFlagEffect(tp,511010105,RESET_PHASE+PHASE_DAMAGE,0,1)
+	Duel.RegisterFlagEffect(tp,511010105,RESET_PHASE+PHASE_DAMAGE,EFFECT_FLAG_OATH,1)
 end
 function c511010105.operation(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
 	local a=Duel.GetAttacker()
 	local at=Duel.GetAttackTarget()
-	if a:IsFacedown() or at:IsControler(tp) then return end
-	local e1=Effect.CreateEffect(e:GetHandler())
+	if not a or a~=c or not at:IsRelateToBattle() or not c:IsRelateToEffect(e) then return end
+	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)
 	e1:SetValue(1)
 	e1:SetReset(RESET_PHASE+PHASE_DAMAGE)
-	a:RegisterEffect(e1,true)
-	local e2=Effect.CreateEffect(e:GetHandler())
+	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetCode(EFFECT_REFLECT_BATTLE_DAMAGE)
 	e2:SetValue(1)
 	e2:SetReset(RESET_PHASE+PHASE_DAMAGE)
-	a:RegisterEffect(e2,true)
-	local e3=Effect.CreateEffect(e:GetHandler())
+	c:RegisterEffect(e2)
+	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE)
 	e3:SetCode(EFFECT_UNSTOPPABLE_ATTACK)
 	e3:SetReset(RESET_PHASE+PHASE_DAMAGE)
-	a:RegisterEffect(e3,true)
+	c:RegisterEffect(e3)
 end
 function c511010105.numchk(e,tp,eg,ep,ev,re,r,rp)
 	Duel.CreateToken(tp,59627393)

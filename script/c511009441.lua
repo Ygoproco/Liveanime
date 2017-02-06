@@ -1,6 +1,7 @@
---Supreme King Dragon Zarc (Anime)
+--覇王龍ズァーク
+--fixed by MLD
 function c511009441.initial_effect(c)
-	c:EnableUnsummonable()
+	c:EnableReviveLimit()
 	aux.EnablePendulumAttribute(c,false)
 	--level/rank
 	local e0=Effect.CreateEffect(c)
@@ -48,26 +49,23 @@ function c511009441.initial_effect(c)
 	local e5=e4:Clone()
 	e5:SetCode(EFFECT_INDESTRUCTABLE_EFFECT)
 	c:RegisterEffect(e5)
-	-- immune to leaving
-	local e6=Effect.CreateEffect(c)
-	e6:SetCode(EFFECT_SEND_REPLACE)
-	e6:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-	e6:SetCondition(c511009441.indcon)
-	e6:SetTarget(c511009441.reptg)
-	e6:SetOperation(c511009441.repop)
+	local e6=e4:Clone()
+	e6:SetCode(EFFECT_IMMUNE_EFFECT)
+	e6:SetValue(c511009441.imfilter)
 	c:RegisterEffect(e6)
 	--immune to Fusion/Synchro/Xyz
 	local e7=Effect.CreateEffect(c)
-	e7:SetType(EFFECT_TYPE_SINGLE)
-	e7:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-	e7:SetRange(LOCATION_MZONE)
+	e7:SetType(EFFECT_TYPE_FIELD)
 	e7:SetCode(EFFECT_IMMUNE_EFFECT)
+	e7:SetRange(LOCATION_MZONE)
+	e7:SetTargetRange(LOCATION_MZONE,0)
 	e7:SetValue(c511009441.efilter)
 	c:RegisterEffect(e7)
 	--special summon SK dragon
 	local e8=Effect.CreateEffect(c)
 	e8:SetDescription(aux.Stringid(13331639,2))
 	e8:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e8:SetProperty(EFFECT_FLAG_DELAY)
 	e8:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e8:SetCode(EVENT_BATTLE_DESTROYING)
 	e8:SetCondition(aux.bdocon)
@@ -78,39 +76,33 @@ function c511009441.initial_effect(c)
 	local e9=Effect.CreateEffect(c)
 	e9:SetDescription(aux.Stringid(13331639,0))
 	e9:SetCategory(CATEGORY_DESTROY)
+	e9:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_DAMAGE_STEP)
 	e9:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e9:SetCode(EVENT_TO_HAND)
 	e9:SetRange(LOCATION_MZONE)
-	e9:SetCondition(c511009441.ddcon)
-	e9:SetTarget(c511009441.ddtg)
-	e9:SetOperation(c511009441.ddop)
+	e9:SetCondition(c511009441.descon)
+	e9:SetTarget(c511009441.destg)
+	e9:SetOperation(c511009441.desop)
 	c:RegisterEffect(e9)
 end
 function c511009441.splimit(e,se,sp,st)
 	return se:GetHandler():IsCode(76794549)
 end
-
--- summon Self
-function c511009441.costfilter(c)
-	return c:IsSetCard(0xf8)
-end
 function c511009441.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckReleaseGroup(tp,c511009441.costfilter,1,nil) end
-	local g=Duel.SelectReleaseGroup(tp,c511009441.costfilter,1,1,nil)
+	if chk==0 then return Duel.CheckReleaseGroup(tp,Card.IsSetCard,1,nil,0xf8) end
+	local g=Duel.SelectReleaseGroup(tp,Card.IsSetCard,1,1,nil,0xf8)
 	Duel.Release(g,REASON_COST)
 end
 function c511009441.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsCanBeSpecialSummoned(e,0,tp,false,false) end
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and e:GetHandler():IsCanBeSpecialSummoned(e,0,tp,true,false) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,e:GetHandler(),1,0,0)
 end
 function c511009441.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and c:IsRelateToEffect(e) then
-		Duel.SpecialSummon(c,0,tp,tp,true,true,POS_FACEUP)
+		Duel.SpecialSummon(c,0,tp,tp,true,false,POS_FACEUP)
 	end
 end
-
--- Destroy and damage
 function c511009441.damcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():GetAttackAnnouncedCount()==0 end
 	local e1=Effect.CreateEffect(e:GetHandler())
@@ -118,92 +110,71 @@ function c511009441.damcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e1:SetCode(EFFECT_CANNOT_ATTACK)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_OATH)
 	e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
-	e:GetHandler():RegisterEffect(e1,true)
+	e:GetHandler():RegisterEffect(e1)
 end
-function c511009441.damtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+function c511009441.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(aux.TRUE,tp,0,LOCATION_MZONE,1,e:GetHandler()) end
 	local sg=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,e:GetHandler())
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,sg,sg:GetCount(),0,0)
 	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,PLAYER_ALL,0)
 end
 function c511009441.damop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(c511009441.desfil,tp,0,LOCATION_MZONE,nil)
+	local g=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
 	if Duel.Destroy(g,REASON_EFFECT)>0 then
 		local dg=Duel.GetOperatedGroup()
 		Duel.BreakEffect()
 		local dam=dg:GetSum(Card.GetPreviousAttackOnField)
-		if dg:IsExists(aux.FilterEqualFunction(Card.GetPreviousControler,1-tp),1,nil) then Duel.Damage(1-tp,dam,REASON_EFFECT,true) end
-		Duel.RDComplete()
+		Duel.Damage(1-tp,dam,REASON_EFFECT)
 	end
 end
-
-
--- indestructable/immune
-------------------------------
-function c511009441.indfilterFusion(c)
-	return c:IsFaceup() and c:IsType(TYPE_FUSION) 
-end
-function c511009441.indfilterSynchro(c)
-	return c:IsFaceup() and c:IsType(TYPE_SYNCHRO) 
-end
-function c511009441.indfilterXyz(c)
-	return c:IsFaceup() and c:IsType(TYPE_XYZ)
+function c511009441.indfilter(c,tpe)
+	return (c:IsLocation(LOCATION_GRAVE) or c:IsFaceup()) and c:IsType(tpe)
 end
 function c511009441.indcon(e)
-	return Duel.IsExistingMatchingCard(c511009441.indfilterFusion,e:GetHandlerPlayer(),LOCATION_GRAVE+LOCATION_REMOVED,LOCATION_GRAVE+LOCATION_REMOVED,1,nil)
-	and Duel.IsExistingMatchingCard(c511009441.indfilterSynchro,e:GetHandlerPlayer(),LOCATION_GRAVE+LOCATION_REMOVED,LOCATION_GRAVE+LOCATION_REMOVED,1,nil)
-	and Duel.IsExistingMatchingCard(c511009441.indfilterXyz,e:GetHandlerPlayer(),LOCATION_GRAVE+LOCATION_REMOVED,LOCATION_GRAVE+LOCATION_REMOVED,1,nil)
+	return Duel.IsExistingMatchingCard(c511009441.indfilter,0,LOCATION_GRAVE+LOCATION_REMOVED,LOCATION_GRAVE+LOCATION_REMOVED,1,nil,TYPE_FUSION)
+		and Duel.IsExistingMatchingCard(c511009441.indfilter,0,LOCATION_GRAVE+LOCATION_REMOVED,LOCATION_GRAVE+LOCATION_REMOVED,1,nil,TYPE_SYNCHRO)
+		and Duel.IsExistingMatchingCard(c511009441.indfilter,0,LOCATION_GRAVE+LOCATION_REMOVED,LOCATION_GRAVE+LOCATION_REMOVED,1,nil,TYPE_XYZ)
 end
----------------------------------
--- immune to leaving
-function c511009441.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local c=e:GetHandler()
-	if chk==0 then return not c:IsReason(REASON_BATTLE) end
-	return true
+function c511009441.imfilter(e,te)
+	if not te then return false end
+	return te:IsHasCategory(CATEGORY_TOHAND+CATEGORY_DESTROY+CATEGORY_REMOVE+CATEGORY_TODECK+CATEGORY_RELEASE+CATEGORY_TOGRAVE)
 end
-function c511009441.repop(e,tp,eg,ep,ev,re,r,rp)
-	
-end
---------------------------------------
--- Fusion/Synchro/Xyz
 function c511009441.efilter(e,te)
-	return te:IsActiveType(TYPE_FUSION) or te:IsActiveType(TYPE_SYNCHRO) or te:IsActiveType(TYPE_XYZ) 
+	return te:IsActiveType(TYPE_FUSION+TYPE_SYNCHRO+TYPE_XYZ) and e~=te
 end
----------------------------------
--- summon SK dragons
 function c511009441.spfilter(c,e,tp)
-	return c:IsSetCard(0x20f8) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsSetCard(0x21fb) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function c511009441.sptg2(e,tp,eg,ep,ev,re,r,rp,chk)
-	local g=Duel.GetMatchingGroup(c511009441.spfilter,tp,LOCATION_EXTRA,0,nil,e,tp)
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>1 and g:GetCount()>1 end
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,2,0,0)
+	if chk==0 then return not Duel.IsPlayerAffectedByEffect(tp,59822133) and Duel.GetLocationCount(tp,LOCATION_MZONE)>1 
+		and Duel.IsExistingMatchingCard(c511009441.spfilter,tp,LOCATION_EXTRA,0,2,nil,e,tp) end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,2,tp,LOCATION_EXTRA)
 end
 function c511009441.spop2(e,tp,eg,ep,ev,re,r,rp)
+	if Duel.IsPlayerAffectedByEffect(tp,59822133) then return end
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<2 then return end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectMatchingCard(tp,c511009441.spfilter,tp,LOCATION_EXTRA,0,2,2,nil,e,tp)
-	if g:GetCount()>0 then
-		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP_DEFENSE)
+	local c=e:GetHandler()
+	local g=Duel.GetMatchingGroup(c511009441.spfilter,tp,LOCATION_EXTRA,0,nil,e,tp)
+	if g:GetCount()>=2 then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+		local sg=g:Select(tp,2,2,nil)
+		Duel.SpecialSummon(sg,0,tp,tp,false,false,POS_FACEUP_DEFENSE)
 	end
 end
-------------------------------------
--- to hand destroy
-function c511009441.ddcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetCurrentPhase()~=PHASE_DRAW
+function c511009441.descon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetCurrentPhase()~=PHASE_DRAW and eg:IsExists(Card.IsControler,1,nil,1-tp)
 end
-function c511009441.ddfilter(c,tp)
-	return c:IsControler(1-tp)
-end
-function c511009441.ddtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local g=nil
-	if eg then g=eg:Filter(c511009441.ddfilter,nil,tp) end
-	if chk==0 then return g and g:GetCount()>0 end
+function c511009441.destg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	Duel.SetTargetCard(eg)
+	local g=eg:Filter(Card.IsControler,nil,1-tp)
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,g:GetCount(),0,0)
 end
-function c511009441.ddop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) then return end
-	local g=eg:Filter(c511009441.ddfilter,nil,tp)
+function c511009441.desfilter(c,e,tp)
+	return c:IsRelateToEffect(e) and c:IsControler(1-tp)
+end
+function c511009441.desop(e,tp,eg,ep,ev,re,r,rp)
+	local g=eg:Filter(c511009441.desfilter,nil,e,tp)
 	if g:GetCount()>0 then
 		Duel.Destroy(g,REASON_EFFECT)
 	end

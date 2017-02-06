@@ -1,4 +1,5 @@
 --Predaplant Stapelia Worm
+--fixed by MLD
 function c511004412.initial_effect(c)
 	--disable
 	local e1=Effect.CreateEffect(c)
@@ -13,17 +14,17 @@ function c511004412.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function c511004412.discon(e,tp,eg,ep,ev,re,r,rp)
-	return re:IsHasCategory(CATEGORY_ATKCHANGE)
+	return not e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) and Duel.IsChainNegatable(ev) and re:IsHasCategory(CATEGORY_ATKCHANGE)
 end
 function c511004412.distg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	Duel.SetOperationInfo(0,CATEGORY_NEGATE,eg,1,0,0)
-	if re:GetHandler():IsDestructable() and re:GetHandler():IsRelateToEffect(re) then
+	if re:GetHandler():IsRelateToEffect(re) then
 		Duel.SetOperationInfo(0,CATEGORY_DESTROY,eg,1,0,0)
 	end
 end
 function c511004412.disop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.NegateEffect(ev) then
+	if Duel.NegateActivation(ev) and re:GetHandler():IsRelateToEffect(re) then
 		Duel.Destroy(eg,REASON_EFFECT)
 	end
 end

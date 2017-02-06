@@ -1,4 +1,5 @@
 --D/D/D Flame High King Executive Genghis
+--fixed by MLD
 function c511009530.initial_effect(c)
 	--fusion material
 	c:EnableReviveLimit()
@@ -22,8 +23,8 @@ function c511009530.initial_effect(c)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetCountLimit(1)
-	e2:SetTarget(c511009530.thtg)
-	e2:SetOperation(c511009530.thop)
+	e2:SetTarget(c511009530.distg)
+	e2:SetOperation(c511009530.disop)
 	c:RegisterEffect(e2)
 end
 function c511009530.ffilter(c)
@@ -48,27 +49,26 @@ function c511009530.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 function c511009530.spop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) then
+	if tc and tc:IsRelateToEffect(e) then
 		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 	end
 end
--------------------------------------
 function c511009530.filter(c)
 	return c:IsFaceup() and c:IsSetCard(0xaf)
 end
-function c511009530.filter2(c)
-	return c:IsType(TYPE_SPELL+TYPE_TRAP) and (c:IsFaceup() and not c:IsDisabled())
+function c511009530.disfilter(c)
+	return c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup() and not c:IsDisabled()
 end
-function c511009530.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsOnField() and chkc:IsControler(1-tp) and c511009530.filter2(chkc) end
-	if chk==0 then return Duel.IsExistingMatchingCard(c511009530.filter,tp,LOCATION_ONFIELD,0,1,e:GetHandler())
-		and Duel.IsExistingTarget(c511009530.filter2,tp,0,LOCATION_ONFIELD,1,nil) end
-	local ct=Duel.GetMatchingGroupCount(c511009530.filter,tp,LOCATION_ONFIELD,0,e:GetHandler())
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RTOHAND)
-	local g=Duel.SelectTarget(tp,c511009530.filter2,tp,0,LOCATION_ONFIELD,1,ct,nil)
+function c511009530.distg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsOnField() and chkc:IsControler(1-tp) and c511009530.disfilter(chkc) end
+	if chk==0 then return Duel.IsExistingMatchingCard(c511009530.filter,tp,LOCATION_MZONE,0,1,e:GetHandler())
+		and Duel.IsExistingTarget(c511009530.disfilter,tp,0,LOCATION_ONFIELD,1,nil) end
+	local ct=Duel.GetMatchingGroupCount(c511009530.filter,tp,LOCATION_MZONE,0,e:GetHandler())
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
+	local g=Duel.SelectTarget(tp,c511009530.disfilter,tp,0,LOCATION_ONFIELD,1,ct,nil)
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,g,g:GetCount(),0,0)
 end
-function c511009530.thop(e,tp,eg,ep,ev,re,r,rp)
+function c511009530.disop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 	if g:GetCount()>0 then
@@ -76,23 +76,20 @@ function c511009530.thop(e,tp,eg,ep,ev,re,r,rp)
 		while tc do
 			local e1=Effect.CreateEffect(c)
 			e1:SetType(EFFECT_TYPE_SINGLE)
-			e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
 			e1:SetCode(EFFECT_DISABLE)
-			e1:SetReset(RESET_EVENT+0x1ff0000+RESET_PHASE+PHASE_STANDBY+RESET_SELF_TURN)
+			e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_STANDBY+RESET_OPPO_TURN)
 			tc:RegisterEffect(e1)
 			local e2=Effect.CreateEffect(c)
 			e2:SetType(EFFECT_TYPE_SINGLE)
-			e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
 			e2:SetCode(EFFECT_DISABLE_EFFECT)
 			e2:SetValue(RESET_TURN_SET)
-			e2:SetReset(RESET_EVENT+0x1ff0000+RESET_PHASE+PHASE_STANDBY+RESET_SELF_TURN)
+			e2:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_STANDBY+RESET_OPPO_TURN)
 			tc:RegisterEffect(e2)
 			if tc:IsType(TYPE_TRAPMONSTER) then
 				local e3=Effect.CreateEffect(c)
 				e3:SetType(EFFECT_TYPE_SINGLE)
-				e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
 				e3:SetCode(EFFECT_DISABLE_TRAPMONSTER)
-				e3:SetReset(RESET_EVENT+0x1ff0000+RESET_PHASE+PHASE_STANDBY+RESET_SELF_TURN)
+				e3:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_STANDBY+RESET_OPPO_TURN)
 				tc:RegisterEffect(e3)
 			end
 			tc=g:GetNext()
