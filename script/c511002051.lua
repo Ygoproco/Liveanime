@@ -20,6 +20,14 @@ function c511002051.atkop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=g:GetFirst()
 	if tc then
 		Duel.HintSelection(g)
+		local e1=Effect.CreateEffect(e:GetHandler())
+		e1:SetType(EFFECT_TYPE_FIELD)
+		e1:SetRange(LOCATION_SZONE)
+		e1:SetCode(EFFECT_SELF_ATTACK)
+		e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+		e1:SetReset(RESET_PHASE+PHASE_DAMAGE)
+		e1:SetTargetRange(1,1)
+		Duel.RegisterEffect(e1,tp)
 		Duel.ChangeAttackTarget(tc,true)
 	end
 end

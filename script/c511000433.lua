@@ -57,12 +57,12 @@ end
 function c511000433.eqtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingTarget(Card.IsFaceup,0,0,LOCATION_MZONE,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(511000433,1))
-	local tc=Duel.SelectTarget(tp,Card.IsFaceup,tp,0,LOCATION_MZONE,1,1,nil)
+	Duel.SelectTarget(tp,Card.IsFaceup,tp,0,LOCATION_MZONE,1,1,nil)
 end
 function c511000433.eqop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	if tc:IsFaceup() and tc:IsRelateToEffect(e) then
+	if tc and tc:IsFaceup() and tc:IsRelateToEffect(e) then
 		Duel.Equip(tp,c,tc)
 	else
 		Duel.SendtoGrave(c,REASON_EFFECT) 
@@ -78,7 +78,7 @@ function c511000433.eqcon2(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsReason(REASON_LOST_TARGET) and e:GetHandler():GetPreviousEquipTarget():IsReason(REASON_DESTROY)
 end
 function c511000433.eqtg2(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingTarget(c511000433.filter,tp,LOCATION_MZONE,0,1,nil,e) end
+	if chk==0 then return Duel.IsExistingTarget(c511000433.filter,tp,LOCATION_MZONE,0,1,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(511000433,1))
-	Duel.SelectTarget(tp,c511000433.filter,tp,LOCATION_MZONE,0,1,1,nil,e)
+	Duel.SelectTarget(tp,c511000433.filter,tp,LOCATION_MZONE,0,1,1,nil,e,tp)
 end

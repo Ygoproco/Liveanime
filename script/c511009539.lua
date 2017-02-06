@@ -1,4 +1,5 @@
 --D/D Savant Dirac
+--fixed by MLD
 function c511009539.initial_effect(c)
 	--pendulum summon
 	aux.EnablePendulumAttribute(c)
@@ -22,7 +23,7 @@ function c511009539.initial_effect(c)
 end
 function c511009539.damcon(e,tp,eg,ep,ev,re,r,rp)
 	local ph=Duel.GetCurrentPhase()
-	return ph>=PHASE_BATTLE_START and ph<=PHASE_BATTLE and (ph~=PHASE_DAMAGE or not Duel.IsDamageCalculated()) and	aux.damcon1(e,1-tp,eg,ep,ev,re,r,rp)
+	return ph>=PHASE_BATTLE_START and ph<=PHASE_BATTLE and (aux.damcon1(e,tp,eg,ep,ev,re,r,rp) or aux.damcon1(e,1-tp,eg,ep,ev,re,r,rp))
 end
 function c511009539.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0

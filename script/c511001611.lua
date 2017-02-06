@@ -9,47 +9,40 @@ function c511001611.initial_effect(c)
 	e1:SetOperation(c511001611.activate)
 	c:RegisterEffect(e1)
 end
-function c511001611.notchk(c,xyz)
-	return not c:IsCanBeXyzMaterial(xyz)
-end
-function c511001611.numfilter(c,g,matg,e,tp,ct)
-	local mg=g:Clone()
-	local tg=matg:Clone()
-	mg:RemoveCard(c)
-	tg:AddCard(c)
-	local ctc=ct+c.xyz_number
-	return Duel.IsExistingMatchingCard(c511001611.spfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp,tg,ctc) 
-		or mg:IsExists(c511001611.numfilter,1,nil,mg,tg,e,tp,ctc)
-end
-function c511001611.spfilter(c,e,tp,mg,ct)
-	if mg:GetCount()==0 or mg:IsExists(c511001611.notchk,1,nil,c) or mg:IsContains(c) then return false end
-	return c:IsSetCard(0x48) and c:IsType(TYPE_XYZ) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
-		and c.xyz_number and c.xyz_number==ct
+function c511001611.spfilterchk(c,e,tp,mg)
+	if not c:IsSetCard(0x48) or not c:IsType(TYPE_XYZ) or not c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
+		or not c.xyz_number then return false end
+		
+	if c.xyz_number>0 then
+		return mg:CheckWithSumEqual(function(c) return c.xyz_number end,c.xyz_number,1,99)
+	else
+		return mg:IsExists(function(c) return c.xyz_number==0 end,1,nil)
+	end
 end
 function c511001611.filter(c)
 	return c:IsSetCard(0x48) and c:IsType(TYPE_XYZ) and c.xyz_number
 end
+function c511001611.spfilter(c,e,tp,g,ct)
+	return c:IsType(TYPE_XYZ) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
+		and c.xyz_number==ct and not g:IsContains(c)
+end
 function c511001611.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	local g=Duel.GetMatchingGroup(c511001611.filter,tp,LOCATION_EXTRA,0,nil)
+	local mg=Duel.GetMatchingGroup(c511001611.filter,tp,LOCATION_EXTRA,0,nil)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and	g:IsExists(c511001611.numfilter,1,nil,g,Group.CreateGroup(),e,tp,0) end
+		and	Duel.IsExistingMatchingCard(c511001611.spfilterchk,tp,LOCATION_EXTRA,0,1,nil,e,tp,mg) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,0,LOCATION_EXTRA)
 end
 function c511001611.activate(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(c511001611.filter,tp,LOCATION_EXTRA,0,nil)
-	local sg=Group.CreateGroup()
-	local ct=0
-	if not g:IsExists(c511001611.numfilter,1,nil,g,sg,e,tp,ct) then return end
-	while not Duel.IsExistingMatchingCard(c511001611.spfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp,sg,ct) 
-		or (g:IsExists(c511001611.numfilter,1,nil,g,sg,e,tp,ct) and Duel.SelectYesNo(tp,513)) do
+	local mg=Duel.GetMatchingGroup(c511001611.filter,tp,LOCATION_EXTRA,0,nil)
+	if not Duel.IsExistingMatchingCard(c511001611.spfilterchk,tp,LOCATION_EXTRA,0,1,nil,e,tp,mg) then return end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
+	local sg=mg:Select(tp,1,99,nil)
+	while not Duel.IsExistingMatchingCard(c511001611.spfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp,sg,sg:GetSum(function(c) return c.xyz_number end)) do
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
-		local tg=g:FilterSelect(tp,c511001611.numfilter,1,1,nil,g,sg,e,tp,ct)
-		sg:Merge(tg)
-		g:Sub(tg)
-		ct=ct+tg:GetFirst().xyz_number
+		sg=mg:Select(tp,1,99,nil)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectMatchingCard(tp,c511001611.spfilter,tp,LOCATION_EXTRA,0,1,1,nil,e,tp,sg,ct)
+	local g=Duel.SelectMatchingCard(tp,c511001611.spfilter,tp,LOCATION_EXTRA,0,1,1,nil,e,tp,sg,sg:GetSum(function(c) return c.xyz_number end))
 	local tc=g:GetFirst()
 	if tc then
 		tc:SetMaterial(sg)

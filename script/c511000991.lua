@@ -58,7 +58,7 @@ end
 function c511000991.costchk(e,c,tp)
 	local atk=c:GetAttack()
 	e:SetLabel(atk)
-	return Duel.CheckLPCost(c:GetControler(),atk)
+	return Duel.IsPlayerAffectedByEffect(c:GetControler(),511000991) and Duel.CheckLPCost(c:GetControler(),atk)
 end
 function c511000991.costop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

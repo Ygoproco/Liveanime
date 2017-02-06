@@ -1,4 +1,5 @@
---Ancient Gear Devil (Anime)
+--古代の機械魔神
+--cleaned up by MLD
 function c511009307.initial_effect(c)
 	--fusion material
 	c:EnableReviveLimit()
@@ -8,6 +9,7 @@ function c511009307.initial_effect(c)
 	e1:SetDescription(aux.Stringid(5014629,0))
 	e1:SetCategory(CATEGORY_DAMAGE)
 	e1:SetType(EFFECT_TYPE_IGNITION)
+	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetCountLimit(1)
 	e1:SetTarget(c511009307.damtg)
@@ -39,7 +41,7 @@ function c511009307.damop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Damage(p,ct*1000,REASON_EFFECT)
 end
 function c511009307.eqcon(e)
-	return e:GetHandler():GetEquipGroup():GetCount()>0
+	return e:GetHandler():GetEquipCount()>0
 end
 function c511009307.unval(e,te)
 	return te:GetOwnerPlayer()~=e:GetHandlerPlayer()

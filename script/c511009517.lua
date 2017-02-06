@@ -1,22 +1,21 @@
 --Supreme King Servant Dragon Clear Wing
+--fixed by MLD
 function c511009517.initial_effect(c)
 	--synchro summon
 	aux.AddSynchroProcedure(c,aux.FilterBoolFunction(Card.IsAttribute,ATTRIBUTE_DARK),aux.NonTuner(nil),1)
 	c:EnableReviveLimit()
 	--special summon
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(511000369,0))
-	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e1:SetRange(LOCATION_EXTRA+LOCATION_GRAVE)
 	e1:SetCondition(c511009517.spcon)
-	e1:SetTarget(c511009517.sptg)
 	e1:SetOperation(c511009517.spop)
 	c:RegisterEffect(e1)
 	--spsummon success
 	local e2=Effect.CreateEffect(c)
 	e2:SetCategory(CATEGORY_DISABLE)
+	e2:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e2:SetTarget(c511009517.distg)
@@ -32,64 +31,54 @@ function c511009517.initial_effect(c)
 	c:RegisterEffect(e3)
 	--Destroy and damage
 	local e4=Effect.CreateEffect(c)
-	e4:SetCategory(CATEGORY_TOHAND+CATEGORY_EQUIP)
-	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e4:SetDescription(aux.Stringid(16691074,0))
+	e4:SetType(EFFECT_TYPE_QUICK_O)
 	e4:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e4:SetCode(EVENT_ATTACK_ANNOUNCE)
+	e4:SetCode(EVENT_FREE_CHAIN)
 	e4:SetRange(LOCATION_MZONE)
 	e4:SetCountLimit(1)
-	e4:SetCondition(c511009517.condition)
-	e4:SetTarget(c511009517.target)
-	e4:SetOperation(c511009517.operation)
+	e4:SetCondition(c511009517.descon)
+	e4:SetTarget(c511009517.destg)
+	e4:SetOperation(c511009517.desop)
 	c:RegisterEffect(e4)
 	--spsummon
 	local e5=Effect.CreateEffect(c)
+	e5:SetDescription(aux.Stringid(95923441,0))
 	e5:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e5:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e5:SetType(EFFECT_TYPE_QUICK_O)
 	e5:SetCode(EVENT_FREE_CHAIN)
 	e5:SetHintTiming(0,TIMING_END_PHASE)
 	e5:SetRange(LOCATION_MZONE)
 	e5:SetCost(c511009517.spcost)
-	e5:SetTarget(c511009517.sptg2)
+	e5:SetTarget(c511009517.sptg)
 	e5:SetOperation(c511009517.spop2)
 	c:RegisterEffect(e5)
 end
-function c511009517.sfilter(c,tp)
-	return c:IsControler(1-tp) and c:IsType(TYPE_SYNCHRO) and c:GetSummonType()==SUMMON_TYPE_SYNCHRO
+function c511009517.spfilter(c,tp)
+	return c:IsControler(1-tp) and c:IsType(TYPE_SYNCHRO) and c:IsSummonType(SUMMON_TYPE_SYNCHRO)
 end
 function c511009517.cfilter(c)
 	return c:IsFaceup() and c:IsCode(13331639)
 end
-function c511009517.spfilter(c)
-	return c:IsSetCard(0x20f8)
-end
 function c511009517.spcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(c511009517.sfilter,1,nil,tp) and Duel.IsExistingMatchingCard(c511009517.cfilter,tp,LOCATION_ONFIELD,0,1,nil)
-	and Duel.CheckReleaseGroup(tp,Card.IsSetCard,2,nil,0x20f8)
-end
-function c511009517.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local c=e:GetHandler()
-	if chk==0 then return c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_SYNCHRO,tp,false,false) end
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,c,1,0,0)
+	return eg:IsExists(c511009517.spfilter,1,nil,tp) and Duel.IsExistingMatchingCard(c511009517.cfilter,tp,LOCATION_MZONE,0,1,nil)
+		and Duel.CheckReleaseGroup(tp,Card.IsSetCard,2,nil,0x20f8) and e:GetHandler():IsCanBeSpecialSummoned(e,SUMMON_TYPE_SYNCHRO,tp,false,true)
 end
 function c511009517.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) then
+	if Duel.CheckReleaseGroup(tp,Card.IsSetCard,2,nil,0x20f8) and e:GetHandler():IsCanBeSpecialSummoned(e,SUMMON_TYPE_SYNCHRO,tp,false,true) 
+		and Duel.SelectYesNo(tp,aux.Stringid(4003,5)) then
 		local g=Duel.SelectReleaseGroup(tp,Card.IsSetCard,2,2,nil,0x20f8)
-		if Duel.Release(g,REASON_COST) then
-			Duel.SpecialSummon(c,SUMMON_TYPE_SYNCHRO,tp,tp,false,false,POS_FACEUP)
-		end
+		Duel.Release(g,REASON_COST)
+		Duel.SpecialSummon(c,SUMMON_TYPE_SYNCHRO,tp,tp,false,true,POS_FACEUP)
+		c:CompleteProcedure()
 	end
 end
-function c511009517.effcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():GetSummonType()==SUMMON_TYPE_SYNCHRO
-end
 function c511009517.distg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsFaceup,tp,0,LOCATION_ONFIELD,1,nil) end
+	if chk==0 then return Duel.IsExistingMatchingCard(aux.disfilter1,tp,0,LOCATION_MZONE,1,nil) end
 end
 function c511009517.disop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_ONFIELD,nil)
+	local g=Duel.GetMatchingGroup(aux.disfilter1,tp,0,LOCATION_MZONE,nil)
 	local tc=g:GetFirst()
 	while tc do
 		local e1=Effect.CreateEffect(e:GetHandler())
@@ -109,105 +98,85 @@ end
 function c511009517.atlimit(e,c)
 	return c:IsFaceup() and c:IsType(TYPE_SYNCHRO) and c~=e:GetHandler()
 end
-function c511009517.condition(e,tp,eg,ep,ev,re,r,rp)
+function c511009517.descon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local a=Duel.GetAttacker()
-	local d=Duel.GetAttackTarget()
-	if d and a:GetControler()~=d:GetControler() and (a==c or d==c) then
-		if d==c then e:SetLabelObject(a)
-		else e:SetLabelObject(d) end
-		return true
-	else return false end
+	local bc=c:GetBattleTarget()
+	return bc and bc:IsControler(1-tp)
 end
-function c511009517.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-		local c=e:GetHandler()
-	local tc=e:GetLabelObject()
-	if chkc then return chkc==tc end
-	if chk==0 and not c:IsHasEffect(511009518) then return tc:IsOnField() and tc:IsCanBeEffectTarget(e) end
-	if chk==0 and c:IsHasEffect(511009518)  then return tc end
-	if not c:IsHasEffect(511009518) then
-	e.SetProperty(e,EFFECT_FLAG_CARD_TARGET)
-	Duel.SetTargetCard(tc)
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,tc,1,0,0)
-	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,tc:GetAttack())
+function c511009517.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	local c=e:GetHandler()
+	local bc=c:GetBattleTarget()
+	if chkc then return chkc==bc end
+	if chk==0 then
+		if c:IsHasEffect(511009518) then return true
+		else return bc and bc:IsOnField() and bc:IsCanBeEffectTarget(e) end
 	end
 	if c:IsHasEffect(511009518) then
-	e.SetProperty(e,0)
-	local g=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,g:GetCount(),0,0)
-	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,0)
+		e:SetProperty(0)
+		local g=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
+		Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,g:GetCount(),0,0)
+		Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,0)
+	else
+		e:SetProperty(e,EFFECT_FLAG_CARD_TARGET)
+		Duel.SetTargetCard(bc)
+		Duel.SetOperationInfo(0,CATEGORY_DESTROY,bc,1,0,0)
+		Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,bc:GetAttack())
 	end
 end
-function c511009517.operation(e,tp,eg,ep,ev,re,r,rp)
+function c511009517.desop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if not c:IsHasEffect(511009518) then
-		local tc=Duel.GetFirstTarget()
-		if Duel.NegateAttack() and Duel.Destroy(tc,REASON_EFFECT)>0 then
-			if c:IsRelateToEffect(e) and c:IsFaceup() then
-				local atk=tc:GetPreviousAttackOnField()
-				if atk<=0 then return end
-				Duel.Damage(1-tp,atk,REASON_EFFECT)
-			end
+	local sum=0
+	e:SetProperty(e,EFFECT_FLAG_CARD_TARGET)
+	if not Duel.NegateAttack() then return end
+	if c:IsHasEffect(511009518) then
+		local g=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
+		if Duel.Destroy(tc,REASON_EFFECT)>0 then
+			local dg=Duel.GetOperatedGroup():Filter(Card.IsPreviousPosition,nil,POS_FACEUP)
+			sum=dg:GetSum(Card.GetAttack)
 		end
-		else
-			local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
-			if Duel.NegateAttack() and Duel.Destroy(g,REASON_EFFECT)>0 then
-			local dg=Duel.GetOperatedGroup()
-			local tc=dg:GetFirst()
-			local dam=0
-			
-			while tc do
-			local atk=tc:GetPreviousAttackOnField()
-			if atk<0 then atk=0 end
-				dam=dam+atk
-				tc=dg:GetNext()
-			end
-			if c:IsRelateToEffect(e) and c:IsFaceup() then
-				if dam<=0 then return end
-				Duel.Damage(1-tp,dam,REASON_EFFECT)
-			end
+	else
+		local tc=Duel.GetFirstTarget()
+		if not tc or not tc:IsRelateToEffect(e) or Duel.Destroy(tc,REASON_EFFECT)==0 then return end
+		if tc:IsPreviousPosition(POS_FACEUP) then
+			sum=tc:GetPreviousAttackOnField()
 		end
 	end
-	e.SetProperty(e,EFFECT_FLAG_CARD_TARGET)
+	Duel.Damage(1-tp,sum,REASON_EFFECT)
 end
 function c511009517.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToExtraAsCost() end
 	Duel.SendtoDeck(e:GetHandler(),nil,0,REASON_COST)
 end
-function c511009517.spfilter(c,e,tp)
+function c511009517.spfilter2(c,e,tp)
 	return c:IsFaceup() and c:IsSetCard(0x20f8) and c:IsType(TYPE_PENDULUM) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
-function c511009517.sptg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return false end
+function c511009517.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return not Duel.IsPlayerAffectedByEffect(tp,59822133)
-		and Duel.GetLocationCount(tp,LOCATION_MZONE)>1
-		and Duel.IsExistingTarget(c511009517.spfilter,tp,LOCATION_EXTRA,0,2,nil,e,tp) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectTarget(tp,c511009517.spfilter,tp,LOCATION_EXTRA,0,2,2,nil,e,tp)
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,2,0,0)
+		and Duel.GetLocationCount(tp,LOCATION_MZONE)>1 and e:GetHandler():GetFlagEffect(511009517)==0
+		and Duel.IsExistingMatchingCard(c511009517.spfilter2,tp,LOCATION_EXTRA,0,2,nil,e,tp) end
+	e:GetHandler():RegisterFlagEffect(511009517,RESET_CHAIN,0,0)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,2,tp,LOCATION_EXTRA)
 end
 function c511009517.filter(c)
 	return c:IsFaceup() and c:IsType(TYPE_SYNCHRO)
 end
 function c511009517.spop2(e,tp,eg,ep,ev,re,r,rp)
-	local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
-	if ft<=1 then return end
-	if Duel.IsPlayerAffectedByEffect(tp,59822133) then return end
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
-	if g:GetCount()==0 then return end
-	if g:GetCount()<=ft then
-		if Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP) then 
-			local g=Duel.GetMatchingGroup(c511009517.filter,tp,0,LOCATION_MZONE,nil)
-			local tc=g:GetFirst()
-			while tc do
-				local e2=Effect.CreateEffect(e:GetHandler())
-				e2:SetType(EFFECT_TYPE_SINGLE)
-				e2:SetCode(EFFECT_SET_ATTACK_FINAL)
-				e2:SetValue(0)
-				e2:SetReset(RESET_EVENT+0x1fe0000)
-				tc:RegisterEffect(e2)
-				tc=g:GetNext()
-			end
+	if Duel.IsPlayerAffectedByEffect(tp,59822133) or Duel.GetLocationCount(tp,LOCATION_MZONE)<2 then return end
+	local g=Duel.GetMatchingGroup(c511009517.spfilter2,tp,LOCATION_EXTRA,0,nil,e,tp)
+	if g:GetCount()>=2 then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+		local sg=g:Select(tp,2,2,nil)
+		if Duel.SpecialSummon(sg,0,tp,tp,false,false,POS_FACEUP)==0 then return end
+		local ag=Duel.GetMatchingGroup(c511009517.filter,tp,0,LOCATION_MZONE,nil)
+		local tc=ag:GetFirst()
+		while tc do
+			local e2=Effect.CreateEffect(e:GetHandler())
+			e2:SetType(EFFECT_TYPE_SINGLE)
+			e2:SetCode(EFFECT_SET_ATTACK_FINAL)
+			e2:SetValue(0)
+			e2:SetReset(RESET_EVENT+0x1fe0000)
+			tc:RegisterEffect(e2)
+			tc=ag:GetNext()
 		end
 	end
 end

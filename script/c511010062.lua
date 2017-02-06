@@ -1,20 +1,19 @@
 --Number 62: Galaxy-Eyes Prime Photon Dragon (Anime)
 --No.62 銀河眼の光子竜皇 (Anime)
 --Scripted By TheOnePharaoh
+--fixed by MLD
 function c511010062.initial_effect(c)
---xyz summon
+	--xyz summon
 	aux.AddXyzProcedure(c,nil,8,2)
 	c:EnableReviveLimit()
 	--atk
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(511010062,0))
-	e1:SetCategory(CATEGORY_ATKCHANGE)
-	e1:SetType(EFFECT_TYPE_QUICK_F)
-	e1:SetCode(EVENT_PRE_DAMAGE_CALCULATE)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(EFFECT_UPDATE_ATTACK)
+	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetCondition(c511010062.atkcon)
-	e1:SetCost(c511010062.atkcost)
-	e1:SetOperation(c511010062.atkop)
+	e1:SetValue(c511010062.atkval)
 	c:RegisterEffect(e1)
 	--spsummon
 	local e2=Effect.CreateEffect(c)
@@ -31,7 +30,7 @@ function c511010062.initial_effect(c)
 	e3:SetRange(LOCATION_MZONE)
 	e3:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
 	e3:SetCode(EFFECT_LEVEL_RANK_S)
-	e3:SetTarget(function (e,c) return not c:IsType(TYPE_XYZ)end)
+	e3:SetTarget(function(e,c) return not c:IsType(TYPE_XYZ) end)
 	c:RegisterEffect(e3)
 	-- Update Rank Rank/Level
 	local e4=Effect.CreateEffect(c)
@@ -39,8 +38,8 @@ function c511010062.initial_effect(c)
 	e4:SetRange(LOCATION_MZONE)
 	e4:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e4:SetCountLimit(1)
-	e4:SetTarget(c511010062.target)
-	e4:SetOperation(c511010062.op)
+	e4:SetTarget(c511010062.rktg)
+	e4:SetOperation(c511010062.rkop)
 	c:RegisterEffect(e4)
 	--battle indestructable
 	local e5=Effect.CreateEffect(c)
@@ -48,13 +47,6 @@ function c511010062.initial_effect(c)
 	e5:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)
 	e5:SetValue(c511010062.indes)
 	c:RegisterEffect(e5)
-	--resetlevel
-	local e7=Effect.CreateEffect(c)
-	e7:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-	e7:SetProperty(EFFECT_FLAG_DAMAGE_STEP)
-	e7:SetCode(EVENT_LEAVE_FIELD)
-	e7:SetOperation(c511010062.evop)
-	c:RegisterEffect(e7)
 	if not c511010062.global_check then
 		c511010062.global_check=true
 		local ge2=Effect.CreateEffect(c)
@@ -67,27 +59,12 @@ function c511010062.initial_effect(c)
 	end
 end
 c511010062.xyz_number=62
-function c511010062.atkcon(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	return c==Duel.GetAttacker() or c==Duel.GetAttackTarget()
+function c511010062.atkcon(e)
+	return Duel.GetCurrentPhase()==PHASE_DAMAGE_CAL and e:GetHandler():GetBattleTarget()
 end
-function c511010062.atkcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	local c=e:GetHandler()
-	if chk==0 then return c:GetFlagEffect(511010062)==0 end
-	c:RegisterFlagEffect(511010062,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_DAMAGE_CAL,0,1)
-end
-function c511010062.atkop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) and c:IsFaceup() then
-		local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
-	 	local val=math.ceil(g:GetSum(Card.GetRank))*200
-		local e1=Effect.CreateEffect(c)
-		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetCode(EFFECT_UPDATE_ATTACK)
-		e1:SetValue(val)
-		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_DAMAGE_CAL)
-		c:RegisterEffect(e1)
-	end
+function c511010062.atkval(e,c)
+	local g=Duel.GetMatchingGroup(Card.IsFaceup,c:GetControler(),LOCATION_MZONE,LOCATION_MZONE,nil)
+	return g:GetSum(Card.GetRank)*200
 end
 function c511010062.spcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
@@ -125,70 +102,53 @@ function c511010062.spop2(e,tp,eg,ep,ev,re,r,rp)
 	ct=ct+1
 	c:SetTurnCounter(ct)
 	if ct==cr then
-		Duel.SpecialSummonStep(c,SUMMON_TYPE_SPECIAL,tp,tp,true,false,POS_FACEUP)
-			--atk
-			local e1=Effect.CreateEffect(c)
-			e1:SetDescription(aux.Stringid(511010062,0))
-			e1:SetCategory(CATEGORY_ATKCHANGE)
-			e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_QUICK_F)
-			e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
-			e1:SetCode(EVENT_ATTACK_ANNOUNCE)
-			e1:SetRange(LOCATION_MZONE)
-			e1:SetReset(RESET_EVENT+0x1ff0000+RESET_PHASE+PHASE_END)
-			e1:SetLabel(e:GetLabel())
-			e1:SetCondition(c511010062.atkcon2)
-			e1:SetCost(c511010062.atkcost2)
-			e1:SetOperation(c511010062.atkop2)
-			c:RegisterEffect(e1,true)
-		Duel.SpecialSummonComplete()
+		Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
+		--atk
+		local e1=Effect.CreateEffect(c)
+		e1:SetDescription(aux.Stringid(511010062,0))
+		e1:SetCategory(CATEGORY_ATKCHANGE)
+		e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+		e1:SetCode(EVENT_ATTACK_ANNOUNCE)
+		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
+		e1:SetLabel(e:GetLabel())
+		e1:SetOperation(c511010062.atkop2)
+		c:RegisterEffect(e1)
 	end
-end
-function c511010062.atkcon2(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	return c==Duel.GetAttacker()
-end
-function c511010062.atkcost2(e,tp,eg,ep,ev,re,r,rp,chk)
-	local c=e:GetHandler()
-	if chk==0 then return c:GetFlagEffect(511010062)==0 end
-	c:RegisterFlagEffect(511010062,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_DAMAGE_CAL,0,1)
 end
 function c511010062.atkop2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local cr=e:GetLabel()
-	if c:IsRelateToEffect(e) and c:IsFaceup() then
-		local e1=Effect.CreateEffect(c)
-		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE+EFFECT_FLAG_COPY_INHERIT)
-		e1:SetCode(EFFECT_SET_ATTACK_FINAL)
-		e1:SetValue(c:GetAttack()*e:GetLabel())
-		e1:SetReset(RESET_EVENT+0x1fe0000)
-		c:RegisterEffect(e1)
-	end
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+	e1:SetCode(EFFECT_SET_ATTACK_FINAL)
+	e1:SetValue(c:GetAttack()*e:GetLabel())
+	e1:SetReset(RESET_EVENT+0x1fe0000)
+	c:RegisterEffect(e1)
 end
-function c511010062.target(e,tp,eg,ep,ev,re,r,rp,chk)
+function c511010062.rktg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsFaceup,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
 end
-function c511010062.op(e,tp,eg,ep,ev,re,r,rp)
+function c511010062.rkop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
     local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
 	local tc=g:GetFirst()
 	while tc do
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE)
-	e1:SetCode(EFFECT_UPDATE_RANK)
-	e1:SetValue(1)
-	e1:SetReset(RESET_EVENT+0x1ff0000)
-	tc:RegisterEffect(e1)
-	tc=g:GetNext()
+		local e1=Effect.CreateEffect(c)
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_UPDATE_RANK)
+		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+		e1:SetValue(1)
+		e1:SetReset(RESET_EVENT+0x1fe0000)
+		tc:RegisterEffect(e1)
+		tc=g:GetNext()
 	end
-end
-function c511010062.evop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.RaiseEvent(e:GetHandler(),511010062,re,REASON_EFFECT,rp,tp,1)
 end
 function c511010062.numchk(e,tp,eg,ep,ev,re,r,rp)
 	Duel.CreateToken(tp,31801517)
 	Duel.CreateToken(1-tp,31801517)
 end
 function c511010062.indes(e,c)
-return not c:IsSetCard(0x48)
+	return not c:IsSetCard(0x48)
 end
