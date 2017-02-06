@@ -106,7 +106,7 @@ function c511001939.activate(e,tp,eg,ep,ev,re,r,rp)
 			local g=Group.FromCards(tc)
 			local p=tc:GetControler()
 			if tg then tg(e,tp,g,p,chain,te2,REASON_EFFECT,p,1) end
-		elseif te:GetCode()==EVENT_FREE_CHAIN
+		elseif te:GetCode()==EVENT_FREE_CHAIN then
 			if tg then tg(e,tp,eg,ep,ev,re,r,rp,1) end
 		else
 			local res,teg,tep,tev,tre,tr,trp=Duel.CheckEvent(te:GetCode(),true)
