@@ -83,7 +83,8 @@ function c511009528.cpcon(e,tp,eg,ep,ev,re,r,rp)
 end
 function c511009528.cptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE+LOCATION_GRAVE) and chkc:IsType(TYPE_MONSTER) end
-	if chk==0 then return Duel.IsExistingTarget(Card.IsType,tp,LOCATION_GRAVE+LOCATION_MZONE,LOCATION_GRAVE+LOCATION_MZONE,1,nil,TYPE_MONSTER) end
+	if chk==0 then return Duel.IsExistingTarget(Card.IsType,tp,LOCATION_GRAVE+LOCATION_MZONE,LOCATION_GRAVE+LOCATION_MZONE,1,nil,TYPE_MONSTER) 
+		and e:GetHandler():GetFlagEffect(511009529)==0 end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 	Duel.SelectTarget(tp,Card.IsType,tp,LOCATION_GRAVE+LOCATION_MZONE,LOCATION_GRAVE+LOCATION_MZONE,1,1,nil,TYPE_MONSTER)
 end
@@ -104,7 +105,8 @@ function c511009528.cpop(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 		tc:RegisterEffect(e2)
 		if not tc:IsType(TYPE_TRAPMONSTER) then
-			c:ReplaceEffect(code,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
+			c:CopyEffect(code,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,1)
+			c:RegisterFlagEffect(511009529,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,0)
 		end
 	end
 end
