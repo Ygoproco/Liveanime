@@ -73,7 +73,7 @@ function c513000061.spop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c513000061.negcon(e,tp,eg,ep,ev,re,r,rp)
-	if not Duel.IsChainNegatable(ev) then return false end
+	if not Duel.IsChainDisablable(ev) then return false end
 	local ev,tg,tc=Duel.GetOperationInfo(ev,CATEGORY_CONTROL)
 	if ev and tg~=nil and tg:IsContains(e:GetHandler()) then return true end
 	local ev,tg,tc=Duel.GetOperationInfo(ev,CATEGORY_REMOVE)
