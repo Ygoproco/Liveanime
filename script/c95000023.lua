@@ -106,7 +106,7 @@ function c95000023.acop(e,tp,eg,ep,ev,re,r,rp)
 			if co then co(e,tp,g,p,chain,te2,REASON_EFFECT,p,1) end
 			if tg then tg(e,tp,g,p,chain,te2,REASON_EFFECT,p,1) end
 			if op then op(e,tp,g,p,chain,te2,REASON_EFFECT,p) end
-		elseif te:GetCode()==EVENT_SUMMON or te:GetCode()==EVENT_FLIP_SUMMON or te:GetCode()==EVENT_SPSUMMON or te:GetCode()==EVENT_FREE_CHAIN
+		elseif te:GetCode()==EVENT_SUMMON or te:GetCode()==EVENT_FLIP_SUMMON or te:GetCode()==EVENT_SPSUMMON or te:GetCode()==EVENT_FREE_CHAIN then
 			if co then co(e,tp,eg,ep,ev,re,r,rp,1) end
 			if tg then tg(e,tp,eg,ep,ev,re,r,rp,1) end
 			if op then op(e,tp,eg,ep,ev,re,r,rp) end
