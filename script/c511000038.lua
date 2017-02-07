@@ -10,7 +10,7 @@ function c511000038.initial_effect(c)
 	--Search Deck
 	local e4=Effect.CreateEffect(c)
 	e4:SetDescription(aux.Stringid(511000038,0))
-	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
+	e4:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e4:SetCode(EVENT_TO_GRAVE)
 	e4:SetProperty(EFFECT_FLAG_DELAY)
