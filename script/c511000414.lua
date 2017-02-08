@@ -29,8 +29,10 @@ function c511000414.initial_effect(c)
 end
 function c511000414.damcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local ec=c:GetPreviousEquipTarget()
-	e:SetLabel(ec:GetPreviousControler())
+	if ec ~= nil then
+		local ec=c:GetPreviousEquipTarget()
+		e:SetLabel(ec:GetPreviousControler())
+	end
 	return c:IsReason(REASON_DESTROY)
 end
 function c511000414.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
