@@ -12,7 +12,7 @@ function c511002762.initial_effect(c)
 	--atkup
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(95486586,0))
-	e2:SetProperty(EFFECT_FLAG2_XMDETACH)
+	e2:SetProperty(0,EFFECT_FLAG2_XMDETACH)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_BATTLE_START)
 	e2:SetCondition(c511002762.con)

@@ -5,7 +5,7 @@ function c511002076.initial_effect(c)
 	c:EnableReviveLimit()
 	--double
 	local e1=Effect.CreateEffect(c)
-	e1:SetProperty(EFFECT_FLAG2_XMDETACH)
+	e1:SetProperty(0,EFFECT_FLAG2_XMDETACH)
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetCost(c511002076.cost)

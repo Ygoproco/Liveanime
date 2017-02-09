@@ -6,7 +6,7 @@ function c511002058.initial_effect(c)
 	--atk/def
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(95100120,0))
-	e1:SetProperty(EFFECT_FLAG2_XMDETACH)
+	e1:SetProperty(0,EFFECT_FLAG2_XMDETACH)
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetCost(c511002058.adcost)

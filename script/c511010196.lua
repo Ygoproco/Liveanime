@@ -49,7 +49,7 @@ function c511010196.rankupregop(e,tp,eg,ep,ev,re,r,rp)
 	--atk
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(511010196,0))
-	e1:SetProperty(EFFECT_FLAG2_XMDETACH)
+	e1:SetProperty(0,EFFECT_FLAG2_XMDETACH)
 	e1:SetType(EFFECT_TYPE_QUICK_O)
 	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
 	e1:SetRange(LOCATION_MZONE)

@@ -27,7 +27,7 @@ function c511010009.initial_effect(c)
 	--direct attack
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(511010009,0))
-	e3:SetProperty(EFFECT_FLAG2_XMDETACH)
+	e3:SetProperty(0,EFFECT_FLAG2_XMDETACH)
 	e3:SetType(EFFECT_TYPE_IGNITION)
 	e3:SetRange(LOCATION_MZONE)
 	e3:SetCountLimit(1)

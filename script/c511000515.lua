@@ -23,7 +23,7 @@ function c511000515.initial_effect(c)
 	--chain attack
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(511000515,1))
-	e3:SetProperty(EFFECT_FLAG2_XMDETACH)
+	e3:SetProperty(0,EFFECT_FLAG2_XMDETACH)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e3:SetCode(EVENT_DAMAGE_STEP_END)
 	e3:SetCondition(c511000515.atcon)

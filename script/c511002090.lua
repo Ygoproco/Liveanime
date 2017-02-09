@@ -17,7 +17,7 @@ function c511002090.initial_effect(c)
 	--lp
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(9161357,1))
-	e2:SetProperty(EFFECT_FLAG2_XMDETACH)
+	e2:SetProperty(0,EFFECT_FLAG2_XMDETACH)
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetCountLimit(1)
 	e2:SetRange(LOCATION_MZONE)
