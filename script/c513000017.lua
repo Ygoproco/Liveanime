@@ -22,16 +22,6 @@ function c513000017.initial_effect(c)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetTarget(c513000017.reptg)
 	c:RegisterEffect(e2)
-	if not c513000017.global_check then
-		c513000017.global_check=true
-		local ge2=Effect.CreateEffect(c)
-		ge2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-		ge2:SetCode(EVENT_ADJUST)
-		ge2:SetCountLimit(1)
-		ge2:SetProperty(EFFECT_FLAG_NO_TURN_RESET)
-		ge2:SetOperation(c513000017.numchk)
-		Duel.RegisterEffect(ge2,0)
-	end
 	--battle indestructable
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE)
@@ -55,7 +45,7 @@ function c513000017.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e:GetHandler():RemoveOverlayCard(tp,1,1,REASON_COST)
 end
 function c513000017.filter(c)
-	return c:IsAbleToChangeControler() and not c:IsType(TYPE_TOKEN)
+	return c:IsAbleToChangeControler() and not c:IsType(TYPE_TOKEN) and not c:IsImmuneToEffect(e)
 end
 function c513000017.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c513000017.filter,tp,0,LOCATION_MZONE,1,nil) end
@@ -66,7 +56,7 @@ function c513000017.operation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 		local g=Duel.SelectMatchingCard(tp,c513000017.filter,tp,0,LOCATION_MZONE,1,1,nil)
 		Duel.HintSelection(g)
-		if g:GetCount()>0 then
+		if g:GetCount()>0 and not g:GetFirst():IsImmuneToEffect(e) then
 			local og=g:GetFirst():GetOverlayGroup()
 			if og:GetCount()>0 then
 				Duel.SendtoGrave(og,REASON_RULE)
