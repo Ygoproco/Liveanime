@@ -22,16 +22,6 @@ function c513000017.initial_effect(c)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetTarget(c513000017.reptg)
 	c:RegisterEffect(e2)
-	if not c513000017.global_check then
-		c513000017.global_check=true
-		local ge2=Effect.CreateEffect(c)
-		ge2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-		ge2:SetCode(EVENT_ADJUST)
-		ge2:SetCountLimit(1)
-		ge2:SetProperty(EFFECT_FLAG_NO_TURN_RESET)
-		ge2:SetOperation(c513000017.numchk)
-		Duel.RegisterEffect(ge2,0)
-	end
 	--battle indestructable
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE)
