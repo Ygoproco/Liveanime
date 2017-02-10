@@ -55,7 +55,7 @@ function c513000017.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e:GetHandler():RemoveOverlayCard(tp,1,1,REASON_COST)
 end
 function c513000017.filter(c)
-	return c:IsAbleToChangeControler() and not c:IsType(TYPE_TOKEN)
+	return c:IsAbleToChangeControler() and not c:IsType(TYPE_TOKEN) and not c:IsImmuneToEffect(e)
 end
 function c513000017.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c513000017.filter,tp,0,LOCATION_MZONE,1,nil) end
@@ -66,7 +66,7 @@ function c513000017.operation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 		local g=Duel.SelectMatchingCard(tp,c513000017.filter,tp,0,LOCATION_MZONE,1,1,nil)
 		Duel.HintSelection(g)
-		if g:GetCount()>0 then
+		if g:GetCount()>0 and not g:GetFirst():IsImmuneToEffect(e) then
 			local og=g:GetFirst():GetOverlayGroup()
 			if og:GetCount()>0 then
 				Duel.SendtoGrave(og,REASON_RULE)
