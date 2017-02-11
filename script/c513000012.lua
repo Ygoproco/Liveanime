@@ -30,7 +30,6 @@ function c513000012.initial_effect(c)
 	e3:SetCategory(CATEGORY_NEGATE+CATEGORY_DESTROY)
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_QUICK_F)
 	e3:SetCode(EVENT_CHAINING)
-	e3:SetCountLimit(1)
 	e3:SetRange(LOCATION_MZONE)
 	e3:SetCondition(c513000012.discon)
 	e3:SetTarget(c513000012.distg)
@@ -92,7 +91,7 @@ function c513000012.mtop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c513000012.discon(e,tp,eg,ep,ev,re,r,rp)
-	if e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) or not Duel.IsChainNegatable(ev) then return false end
+	if e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) or not Duel.IsChainNegatable(ev) or e:GetHandler():IsStatus(STATUS_CHAINING)  then return false end
 	if re:IsHasCategory(CATEGORY_NEGATE)
 		and Duel.GetChainInfo(ev-1,CHAININFO_TRIGGERING_EFFECT):IsHasType(EFFECT_TYPE_ACTIVATE) then return false end
 	local ex,tg,tc=Duel.GetOperationInfo(ev,CATEGORY_DESTROY)
