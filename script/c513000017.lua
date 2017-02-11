@@ -45,7 +45,7 @@ function c513000017.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e:GetHandler():RemoveOverlayCard(tp,1,1,REASON_COST)
 end
 function c513000017.filter(c)
-	return c:IsAbleToChangeControler() and not c:IsType(TYPE_TOKEN) and not c:IsImmuneToEffect(e)
+	return c:IsAbleToChangeControler() and not c:IsType(TYPE_TOKEN)
 end
 function c513000017.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c513000017.filter,tp,0,LOCATION_MZONE,1,nil) end
