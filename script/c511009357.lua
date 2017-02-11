@@ -12,20 +12,21 @@ function c511009357.initial_effect(c)
 end
 
 function c511009357.spfilter(c,e,tp,lv)
-	return c:IsLevelBelow(lv-1) and c:GetSummonLocation()==LOCATION_EXTRA and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsLevelBelow(lv+1) and c:GetSummonLocation()==LOCATION_EXTRA and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function c511009357.filter(c,e,tp)
-	return c:IsFaceup()	and Duel.IsExistingMatchingCard(c511009357.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp,c:GetLevel())
+	return c:IsFaceup() and Duel.IsExistingMatchingCard(c511009357.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp,c:GetLevel())
 end
 function c511009357.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_MZONE) and c511009357.filter(chkc,e,tp) end
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingTarget(c511009357.filter,tp,LOCATION_MZONE,0,1,nil,e,tp) end
+		and Duel.IsExistingTarget(c511009357.filter,tp,0,LOCATION_MZONE,1,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-	local g=Duel.SelectTarget(tp,c511009357.filter,tp,LOCATION_MZONE,0,1,1,nil,e,tp)
+	local g=Duel.SelectTarget(tp,c511009357.filter,tp,0,LOCATION_MZONE,1,1,nil,e,tp)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_GRAVE)
 end
 function c511009357.activate(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
 	local tc=Duel.GetFirstTarget()
 	if not tc:IsRelateToEffect(e) or tc:IsFacedown() then return end
