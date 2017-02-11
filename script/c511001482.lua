@@ -6,7 +6,7 @@ function c511001482.initial_effect(c)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetOperation(c511001482.lpop)
 	c:RegisterEffect(e1)
-	--copy	
+	--LP Setting
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e2:SetCode(EVENT_ADJUST)
@@ -20,6 +20,10 @@ function c511001482.lpop(e,tp,eg,ep,ev,re,r,rp)
 	local sum=0
 	if g:GetCount()>0 then
 		sum=g:GetSum(Card.GetAttack)
+	end
+	local infinity=89478485
+	if sum>infinity then
+		sum=infinity
 	end
 	Duel.SetLP(tp,sum,REASON_EFFECT)
 end
