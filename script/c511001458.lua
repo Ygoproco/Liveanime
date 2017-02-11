@@ -55,6 +55,6 @@ function c511001458.desop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=c:GetFirstCardTarget()
 	if tc and tc:IsAttackPos() then
 		local g=Group.FromCards(tc,c)
-		Duel.Destroy(g,REASON_EFFECT)>0
+		Duel.Destroy(g,REASON_EFFECT)
 	end
 end
