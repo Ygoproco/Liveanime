@@ -30,7 +30,7 @@ function c450000353.archchk(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c450000353.filterloli(c)
-	return (c:IsSetCard(0x800) and c:IsSetCard(0x2066)) and c:IsType(TYPE_MONSTER) and c:IsLocation(LOCATION_ONFIELD)
+	return (c:IsSetCard(0x800) or c:IsSetCard(0x2066)) and c:IsType(TYPE_MONSTER) and c:IsLocation(LOCATION_ONFIELD)
 	--return c420.IsMagnet(c) and c:IsType(TYPE_MONSTER) and c:IsLocation(LOCATION_ONFIELD)
 end
 function c450000353.condition(e,tp,eg,ev,ep,re,r,rp)
