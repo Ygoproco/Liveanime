@@ -86,6 +86,7 @@ function c511010062.spcon(e,tp,eg,ep,ev,re,r,rp)
 end
 function c511010062.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
+	if not c:IsPreviousLocation(LOCATION_MZONE) then return end
 	local ct=e:GetLabel()
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -109,6 +110,7 @@ function c511010062.spcon2(e,tp,eg,ep,ev,re,r,rp)
 end
 function c511010062.spop2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
+	if not c:IsPreviousLocation(LOCATION_MZONE) then e:Reset() return end
 	local val=e:GetValue()
 	local ct=e:GetLabel()
 	ct=ct+1
