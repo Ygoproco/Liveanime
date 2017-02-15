@@ -10,26 +10,25 @@ function c100000037.initial_effect(c)
 	c:RegisterEffect(e1)
 	--damage
 	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(76321376,0))
 	e2:SetCategory(CATEGORY_DAMAGE)
+	e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_DAMAGE_STEP)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
-	e2:SetCode(EVENT_LEAVE_FIELD)
-	e2:SetCondition(c100000037.dmcon)
-	e2:SetTarget(c100000037.dmtg)
-	e2:SetOperation(c100000037.dmop)
+	e2:SetCode(EVENT_DESTROYED)
+	e2:SetTarget(c100000037.damtg)
+	e2:SetOperation(c100000037.damop)
 	c:RegisterEffect(e2)
 end
 function c100000037.sdcon(e)
 	return e:GetHandler():IsPosition(POS_FACEUP_DEFENSE)
 end
-function c100000037.dmcon(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	return c:IsReason(REASON_DESTROY) and c:IsPreviousPosition(POS_FACEUP)
-		and (not c:IsReason(REASON_BATTLE) or bit.band(c:GetBattlePosition(),POS_FACEUP)~=0)
-end
-function c100000037.dmtg(e,tp,eg,ep,ev,re,r,rp,chk)
+function c100000037.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,tp,2000)
+	Duel.SetTargetPlayer(tp)
+	Duel.SetTargetParam(2000)
+	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,2000)
 end
-function c100000037.dmop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Damage(tp,2000,REASON_EFFECT)
+function c100000037.damop(e,tp,eg,ep,ev,re,r,rp)
+	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
+	Duel.Damage(p,d,REASON_EFFECT)
 end

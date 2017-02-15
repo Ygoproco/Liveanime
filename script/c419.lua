@@ -372,6 +372,7 @@ function c419.atkraiseeff(e,tp,eg,ep,ev,re,r,rp)
 	end
 	Duel.RaiseEvent(g1,511001265,re,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g1,511001441,re,REASON_EFFECT,rp,ep,0)
+	Duel.RaiseEvent(g2,511000377,re,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g2,511001762,re,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g3,511000883,re,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g3,511009110,re,REASON_EFFECT,rp,ep,0)

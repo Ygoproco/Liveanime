@@ -1,4 +1,5 @@
 --Black Feather Illusion
+--fixed by MLD
 function c511009526.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
@@ -9,56 +10,49 @@ function c511009526.initial_effect(c)
 	e1:SetTarget(c511009526.target)
 	e1:SetOperation(c511009526.activate)
 	c:RegisterEffect(e1)
-	
 	--special summon
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(23051413,0))
-	e1:SetType(EFFECT_TYPE_QUICK_O)
-	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP)
-	e1:SetRange(LOCATION_GRAVE)
-	e1:SetCode(EVENT_CHAINING)
-	e1:SetCondition(c511009526.negcon)
-	e2:SetCost(c511009526.negcost)
-	e1:SetTarget(c511009526.negtg)
-	e1:SetOperation(c511009526.negop)
-	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(23051413,0))
+	e2:SetType(EFFECT_TYPE_QUICK_O)
+	e2:SetProperty(EFFECT_FLAG_DAMAGE_STEP)
+	e2:SetRange(LOCATION_GRAVE)
+	e2:SetCode(EVENT_FREE_CHAIN)
+	e2:SetCondition(c511009526.negcon)
+	e2:SetCost(aux.bfgcost)
+	e2:SetOperation(c511009526.negop)
+	c:RegisterEffect(e2)
 end
 function c511009526.cfilter(c,e,tp)
-	return c:IsPreviousPosition(POS_FACEUP) and c:GetPreviousControler()==tp and c:IsPreviousLocation(LOCATION_MZONE) and c:IsReason(REASON_EFFECT+REASON_BATTLE)
+	return c:IsPreviousPosition(POS_FACEUP) and c:GetPreviousControler()==tp and c:IsPreviousLocation(LOCATION_MZONE) 
 		and c:IsPreviousSetCard(0x33) and c:IsType(TYPE_SYNCHRO) and c:IsCanBeEffectTarget(e) and c:IsLocation(LOCATION_GRAVE+LOCATION_REMOVED)
 end
 function c511009526.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return eg:IsContains(chkc) and c511009526.cfilter(chkc,e,tp) end
 	if chk==0 then return eg:IsExists(c511009526.cfilter,1,nil,e,tp) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local g=eg:FilterSelect(tp,c511009526.cfilter,1,1,nil,e,tp)
 	Duel.SetTargetCard(g)
-		Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,1,0,0)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,1,0,0)
 end
 function c511009526.activate(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) then
-		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
-		local e1=Effect.CreateEffect(c)
+	if tc and tc:IsRelateToEffect(e) and Duel.SpecialSummonStep(tc,0,tp,tp,false,false,POS_FACEUP) then
+		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_DISABLE)
 		e1:SetReset(RESET_EVENT+0x1fe0000)
 		tc:RegisterEffect(e1)
-		local e2=Effect.CreateEffect(c)
+		local e2=Effect.CreateEffect(e:GetHandler())
 		e2:SetType(EFFECT_TYPE_SINGLE)
 		e2:SetCode(EFFECT_DISABLE_EFFECT)
 		e2:SetReset(RESET_EVENT+0x1fe0000)
 		tc:RegisterEffect(e2)
 	end
 end
-function c511009526.spcon(e,tp,eg,ep,ev,re,r,rp)
-	return rp~=tp and Duel.GetAttacker():IsSetCard(0x33)
+function c511009526.negcon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetAttacker() and Duel.GetAttacker():IsSetCard(0x33)
 end
-function c511009526.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsAbleToRemoveAsCost() end
-	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_COST)
-end
-function c511009526.activate(e,tp,eg,ep,ev,re,r,rp)
+function c511009526.negop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)

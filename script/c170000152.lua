@@ -23,17 +23,15 @@ function c170000152.filter2(c,code,e,tp)
 	for i=1,c.material_count do
 		if code==c.material[i] then
 			for j=1,c.material_count do
-				if 1784686==c.material[j] then return true end
+				if 1784686==c.material[j] and c.material[j]~=c.material[i] then return true end
 			end
 		end
 	end
 	return false
 end
 function c170000152.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then
-		return Duel.GetLocationCount(tp,LOCATION_MZONE)>=0
-			and Duel.IsExistingMatchingCard(c170000152.filter1,tp,LOCATION_MZONE,0,1,nil,e,tp)
-	end
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>=0 
+		and Duel.IsExistingMatchingCard(c170000152.filter1,tp,LOCATION_MZONE,0,1,nil,e,tp) end
 	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,nil,1,tp,LOCATION_MZONE)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
 end
@@ -41,10 +39,11 @@ function c170000152.activate(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=-1 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 	local g=Duel.SelectMatchingCard(tp,c170000152.filter1,tp,LOCATION_MZONE,0,1,1,nil,e,tp)
-	if g:GetCount()>0 then
+	local tc=g:GetFirst()
+	if tc then
 		g:AddCard(e:GetHandler())
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		local sc=Duel.SelectMatchingCard(tp,c170000152.filter2,tp,LOCATION_EXTRA,0,1,1,nil,g:GetFirst():GetCode(),e,tp):GetFirst()
+		local sc=Duel.SelectMatchingCard(tp,c170000152.filter2,tp,LOCATION_EXTRA,0,1,1,nil,tc:GetCode(),e,tp):GetFirst()
 		if sc then
 			sc:SetMaterial(g)
 			Duel.SendtoGrave(g,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)

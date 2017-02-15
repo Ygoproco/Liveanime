@@ -11,17 +11,17 @@ function c111203902.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function c111203902.cfilter(c,code)
-	return c:IsFaceup() and c:GetCode()==code
+	return c:IsFaceup() and c:IsCode(code)
 end
 function c111203902.condition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsExistingMatchingCard(c111203902.cfilter,tp,LOCATION_MZONE,0,1,nil,76922029)
-	and Duel.IsExistingMatchingCard(c111203902.cfilter,tp,LOCATION_MZONE,0,1,nil,74153887)
-	and Duel.IsExistingMatchingCard(c111203902.cfilter,tp,LOCATION_MZONE,0,1,nil,48768179)
-	and Duel.IsExistingMatchingCard(c111203902.cfilter,tp,LOCATION_MZONE,0,1,nil,6967870)
-	and Duel.IsExistingMatchingCard(c111203902.cfilter,tp,LOCATION_MZONE,0,1,nil,61587183)
+		and Duel.IsExistingMatchingCard(c111203902.cfilter,tp,LOCATION_MZONE,0,1,nil,74153887)
+		and Duel.IsExistingMatchingCard(c111203902.cfilter,tp,LOCATION_MZONE,0,1,nil,48768179)
+		and Duel.IsExistingMatchingCard(c111203902.cfilter,tp,LOCATION_MZONE,0,1,nil,6967870)
+		and Duel.IsExistingMatchingCard(c111203902.cfilter,tp,LOCATION_MZONE,0,1,nil,61587183)
 end
 function c111203902.filter(c)
-	return c:IsFaceup() and c:IsAbleToHand() and ( c:IsCode(76922029) or c:IsSetCard(0x1a) )
+	return c:IsFaceup() and c:IsAbleToHand() and c:IsCode(76922029,74153887,48768179,6967870,61587183)
 end
 function c111203902.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c111203902.filter,tp,LOCATION_MZONE,0,1,nil) end
