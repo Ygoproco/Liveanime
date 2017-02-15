@@ -1,4 +1,5 @@
 --Overlay Burst Armor
+--fixed by MLD
 function c511004426.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
@@ -74,6 +75,14 @@ function c511004426.activate(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetValue(1)
 		e1:SetReset(RESET_PHASE+PHASE_DAMAGE)
 		tc:RegisterEffect(e1)
-		Duel.ChangeBattleDamage(tp,0)
+		local e2=Effect.CreateEffect(e:GetHandler())
+		e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+		e2:SetCode(EVENT_PRE_BATTLE_DAMAGE)
+		e2:SetOperation(c511004426.damop)
+		e2:SetReset(RESET_PHASE+PHASE_DAMAGE)
+		Duel.RegisterEffect(e2,tp)
 	end
+end
+function c511004426.damop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.ChangeBattleDamage(tp,0)
 end

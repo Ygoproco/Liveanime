@@ -20,11 +20,12 @@ function c511002746.target(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c511002746.activate(e,tp,eg,ep,ev,re,r,rp)
 	local mg=Duel.GetMatchingGroup(Card.IsSetCard,tp,LOCATION_GRAVE,0,nil,0x76)
-	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
 	local xyzg=Duel.GetMatchingGroup(c511002746.xyzfilter,tp,LOCATION_EXTRA,0,nil,mg)
 	if xyzg:GetCount()>0 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 		local xyz=xyzg:Select(tp,1,1,nil):GetFirst()
-		Duel.XyzSummon(tp,xyz,mg,1,mg:GetCount())
+		xyz:RegisterFlagEffect(999,RESET_CHAIN,0,0)
+		mg:KeepAlive()
+		Duel.XyzSummon(tp,xyz,mg,1,63)
 	end
 end
