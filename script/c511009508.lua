@@ -57,7 +57,7 @@ function c511009508.spcon(e,tp,eg,ep,ev,re,r,rp)
 end
 function c511009508.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if c:IsXyzSummonable(nil) and Duel.SelectYesNo(tp,aux.Stringid(4003,5)) then
+	if c:IsXyzSummonable(nil) and Duel.SelectYesNo(tp,aux.Stringid(4003,7)) then
 		Duel.XyzSummon(tp,c,nil)
 	end
 end
