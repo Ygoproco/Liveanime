@@ -117,7 +117,7 @@ function c511009517.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 		Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,g:GetCount(),0,0)
 		Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,0)
 	else
-		e:SetProperty(e,EFFECT_FLAG_CARD_TARGET)
+		e:SetProperty(EFFECT_FLAG_CARD_TARGET)
 		Duel.SetTargetCard(bc)
 		Duel.SetOperationInfo(0,CATEGORY_DESTROY,bc,1,0,0)
 		Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,bc:GetAttack())
@@ -126,11 +126,11 @@ end
 function c511009517.desop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local sum=0
-	e:SetProperty(e,EFFECT_FLAG_CARD_TARGET)
+	e:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	if not Duel.NegateAttack() then return end
 	if c:IsHasEffect(511009518) then
 		local g=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
-		if Duel.Destroy(tc,REASON_EFFECT)>0 then
+		if Duel.Destroy(g,REASON_EFFECT)>0 then
 			local dg=Duel.GetOperatedGroup():Filter(Card.IsPreviousPosition,nil,POS_FACEUP)
 			sum=dg:GetSum(Card.GetAttack)
 		end
