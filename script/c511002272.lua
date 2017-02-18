@@ -15,7 +15,7 @@ end
 function c511002272.descon(e,tp,eg,ep,ev,re,r,rp)
 	local ec=e:GetHandler():GetEquipTarget()
 	local d=Duel.GetAttackTarget()
-	return ec==Duel.GetAttacker() and d and d:IsDefensePos() and ec:IsRace(0x10000000)
+	return ec==Duel.GetAttacker() and d and d:IsDefensePos() and ec:IsRace(0x80000000)
 end
 function c511002272.destg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
