@@ -15,7 +15,7 @@ function c511000146.filter(c,e,tp,eg,ep,ev,re,r,rp)
 	if not te then return false end
 	local cost=te:GetCost()
 	local target=te:GetTarget()
-	return c:GetCode()~=511000146 and c:GetType()==0x2 and (not cost or cost(te,tp,eg,ep,ev,re,r,rp,0) or not cost(te,tp,eg,ep,ev,re,r,rp,0)) 
+	return c:GetCode()~=511000146 and c:GetType()==0x2 and bit.band(c:GetPosition(),POS_FACEUP)>0 and (not cost or cost(te,tp,eg,ep,ev,re,r,rp,0) or not cost(te,tp,eg,ep,ev,re,r,rp,0)) 
 		and (not target or target(te,tp,eg,ep,ev,re,r,rp,0))
 end
 function c511000146.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
