@@ -8,6 +8,14 @@ function c511000952.initial_effect(c)
 	e1:SetTarget(c511000952.target)
 	e1:SetOperation(c511000952.activate)
 	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_CANNOT_DISABLE)
+	e2:SetCode(511001283)
+	c:RegisterEffect(e2)
+end
+function c511000952.cfilter(c,e,tp,chk,chain)
+	return not c:IsHasEffect(511001283) and c511000952.filter(c,e,tp,chk,chain)
 end
 function c511000952.filter(c,e,tp,chk,chain)
 	local te,eg,ep,ev,re,r,rp=c:CheckActivateEffect(true,true,true)
@@ -36,7 +44,7 @@ function c511000952.target(e,tp,eg,ep,ev,re,r,rp,chk)
 		if e:GetLabel()~=1 then return false end
 		e:SetLabel(0)
 		return Duel.IsExistingMatchingCard(Card.IsAbleToRemoveAsCost,tp,LOCATION_MZONE,0,1,nil)
-			and Duel.IsExistingMatchingCard(c511000952.filter,tp,LOCATION_GRAVE,0,1,e:GetHandler(),e,tp,chk,chain) end
+			and Duel.IsExistingMatchingCard(c511000952.cfilter,tp,LOCATION_GRAVE,0,1,e:GetHandler(),e,tp,chk,chain) end
 	chain=chain-1
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 	local g1=Duel.SelectMatchingCard(tp,Card.IsAbleToRemoveAsCost,tp,LOCATION_MZONE,0,1,1,nil)

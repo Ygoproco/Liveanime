@@ -5,22 +5,30 @@ function c511000146.initial_effect(c)
 	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetHintTiming(0x1e1,0x1e1)
 	e1:SetTarget(c511000146.target)
 	e1:SetOperation(c511000146.operation)
 	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_CANNOT_DISABLE)
+	e2:SetCode(511001283)
+	c:RegisterEffect(e2)
+end
+function c511000146.cfilter(c,e,tp,eg,ep,ev,re,r,rp)
+	return not c:IsHasEffect(511001283) and c511000146.filter(c,e,tp,eg,ep,ev,re,r,rp)
 end
 function c511000146.filter(c,e,tp,eg,ep,ev,re,r,rp)
 	local te=c:GetActivateEffect()
 	if not te then return false end
 	local cost=te:GetCost()
 	local target=te:GetTarget()
-	return c:GetCode()~=511000146 and c:GetType()==0x2 and bit.band(c:GetPosition(),POS_FACEUP)>0 and (not cost or cost(te,tp,eg,ep,ev,re,r,rp,0) or not cost(te,tp,eg,ep,ev,re,r,rp,0)) 
+	return c:GetType()==0x2 and c:IsFaceup() and (not cost or cost(te,tp,eg,ep,ev,re,r,rp,0) or not cost(te,tp,eg,ep,ev,re,r,rp,0)) 
 		and (not target or target(te,tp,eg,ep,ev,re,r,rp,0))
 end
 function c511000146.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_REMOVED) and chkc:IsControler(tp) and c511000146.filter(chkc,tp,eg,ep,ev,re,r,rp) end
-	if chk==0 then return Duel.IsExistingTarget(c511000146.filter,tp,LOCATION_REMOVED,0,1,nil,e,tp,eg,ep,ev,re,r,rp) end
+	if chk==0 then return Duel.IsExistingTarget(c511000146.cfilter,tp,LOCATION_REMOVED,0,1,nil,e,tp,eg,ep,ev,re,r,rp) end
+	e:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 	local tc=Duel.SelectTarget(tp,c511000146.filter,tp,LOCATION_REMOVED,0,1,1,nil,e,tp,eg,ep,ev,re,r,rp):GetFirst()
 	local te=tc:GetActivateEffect()

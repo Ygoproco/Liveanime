@@ -1,11 +1,11 @@
---虚無
-function c100000594.initial_effect(c)
+--無限
+function c100000595.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetTarget(c100000594.target)
-	e1:SetOperation(c100000594.operation)
+	e1:SetTarget(c100000595.target)
+	e1:SetOperation(c100000595.operation)
 	c:RegisterEffect(e1)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
@@ -13,23 +13,23 @@ function c100000594.initial_effect(c)
 	e2:SetCode(511001283)
 	c:RegisterEffect(e2)
 end
-function c100000594.cfilter(c)
+function c100000595.cfilter(c)
 	return not c:IsHasEffect(511001283) and c100000594.filter(c)
 end
-function c100000594.filter(c)
+function c100000595.filter(c)
 	return c:IsFacedown() and c:CheckActivateEffect(true,true,false)~=nil
 end
-function c100000594.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chk==0 then return Duel.IsExistingMatchingCard(c100000594.cfilter,tp,LOCATION_SZONE,0,1,e:GetHandler()) end
+function c100000595.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chk==0 then return Duel.IsExistingMatchingCard(c100000595.cfilter,tp,LOCATION_SZONE,0,1,e:GetHandler()) end
 end
-function c100000594.allfilter(c)
-	return c:IsFaceup() and c:IsCode(100000595)
+function c100000595.allfilter(c)
+	return c:IsFaceup() and c:IsCode(100000594)
 end
-function c100000594.operation(e,tp,eg,ep,ev,re,r,rp)
+function c100000595.operation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterFlagEffect(tp,100000590,RESET_CHAIN,0,1)
-	if not Duel.IsExistingMatchingCard(c100000594.cfilter,tp,LOCATION_SZONE,0,1,e:GetHandler()) then return end
-	if Duel.IsExistingMatchingCard(c100000594.allfilter,tp,LOCATION_SZONE,0,1,nil) then
-		local sg=Duel.GetMatchingGroup(c100000594.filter,tp,LOCATION_SZONE,0,e:GetHandler())
+	if not Duel.IsExistingMatchingCard(c100000595.cfilter,tp,LOCATION_SZONE,0,1,e:GetHandler()) then return end
+	if Duel.IsExistingMatchingCard(c100000595.allfilter,tp,LOCATION_SZONE,0,1,nil) then
+		local sg=Duel.GetMatchingGroup(c100000595.filter,tp,LOCATION_SZONE,0,e:GetHandler())
 		Duel.ChangePosition(sg,POS_FACEUP)
 		local tc=sg:GetFirst()
 		while tc do
@@ -75,7 +75,7 @@ function c100000594.operation(e,tp,eg,ep,ev,re,r,rp)
 			tc=sg:GetNext()
 		end
 	else
-		local tc=Duel.GetMatchingGroup(c100000594.filter,tp,LOCATION_SZONE,0,e:GetHandler()):RandomSelect(tp,1):GetFirst()
+		local tc=Duel.GetMatchingGroup(c100000595.filter,tp,LOCATION_SZONE,0,e:GetHandler()):RandomSelect(tp,1):GetFirst()
 		local tpe=tc:GetType()
 		local te=tc:GetActivateEffect()
 		local tg=te:GetTarget()
