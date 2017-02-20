@@ -67,11 +67,11 @@ function c511004014.initial_effect(c)
 	--Quick
 	local e7=Effect.CreateEffect(c)
 	e7:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE)
-	e7:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e7:SetType(EFFECT_TYPE_FIELD)
 	e7:SetCode(EFFECT_BECOME_QUICK)
 	e7:SetRange(LOCATION_REMOVED)
 	e7:SetTargetRange(0xff,0xff)
-	e7:SetCondition(function(e)return Duel.GetCurrentPhase()>=0x08 and Duel.GetCurrentPhase()<=0x80 and Duel.GetTurnPlayer()~=e:GetHandler():GetControler() end)
+	e7:SetCondition(function(e)return Duel.GetCurrentPhase()>=0x08 and Duel.GetCurrentPhase()<=0x80 end)
 	c:RegisterEffect(e7)
 	--Negate
 	local e8=Effect.CreateEffect(c)
