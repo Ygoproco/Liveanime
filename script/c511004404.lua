@@ -31,13 +31,13 @@ function c511004404.gop(e,tp)
 	end
 end
 function c511004404.prefilter(c,tp)
-	return c:GetPreviousControler()==tp and bit.band(c:GetPreviousTypeOnField(),TYPE_MONSTER)==TYPE_MONSTER and c:GetFlagEffect(511004404)~=0 and not c:IsType(TYPE_XYZ)
+	return c:GetPreviousControler()==tp and bit.band(c:GetPreviousTypeOnField(),TYPE_MONSTER)==TYPE_MONSTER and c:GetFlagEffect(511004404)~=0 and not (c:IsType(TYPE_XYZ) and not (c:IsHasEffect(EFFECT_RANK_LEVEL) or c:IsHasEffect(EFFECT_RANK_LEVEL_S)))
 end
 function c511004404.con(e,tp,eg,ev,ep,re,r,rp)
 	local lv=0
 	local c=eg:GetFirst()
 	while c do
-		if c:GetPreviousControler()==tp and bit.band(c:GetPreviousTypeOnField(),TYPE_MONSTER)==TYPE_MONSTER and c:GetFlagEffect(511004404)~=0 and not c:IsType(TYPE_XYZ) and c:GetLevel()>lv then
+		if c:GetPreviousControler()==tp and bit.band(c:GetPreviousTypeOnField(),TYPE_MONSTER)==TYPE_MONSTER and c:GetFlagEffect(511004404)~=0 and not (c:IsType(TYPE_XYZ) and not (c:IsHasEffect(EFFECT_RANK_LEVEL) or c:IsHasEffect(EFFECT_RANK_LEVEL_S))) and c:GetLevel()>lv then
 			lv=c:GetLevel()
 		end
 		c=eg:GetNext()
@@ -46,7 +46,7 @@ function c511004404.con(e,tp,eg,ev,ep,re,r,rp)
 	return eg:IsExists(c511004404.prefilter,1,nil,tp)
 end
 function c511004404.filter(c,e,tp,lv)
-	return c:IsType(TYPE_MONSTER) and c:GetLevel()<lv and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_SPECIAL,tp,true,false) and c:GetFlagEffect(511004404)~=0 and not c:IsType(TYPE_XYZ)
+	return c:IsType(TYPE_MONSTER) and c:GetLevel()<lv and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_SPECIAL,tp,true,false) and c:GetFlagEffect(511004404)~=0 and not (c:IsType(TYPE_XYZ) and not (c:IsHasEffect(EFFECT_RANK_LEVEL) or c:IsHasEffect(EFFECT_RANK_LEVEL_S)))
 end
 function c511004404.tg(e,tp,eg,ev,ep,re,r,rp,chk)
 	if chk==0 then
