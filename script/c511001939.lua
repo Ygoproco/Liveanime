@@ -8,8 +8,17 @@ function c511001939.initial_effect(c)
 	e1:SetTarget(c511001939.target)
 	e1:SetOperation(c511001939.activate)
 	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_CANNOT_DISABLE)
+	e2:SetCode(511001408)
+	c:RegisterEffect(e2)
 end
-function c511001939.filter(c,e,tp,eg,ep,ev,re,r,rp)
+function c511001939.cfilter(c,e,tp,eg,ep,ev,re,r,rp,chain)
+	if not c:IsType(TYPE_MONSTER) and (c:IsHasEffect(511001283) or c:IsHasEffect(511001408)) then return false end
+	return c511001939.filter(c,e,tp,eg,ep,ev,re,r,rp)
+end
+function c511001939.filter(c,e,tp,eg,ep,ev,re,r,rp,chain)
 	local ref=c:GetReasonEffect()
 	if not c:IsReason(REASON_BATTLE) and not c:IsReason(REASON_RULE) 
 		and (not ref or ref:GetHandler():GetOwner()==tp) then return false end
@@ -40,12 +49,14 @@ end
 function c511001939.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local chain=Duel.GetCurrentChain()
 	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(1-tp) and c511001939.filter(chkc,e,tp,eg,ep,ev,re,r,rp,chain) end
-	if chk==0 then return Duel.IsExistingTarget(c511001939.filter,tp,0,LOCATION_GRAVE,1,nil,e,tp,eg,ep,ev,re,r,rp,chain) end
+	if chk==0 then return Duel.IsExistingTarget(c511001939.cfilter,tp,0,LOCATION_GRAVE,1,nil,e,tp,eg,ep,ev,re,r,rp,chain) end
+	e:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	chain=chain-1
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 	Duel.SelectTarget(tp,c511001939.filter,tp,0,LOCATION_GRAVE,1,1,nil,e,tp,eg,ep,ev,re,r,rp,chain)
 end
 function c511001939.activate(e,tp,eg,ep,ev,re,r,rp)
+	local chain=Duel.GetCurrentChain()-1
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
 	if not tc or not tc:IsRelateToEffect(e) or not c:IsRelateToEffect(e) then return end
@@ -82,7 +93,7 @@ function c511001939.activate(e,tp,eg,ep,ev,re,r,rp)
 		Duel.RaiseSingleEvent(c,EVENT_SPSUMMON_SUCCESS,e,REASON_EFFECT,rp,ep,0)
 	else
 		local te=tc:GetActivateEffect()
-		if not te then return end
+		if not te or not c511001939.cfilter(tc,e,tp,eg,ep,ev,re,r,rp,chain) then return end
 		local tpe=tc:GetType()
 		if bit.band(tpe,TYPE_FIELD)~=0 then
 			local fc=Duel.GetFieldCard(1-tp,LOCATION_SZONE,5)

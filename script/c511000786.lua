@@ -7,6 +7,14 @@ function c511000786.initial_effect(c)
 	e1:SetTarget(c511000786.target)
 	e1:SetOperation(c511000786.activate)
 	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_CANNOT_DISABLE)
+	e2:SetCode(511001283)
+	c:RegisterEffect(e2)
+end
+function c511000786.cfilter1(c,e,tp,eg,ep,ev,re,r,rp,chain)
+	return not c:IsHasEffect(511001283) and c511000786.filter(c,e,tp,eg,ep,ev,re,r,rp,chain)
 end
 function c511000786.filter(c,e,tp,eg,ep,ev,re,r,rp,chain)
 	if not c:IsType(TYPE_FIELD) and Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 then return false end
@@ -36,13 +44,14 @@ function c511000786.cfilter(tc)
 end
 function c511000786.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	local chain=Duel.GetCurrentChain()
-	if chk==0 then return Duel.IsExistingMatchingCard(c511000786.filter,tp,LOCATION_GRAVE,0,1,nil,e,tp,eg,ep,ev,re,r,rp,chain) 
+	if chk==0 then return Duel.IsExistingMatchingCard(c511000786.cfilter1,tp,LOCATION_GRAVE,0,1,nil,e,tp,eg,ep,ev,re,r,rp,chain) 
 		and (c511000786.cfilter(Duel.GetFieldCard(tp,LOCATION_SZONE,5)) or c511000786.cfilter(Duel.GetFieldCard(1-tp,LOCATION_SZONE,5))) end
 end
 function c511000786.activate(e,tp,eg,ep,ev,re,r,rp)
 	local chain=Duel.GetCurrentChain()-1
 	if Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 then return end
-	local g=Duel.SelectMatchingCard(tp,c511000786.filter,tp,LOCATION_GRAVE,0,1,1,nil)
+	if not Duel.IsExistingMatchingCard(c511000786.cfilter1,tp,LOCATION_GRAVE,0,1,nil,e,tp,eg,ep,ev,re,r,rp,chain) then return end
+	local g=Duel.SelectMatchingCard(tp,c511000786.filter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp,eg,ep,ev,re,r,rp,chain)
 	if g:GetCount()>0 then
 		local tc=g:GetFirst()
 		local tpe=tc:GetType()

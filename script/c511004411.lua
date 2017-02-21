@@ -2,19 +2,29 @@
 function c511004411.initial_effect(c)
 	--activate
 	local e1=Effect.CreateEffect(c)
+	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetTarget(c511004411.target)
 	e1:SetOperation(c511004411.operation)
 	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_CANNOT_DISABLE)
+	e2:SetCode(511001283)
+	c:RegisterEffect(e2)
+end
+function c511004411.cfilter(c)
+	return not c:IsHasEffect(511001283) and c511004411.filter(c)
 end
 function c511004411.filter(c)
-	return c:GetOriginalCode()~=511004411 and c:IsType(TYPE_TRAP+TYPE_SPELL) and c:IsFaceup() and c:CheckActivateEffect(true,true,true)~=nil
+	return c:IsType(TYPE_TRAP+TYPE_SPELL) and c:IsFaceup() and c:CheckActivateEffect(true,true,false)~=nil
 end
 function c511004411.target(e,tp,eg,ev,ep,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return Duel.IsExistingMatchingCard(c511004411.filter,tp,0,LOCATION_SZONE,1,e:GetHandler()) end
-	local g=Duel.SelectMatchingCard(tp,c511004411.filter,tp,0,LOCATION_SZONE,1,1,e:GetHandler())
+	if chk==0 then return Duel.IsExistingTarget(c511004411.cfilter,tp,0,LOCATION_SZONE,1,e:GetHandler()) end
+	e:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	local g=Duel.SelectTarget(tp,c511004411.filter,tp,0,LOCATION_SZONE,1,1,e:GetHandler())
 	local tc=g:GetFirst()
 	if not tc then return end
 	local te,eg,ep,ev,re,r,rp=tc:CheckActivateEffect(true,true,true)
