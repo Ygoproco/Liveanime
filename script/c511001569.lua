@@ -14,7 +14,7 @@ function c511001569.initial_effect(c)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_CANNOT_DISABLE)
-	e2:SetCode(511001283)
+	e2:SetCode(511001408)
 	c:RegisterEffect(e2)
 end
 function c511001569.cost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -22,7 +22,7 @@ function c511001569.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.PayLPCost(tp,math.floor(Duel.GetLP(tp)/2))
 end
 function c511001569.cfilter(c)
-	return not c:IsHasEffect(511001283) and c511001569.filter(c)
+	return not c:IsHasEffect(511001408) and not c:IsHasEffect(511001283) and c511001569.filter(c)
 end
 function c511001569.filter(c)
 	return c:GetType()==0x4 and c:IsAbleToRemove() and c:CheckActivateEffect(false,false,false)~=nil

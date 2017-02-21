@@ -9,9 +9,17 @@ function c511002131.initial_effect(c)
 	e1:SetTarget(c511002131.target)
 	e1:SetOperation(c511002131.activate)
 	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_CANNOT_DISABLE)
+	e2:SetCode(511001408)
+	c:RegisterEffect(e2)
 end
 function c511002131.condition(e,tp,eg,ep,ev,re,r,rp)
 	return re:GetHandler():IsType(TYPE_COUNTER) and re:IsHasType(EFFECT_TYPE_ACTIVATE) and rp~=tp
+end
+function c511002131.cfilter(c,e,tp,eg,ep,ev,re,r,rp)
+	return not c:IsHasEffect(511001408) and not c:IsHasEffect(511001283) and c511002131.filter(c,e,tp,eg,ep,ev,re,r,rp)
 end
 function c511002131.filter(c,e,tp,eg,ep,ev,re,r,rp)
 	local ft=Duel.GetLocationCount(tp,LOCATION_SZONE)
@@ -35,9 +43,9 @@ function c511002131.filter(c,e,tp,eg,ep,ev,re,r,rp)
 end
 function c511002131.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(1-tp) and chkc~=e:GetHandler() and c511002131.filter(chkc,e,tp,eg,ep,ev,re,r,rp) end
-	if chk==0 then return Duel.IsExistingTarget(c511002131.filter,tp,0,LOCATION_GRAVE,1,e:GetHandler(),e,tp,eg,ep,ev,re,r,rp) end
+	if chk==0 then return Duel.IsExistingTarget(c511002131.cfilter,tp,0,LOCATION_GRAVE,1,e:GetHandler(),e,tp,eg,ep,ev,re,r,rp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_EFFECT)
-	Duel.SelectTarget(tp,c511002131.filter,tp,0,LOCATION_GRAVE,1,1,e:GetHandler(),e,tp,eg,ep,ev,re,r,rp)
+	Duel.SelectTarget(tp,c511002131.cfilter,tp,0,LOCATION_GRAVE,1,1,e:GetHandler(),e,tp,eg,ep,ev,re,r,rp)
 end
 function c511002131.activate(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()

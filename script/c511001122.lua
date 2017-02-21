@@ -9,6 +9,15 @@ function c511001122.initial_effect(c)
 	e1:SetTarget(c511001122.target)
 	e1:SetOperation(c511001122.operation)
 	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_CANNOT_DISABLE)
+	e2:SetCode(511001408)
+	c:RegisterEffect(e2)
+end
+function c511001122.cfilter(c,e,tp,eg,ep,ev,re,r,rp,chain)
+	if not c:IsType(TYPE_MONSTER) and c:GetActivateEffect() and (c:IsHasEffect(511001283) or c:IsHasEffect(511001408)) then return false end
+	return c511001122.filter(c,e,tp,eg,ep,ev,re,r,rp,chain)
 end
 function c511001122.filter(c,e,tp,eg,ep,ev,re,r,rp,chain)
 	if c:IsType(TYPE_MONSTER) then
@@ -48,12 +57,13 @@ end
 function c511001122.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local chain=Duel.GetCurrentChain()
 	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(1-tp) and c511001122.filter(chkc,e,tp,eg,ep,ev,re,r,rp,chain) end
-	if chk==0 then return Duel.IsExistingTarget(c511001122.filter,tp,0,LOCATION_GRAVE,1,nil,e,tp,eg,ep,ev,re,r,rp,chain) end
+	if chk==0 then return Duel.IsExistingTarget(c511001122.cfilter,tp,0,LOCATION_GRAVE,1,nil,e,tp,eg,ep,ev,re,r,rp,chain) end
 	chain=chain-1
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 	Duel.SelectTarget(tp,c511001122.filter,tp,0,LOCATION_GRAVE,1,1,nil,e,tp,eg,ep,ev,re,r,rp,chain)
 end
 function c511001122.operation(e,tp,eg,ep,ev,re,r,rp)
+	local chain=Duel.GetCurrentChain()-1
 	local tc=Duel.GetFirstTarget()
 	if not tc or not tc:IsRelateToEffect(e) then return end
 	local tpe=tc:GetType()
@@ -68,6 +78,7 @@ function c511001122.operation(e,tp,eg,ep,ev,re,r,rp)
 		if not tc:IsType(TYPE_FIELD) and Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 then return end
 		local tpe=tc:GetType()
 		local te=tc:GetActivateEffect()
+		if not c511001122.cfilter(c,e,tp,eg,ep,ev,re,r,rp,chain) then return end
 		if te then
 			local tg=te:GetTarget()
 			local co=te:GetCost()

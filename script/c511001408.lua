@@ -11,11 +11,11 @@ function c511001408.initial_effect(c)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_CANNOT_DISABLE)
-	e2:SetCode(511001283)
+	e2:SetCode(511001408)
 	c:RegisterEffect(e2)
 end
 function c511001408.cfilter(c,e,tp,eg,ep,ev,re,r,rp,tid)
-	return not c:IsHasEffect(511001283) and c511001408.filter(c,e,tp,eg,ep,ev,re,r,rp,tid)
+	return not c:IsHasEffect(511001408) and not c:IsHasEffect(511001283) and c511001408.filter(c,e,tp,eg,ep,ev,re,r,rp,tid)
 end
 function c511001408.filter(c,e,tp,eg,ep,ev,re,r,rp,tid)
 	local te=c:GetActivateEffect()
