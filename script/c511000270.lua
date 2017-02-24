@@ -16,8 +16,8 @@ function c511000270.thfilter(c,tp,eg,ep,ev,re,r,rp)
 	local condition=te:GetCondition()
 	local cost=te:GetCost()
 	local target=te:GetTarget()
-	return c:IsCode(511000271) and c:IsType(TYPE_SPELL) and (not condition or condition(te,1-tp,eg,ep,ev,re,r,rp)) and (not cost or cost(te,1-tp,eg,ep,ev,re,r,rp,0))
-		and (not target or target(te,1-tp,eg,ep,ev,re,r,rp,0))  
+	return c:IsType(TYPE_SPELL) and (not condition or condition(te,1-tp,eg,ep,ev,re,r,rp)) and (not cost or cost(te,1-tp,eg,ep,ev,re,r,rp,0))
+		and (not target or target(te,1-tp,eg,ep,ev,re,r,rp,0)) and c:IsCode(511000271) 
 		and Duel.IsExistingMatchingCard(c511000270.filter,tp,0,LOCATION_MZONE,1,nil,te)
 end
 function c511000270.filter(c,e)
@@ -81,7 +81,16 @@ function c511000270.activate(e,tp,eg,ep,ev,re,r,rp)
 				end
 			end
 			Duel.BreakEffect()
-			if op then op(te,1-tp,eg,ep,ev,re,r,rp) end
+			tc:SetStatus(STATUS_ACTIVATED,true)
+			if not tc:IsDisabled() then
+				if op then op(te,1-tp,eg,ep,ev,re,r,rp) end
+			else
+				--insert negated animation here
+			end
+			Duel.RaiseEvent(Group.CreateGroup(tc),EVENT_CHAIN_SOLVED,te,0,tp,tp,Duel.GetCurrentChain())
+			if g and tc:IsType(TYPE_EQUIP) and not tc:GetEquipTarget() then
+				Duel.Equip(tp,tc,g:GetFirst())
+			end
 			tc:ReleaseEffectRelation(te)
 			if etc then	
 				etc=g:GetFirst()

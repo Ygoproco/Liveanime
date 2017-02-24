@@ -58,7 +58,7 @@ function c511002473.activate(e,tp,eg,ep,ev,re,r,rp)
 		end
 		Duel.Hint(HINT_CARD,0,tc:GetCode())
 		tc:CreateEffectRelation(te)
-		if bit.band(tpe,TYPE_EQUIP+TYPE_CONTINUOUS+TYPE_FIELD)==0 then
+		if bit.band(tpe,TYPE_EQUIP+TYPE_CONTINUOUS+TYPE_FIELD)==0 and not tc:IsHasEffect(EFFECT_REMAIN_FIELD) then
 			tc:CancelToGrave(false)
 		end
 		if te:GetCode()==EVENT_CHAINING then

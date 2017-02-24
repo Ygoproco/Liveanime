@@ -29,7 +29,7 @@ function c511002085.efilter(e,re)
 end
 function c511002085.spcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsPreviousLocation(LOCATION_ONFIELD) and c:GetEquipTarget()~=nil and c:IsLocation(LOCATION_GRAVE)
+	return c:IsPreviousLocation(LOCATION_ONFIELD) and (c:GetEquipTarget()~=nil or c:IsReason(REASON_LOST_TARGET)) and c:IsLocation(LOCATION_GRAVE)
 end
 function c511002085.filter(c,e,tp)
 	return c:IsType(TYPE_TUNER) and c:IsRace(RACE_WINDBEAST) and c:IsCanBeSpecialSummoned(e,0,tp,false,false) 
