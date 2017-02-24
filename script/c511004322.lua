@@ -67,7 +67,7 @@ function c511004322.initial_effect(c)
 	--declare a normal summon or set
 	local e3=Effect.CreateEffect(c)
 	e3:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_DISABLE_CHAIN)
-	e3:SetDescription(aux.Stringid(100100,0))
+	e3:SetDescription(1050)
 	e3:SetCategory(CATEGORY_SUMMON)
 	e3:SetType(EFFECT_TYPE_IGNITION)
 	e3:SetCode(EVENT_FREE_CHAIN)
@@ -104,7 +104,7 @@ forbidden={}
 forbidden[0]={}
 forbidden[1]={}
 function c511004322.cflcon(e,tp,eg,ep,ev,re,r,rp)
-	return re:GetHandler()~=e:GetHandler()
+	return re and re:GetHandler()~=e:GetHandler()
 end
 function c511004322.hax(e,tp,eg,ep,ev,re,r,rp)
 	--Duel.ConfirmDecktop(tp,Duel.GetMatchingGroupCount(Card.GetControler,tp,LOCATION_DECK,0,nil))
@@ -137,6 +137,16 @@ function c511004322.activeoperation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SendtoDeck(hand1,tp,0,REASON_RULE)
 	local hand2=Duel.GetMatchingGroup(Card.GetControler,tp,0,LOCATION_HAND,nil)
 	Duel.SendtoDeck(hand2,1-tp,0,REASON_RULE)
+	--if duel is using obsolete ruling change the draw count to 0 to avoid player from draw the first card.
+	if Duel.IsDuelType(DUEL_OBSOLETE_RULING) then
+        	local e1=Effect.CreateEffect(c)
+		e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+        	e1:SetType(EFFECT_TYPE_FIELD)
+        	e1:SetCode(EFFECT_DRAW_COUNT)
+        	e1:SetTargetRange(1,1)
+        	e1:SetValue(0)
+        	Duel.RegisterEffect(e1,tp)
+	end
 end
 --normal/set
 function c511004322.normalsetcondition(e,tp,eg,ep,ev,re,r,rp)
@@ -186,7 +196,7 @@ function c511004322.normalsetoperation(e,tp,eg,ep,ev,re,r,rp)
 			Duel.DisableShuffleCheck()
 			Duel.SendtoDeck(c,tp,an,REASON_RULE)
 			forbidden[tp][an+1]=true
-			Duel.Hint(HINT_MESSAGE,tp,aux.Stringid(100100,5))
+			Duel.Hint(HINT_MESSAGE,tp,aux.Stringid(4002,9))
 		else
 			--re organize forbidden list
 			for i=an+1,n do
@@ -195,7 +205,7 @@ function c511004322.normalsetoperation(e,tp,eg,ep,ev,re,r,rp)
 		end
 	else
 		forbidden[tp][an+1]=true
-		Duel.Hint(HINT_MESSAGE,tp,aux.Stringid(100100,5))
+		Duel.Hint(HINT_MESSAGE,tp,aux.Stringid(4002,9))
 	end
 end
 --spell
@@ -269,11 +279,11 @@ function c511004322.spelloperation(e,tp,eg,ep,ev,re,r,rp)
 			end		 
 		else
 			forbidden[tp][an+1]=true
-			Duel.Hint(HINT_MESSAGE,tp,aux.Stringid(100100,5))
+			Duel.Hint(HINT_MESSAGE,tp,aux.Stringid(4002,9))
 		end
 	else
 		forbidden[tp][an+1]=true
-		Duel.Hint(HINT_MESSAGE,tp,aux.Stringid(100100,5))
+		Duel.Hint(HINT_MESSAGE,tp,aux.Stringid(4002,9))
 	end
 end
 --trap
@@ -339,11 +349,11 @@ function c511004322.trapoperation(e,tp,eg,ep,ev,re,r,rp)
 			end
 		else
 			forbidden[tp][an+1]=true
-			Duel.Hint(HINT_MESSAGE,tp,aux.Stringid(100100,5))
+			Duel.Hint(HINT_MESSAGE,tp,aux.Stringid(4002,9))
 		end
 	else
 		forbidden[tp][an+1]=true
-		Duel.Hint(HINT_MESSAGE,tp,aux.Stringid(100100,5))
+		Duel.Hint(HINT_MESSAGE,tp,aux.Stringid(4002,9))
 	end
 end
 --[[
