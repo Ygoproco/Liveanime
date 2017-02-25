@@ -1,69 +1,57 @@
 --Final Cross
 --  By Shad3
-
-local function getID()
-	local str=string.match(debug.getinfo(2,'S')['source'],"c%d+%.lua")
-	str=string.sub(str,1,string.len(str)-4)
-	local scard=_G[str]
-	local s_id=tonumber(string.sub(str,2))
-	return scard,s_id
-end
-
-local scard,s_id=getID()
-
-function scard.initial_effect(c)
-	--Global effect
-	if not scard.gl_chk then
-		scard.gl_chk=true
-		local ge1=Effect.GlobalEffect()
-		ge1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-		ge1:SetCode(EVENT_TO_GRAVE)
-		ge1:SetOperation(scard.reg_op)
-		Duel.RegisterEffect(ge1,0)
-	end
+--cleaned up and fixed by MLD
+function c511005021.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e1:SetCondition(scard.cd)
-	e1:SetTarget(scard.tg)
-	e1:SetOperation(scard.op)
+	e1:SetCondition(c511005021.condition)
+	e1:SetTarget(c511005021.target)
+	e1:SetOperation(c511005021.activate)
 	c:RegisterEffect(e1)
-end
-
-function scard.reg_op(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetFlagEffect(0,s_id)~=0 then return end
-	local c=eg:GetFirst()
-	while c do
-		if c:IsType(TYPE_SYNCHRO) then
-			Duel.RegisterFlagEffect(0,s_id,RESET_PHASE+PHASE_END,0,1)
-			return
-		end
-		c=eg:GetNext()
+	if not c511005021.global_check then
+		c511005021.global_check=true
+		c511005021[0]=true
+		local ge1=Effect.CreateEffect(c)
+		ge1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+		ge1:SetCode(EVENT_TO_GRAVE)
+		ge1:SetOperation(c511005021.checkop)
+		Duel.RegisterEffect(ge1,0)
+		local ge2=Effect.CreateEffect(c)
+		ge2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+		ge2:SetCode(EVENT_ADJUST)
+		ge2:SetCountLimit(1)
+		ge2:SetOperation(c511005021.clear)
+		Duel.RegisterEffect(ge2,0)
 	end
 end
-
-function scard.at_fil(c)
-	return c:IsType(TYPE_SYNCHRO) and c:IsFaceup() and c:GetAttackAnnouncedCount()>0 and c:GetFlagEffect(s_id)==0
+function c511005021.checkop(e,tp,eg,ep,ev,re,r,rp)
+	if eg:IsExists(Card.IsType,1,nil,TYPE_SYNCHRO) then
+		c511005021[0]=true
+	end
 end
-
-function scard.cd(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetFlagEffect(0,s_id)~=0
+function c511005021.clear(e,tp,eg,ep,ev,re,r,rp)
+	c511005021[0]=false
 end
-
-function scard.tg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsOnField() and scard.at_fil(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(scard.at_fil,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
+function c511005021.condition(e,tp,eg,ep,ev,re,r,rp)
+	return c511005021[0]
+end
+function c511005021.filter(c)
+	return c:IsType(TYPE_SYNCHRO) and c:IsFaceup() and c:GetAttackAnnouncedCount()>0 and c:GetFlagEffect(511005021)==0
+end
+function c511005021.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and c511005021.filter(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(c511005021.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
-	Duel.SelectTarget(tp.scard.at_fil,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
+	Duel.SelectTarget(tp,c511005021.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
 end
-
-function scard.op(e,tp,eg,ep,ev,re,r,rp)
+function c511005021.activate(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc and tc:IsRelateToEffect(e) then
-		tc:RegisterFlagEffect(s_id,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,1)
-		local e1=Effect.CreateEffect(c)
+		tc:RegisterFlagEffect(511005021,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,1)
+		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_EXTRA_ATTACK)
 		e1:SetValue(1)
