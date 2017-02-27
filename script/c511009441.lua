@@ -3,6 +3,13 @@
 function c511009441.initial_effect(c)
 	c:EnableReviveLimit()
 	aux.EnablePendulumAttribute(c,false)
+	--fusion proc
+	local fe=Effect.CreateEffect(c)
+	fe:SetType(EFFECT_TYPE_SINGLE)
+	fe:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	fe:SetCode(EFFECT_FUSION_MATERIAL)
+	fe:SetCondition(c511009441.fscon)
+	c:RegisterEffect(fe)
 	--level/rank
 	local e0=Effect.CreateEffect(c)
 	e0:SetType(EFFECT_TYPE_SINGLE)
@@ -84,6 +91,10 @@ function c511009441.initial_effect(c)
 	e9:SetTarget(c511009441.destg)
 	e9:SetOperation(c511009441.desop)
 	c:RegisterEffect(e9)
+end
+function c511009441.fscon(e,g,gc,chkfnf)
+	if g==nil then return true end
+	return false
 end
 function c511009441.splimit(e,se,sp,st)
 	return se:GetHandler():IsCode(76794549)

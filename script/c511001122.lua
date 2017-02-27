@@ -78,7 +78,7 @@ function c511001122.operation(e,tp,eg,ep,ev,re,r,rp)
 		if not tc:IsType(TYPE_FIELD) and Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 then return end
 		local tpe=tc:GetType()
 		local te=tc:GetActivateEffect()
-		if not c511001122.cfilter(c,e,tp,eg,ep,ev,re,r,rp,chain) then return end
+		if not c511001122.cfilter(tc,e,tp,eg,ep,ev,re,r,rp,chain) then return end
 		if te then
 			local tg=te:GetTarget()
 			local co=te:GetCost()

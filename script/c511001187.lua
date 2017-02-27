@@ -18,7 +18,7 @@ function c511001187.exscon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsExistingMatchingCard(c511001187.cfilter,tp,LOCATION_MZONE,0,1,nil)
 end
 function c511001187.filter(c)
-	return c:IsCode(511001186) and c:IsAbleToGraveAsCost() 
+	return c:IsCode(56673480) and c:IsAbleToGraveAsCost() 
 end
 function c511001187.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c511001187.filter,tp,LOCATION_SZONE,0,1,nil) end

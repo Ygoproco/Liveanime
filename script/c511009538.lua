@@ -32,15 +32,18 @@ function c511009538.target(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c511009538.operation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) then
-		local e2=Effect.CreateEffect(e:GetHandler())
-		e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-		e2:SetCode(EVENT_PRE_BATTLE_DAMAGE)
-		e2:SetOperation(c511009538.damop)
-		e2:SetReset(RESET_PHASE+PHASE_DAMAGE)
-		Duel.RegisterEffect(e2,tp)
-		Duel.BreakEffect()
-		Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
+	--to be reupdated next core update
+	if not c:IsRelateToEffect(e) then return end
+	local e2=Effect.CreateEffect(e:GetHandler())
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e2:SetCode(EVENT_PRE_BATTLE_DAMAGE)
+	e2:SetOperation(c511009538.damop)
+	e2:SetReset(RESET_PHASE+PHASE_DAMAGE)
+	Duel.RegisterEffect(e2,tp)
+	Duel.BreakEffect()
+	if Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)==0 and Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 
+		and c:IsCanBeSpecialSummoned(e,0,tp,false,false) then
+		Duel.SendtoGrave(c,REASON_RULE)
 	end
 end
 function c511009538.damop(e,tp,eg,ep,ev,re,r,rp)

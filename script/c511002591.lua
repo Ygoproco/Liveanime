@@ -17,7 +17,7 @@ function c511002591.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_QUICK_O)
 	e2:SetCode(EVENT_FREE_CHAIN)
 	e2:SetRange(LOCATION_MZONE)
-	e2:SetProperty(EFFECT_FLAG_CARD_TARGET,EFFECT_FLAG2_XMDETACH)
+	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e2:SetHintTiming(0,TIMING_MAIN_END)
 	e2:SetCondition(c511002591.mtcon)
 	e2:SetCost(c511002591.mtcost)
@@ -30,7 +30,7 @@ function c511002591.damval(e,re,val,r,rp,rc)
 	if val<=atk and bit.band(r,REASON_EFFECT)>0 then return 0 else return val end
 end
 function c511002591.mtcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetCurrentPhase()==PHASE_BATTLE or Duel.IsAbleToEnterBP()
+	return (Duel.GetCurrentPhase()>=PHASE_BATTLE_START and Duel.GetCurrentPhase()<=PHASE_BATTLE) or Duel.IsAbleToEnterBP()
 end
 function c511002591.mtcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():CheckRemoveOverlayCard(tp,1,REASON_COST) end
