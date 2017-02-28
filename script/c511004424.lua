@@ -1,7 +1,7 @@
 --supreme king dance
 function c511004424.initial_effect(c)
-	local st1=1
-	local st2=2
+	local st1=aux.Stringid(4004,0)
+	local st2=aux.Stringid(4004,1)
 	--activate
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
@@ -77,7 +77,7 @@ function c511004424.repfilter(c,tp)
 		and ((c:IsType(TYPE_MONSTER) and c:IsReason(REASON_BATTLE)) or (c:IsReason(REASON_EFFECT)))
 end
 function c511004424.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return eg:IsExists(c511004424.repfilter,1,nil) end
+	if chk==0 then return eg:IsExists(c511004424.repfilter,1,nil,tp) end
 	return true
 end
 function c511004424.repval(e,c)
