@@ -1,5 +1,6 @@
---グリーディー・ヴェノム・フュージョン・ドラゴン
+--Greedy Venom Fusion Dragon (Anime)
 --fixed by MLD
+--effect corrected by CCM
 function c511009381.initial_effect(c)
 	--Fusion Proc
 	aux.AddFusionProcFun2(c,aux.FilterBoolFunction(Card.IsFusionSetCard,0x10f3),c511009381.ffilter,true)
@@ -111,14 +112,6 @@ function c511009381.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToRemoveAsCost() and c511009381[tp+2] end
 	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_COST)
 	c511009381[tp]=false
-	local e1=Effect.CreateEffect(e:GetHandler())
-	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_OATH)
-	e1:SetCode(EFFECT_CANNOT_TRIGGER)
-	e1:SetTargetRange(1,0)
-	e1:SetValue(c511009381.aclimit)
-	e1:SetReset(RESET_PHASE+PHASE_END)
-	Duel.RegisterEffect(e1,tp)
 end
 function c511009381.aclimit(e,re,tp)
 	return re:GetHandler():GetOriginalCode()==51570882
@@ -137,6 +130,14 @@ function c511009381.spop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.SelectMatchingCard(tp,aux.NecroValleyFilter(c511009381.spfilter),tp,LOCATION_GRAVE,0,1,1,nil,e,tp)
 	if g:GetCount()>0 then
 		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
+		local e1=Effect.CreateEffect(e:GetHandler())
+		e1:SetType(EFFECT_TYPE_FIELD)
+		e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_OATH)
+		e1:SetCode(EFFECT_CANNOT_TRIGGER)
+		e1:SetTargetRange(1,0)
+		e1:SetValue(c511009381.aclimit)
+		e1:SetReset(RESET_PHASE+PHASE_END)
+		Duel.RegisterEffect(e1,tp)
 	end
 end
 function c511009381.atkcost(e,tp,eg,ep,ev,re,r,rp,chk)
