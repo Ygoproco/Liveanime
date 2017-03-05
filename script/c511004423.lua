@@ -7,7 +7,7 @@ function Auxiliary.PConditionFilter(c,e,tp,lscale,rscale)
 		lv=c:GetLevel()
 	end
 	return (c:IsLocation(LOCATION_HAND) or (c:IsFaceup() and c:IsType(TYPE_PENDULUM)))
-		and ((lv>lscale and lv<rscale) or (c:IsCode(511004423) and Duel.IsExistingMatchingCard(Card.IsSetCard,tp,LOCATION_EXTRA,0,1,c,0x99))) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_PENDULUM,tp,false,false)
+		and ((lv>lscale and lv<rscale) or (c:IsCode(511004423) and Duel.IsExistingMatchingCard(Card.IsSetCard,tp,LOCATION_EXTRA,0,1,nil,0x99))) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_PENDULUM,tp,false,false)
 		and not c:IsForbidden()
 end
 function c511004423.initial_effect(c)
@@ -47,7 +47,7 @@ function c511004423.conditionfilter(c,e,tp,lscale,rscale)
 		lv=c:GetLevel()
 	end
 	return (c:IsLocation(LOCATION_HAND) or (c:IsFaceup() and c:IsType(TYPE_PENDULUM)))
-		and ((lv>lscale and lv<rscale) or (c:IsCode(511004423) and Duel.IsExistingMatchingCard(Card.IsSetCard,tp,LOCATION_EXTRA,0,1,c,0x99))) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_PENDULUM,tp,false,false)
+		and ((lv>lscale and lv<rscale) or (c:IsCode(511004423) and Duel.IsExistingMatchingCard(Card.IsSetCard,tp,LOCATION_EXTRA,0,1,nil,0x99))) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_PENDULUM,tp,false,false)
 		and not c:IsForbidden()
 end
 function c511004423.condition()
@@ -111,9 +111,6 @@ function c511004423.operation()
 				Duel.HintSelection(Group.FromCards(c))
 				Duel.HintSelection(Group.FromCards(rpz))
 			end
-end
-function c511004423.filter(c)
-	return c:IsFaceup() and c:IsType(TYPE_PENDULUM)
 end
 function c511004423.con(e,tp,eg,ev,ep,re,r,rp)
 	local a=Duel.GetAttacker()
