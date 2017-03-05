@@ -3,9 +3,9 @@ function c511009560.initial_effect(c)
 	--xyz summon
 	aux.AddXyzProcedure(c,aux.FilterBoolFunction(Card.IsRace,RACE_SPELLCASTER),5,2)
 	c:EnableReviveLimit()
-	--swap
+	--protection
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(79967395,0))
+	e1:SetDescription(aux.Stringid(16617334,1))
 	e1:SetType(EFFECT_TYPE_QUICK_O)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetRange(LOCATION_MZONE)
@@ -50,8 +50,8 @@ function c511009560.operation(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
 		e1:SetCode(EFFECT_INDESTRUCTABLE_COUNT)
-		e2:SetCountLimit(3)
-		e2:SetValue(c511009560.indct)
+		e1:SetCountLimit(3)
+		e1:SetValue(c511009560.indct)
 		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 		c:RegisterEffect(e1)
 	end
@@ -77,15 +77,15 @@ end
 function c511009560.regop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	--multiple atk
-	local e3=Effect.CreateEffect(c)
-	e3:SetDescription(aux.Stringid(1992816,2))
-	e3:SetType(EFFECT_TYPE_IGNITION)
-	e3:SetProperty(EFFECT_FLAG2_XMDETACH)
-	e3:SetRange(LOCATION_MZONE)
-	e3:SetCountLimit(1)
-	e3:SetCost(c511009560.atkcost)
-	e3:SetOperation(c511009560.atkregop)
-	c:RegisterEffect(e3)
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(47819246,0))
+	e1:SetType(EFFECT_TYPE_IGNITION)
+	e1:SetProperty(EFFECT_FLAG2_XMDETACH)
+	e1:SetRange(LOCATION_MZONE)
+	e1:SetCountLimit(1)
+	e1:SetCost(c511009560.atkcost)
+	e1:SetOperation(c511009560.atkregop)
+	c:RegisterEffect(e1)
 end
 function c511009560.atkcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():CheckRemoveOverlayCard(tp,1,REASON_COST) end
@@ -115,8 +115,8 @@ end
 function c511009560.dirregop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if Duel.GetAttackTarget() then return end
-	c:RegisterFlagEffect(47349310,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_BATTLE,0,1)
+	c:RegisterFlagEffect(511009560,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_BATTLE,0,1)
 end
 function c511009560.dircon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():GetFlagEffect(47349310)~=0
+	return e:GetHandler():GetFlagEffect(511009560)~=0
 end
