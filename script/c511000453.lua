@@ -7,7 +7,7 @@ function c511000453.initial_effect(c)
 	e1:SetCode(EFFECT_CANNOT_TRIGGER)
 	e1:SetRange(LOCATION_SZONE)
 	e1:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e1:SetTarget(c511000453.distg)
+	e1:SetTarget(aux.PersistentTargetFilter)
 	c:RegisterEffect(e1)
 	--cannot attack
 	local e2=e1:Clone()
@@ -67,9 +67,6 @@ function c511000453.atkchk(e,tp,eg,ep,ev,re,r,rp)
 end
 function c511000453.target(e,tp,eg,ep,ev,re,r,rp,tc)
 	Duel.SetOperationInfo(0,CATEGORY_DISABLE,tc,1,0,0)
-end
-function c511000453.distg(e,c)
-	return e:GetHandler():IsHasCardTarget(c)
 end
 function c511000453.efilter(e,re,rp)
 	return e:GetHandlerPlayer()~=rp

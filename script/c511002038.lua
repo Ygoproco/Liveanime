@@ -7,7 +7,7 @@ function c511002038.initial_effect(c)
 	e1:SetCode(EFFECT_DISABLE)
 	e1:SetRange(LOCATION_SZONE)
 	e1:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e1:SetTarget(c511002038.distg)
+	e1:SetTarget(aux.PersistentTargetFilter)
 	c:RegisterEffect(e1)
 	--cannot change pos
 	local e2=e1:Clone()
@@ -21,9 +21,6 @@ function c511002038.initial_effect(c)
 	e2:SetCondition(c511002038.descon)
 	e2:SetOperation(c511002038.desop)
 	c:RegisterEffect(e2)
-end
-function c511002038.distg(e,c)
-	return e:GetHandler():IsHasCardTarget(c)
 end
 function c511002038.cfilter(c)
 	local code=c:GetCode()

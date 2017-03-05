@@ -8,7 +8,7 @@ function c511009306.initial_effect(c)
 	e3:SetCode(EFFECT_INDESTRUCTABLE_EFFECT)
 	e3:SetRange(LOCATION_SZONE)
 	e3:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e3:SetTarget(c511009306.indtg)
+	e3:SetTarget(aux.PersistentTargetFilter)
 	e3:SetValue(1)
 	c:RegisterEffect(e3)
 	--disable
@@ -50,9 +50,6 @@ function c511009306.initial_effect(c)
 end
 function c511009306.filter(c)
 	return c:IsFaceup() and c:IsSetCard(0x19)
-end
-function c511009306.indtg(e,c)
-	return e:GetHandler():IsHasCardTarget(c)
 end
 function c511009306.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(aux.disfilter1,tp,0,LOCATION_MZONE,1,nil) end

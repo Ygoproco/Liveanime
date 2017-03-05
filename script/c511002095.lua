@@ -22,7 +22,7 @@ function c511002095.initial_effect(c)
 	e3:SetCode(EFFECT_CHANGE_CODE)
 	e3:SetRange(LOCATION_SZONE)
 	e3:SetTargetRange(LOCATION_ONFIELD,LOCATION_ONFIELD)
-	e3:SetTarget(c511002095.tg)
+	e3:SetTarget(aux.PersistentTargetFilter)
 	e3:SetValue(511002095)
 	c:RegisterEffect(e3)
 	--Destroy
@@ -41,9 +41,6 @@ function c511002095.initial_effect(c)
 	e5:SetCondition(c511002095.ccon)
 	e5:SetOperation(c511002095.cop)
 	c:RegisterEffect(e5)
-end
-function c511002095.tg(e,c)
-	return e:GetHandler():IsHasCardTarget(c)
 end
 function c511002095.filter(c)
 	return c:IsFaceup() and c:GetCode()~=511002095
