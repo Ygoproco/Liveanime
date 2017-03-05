@@ -8,7 +8,7 @@ function c511001016.initial_effect(c)
 	e1:SetRange(LOCATION_SZONE)
 	e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
 	e1:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e1:SetTarget(c511001016.tg)
+	e1:SetTarget(aux.PersistentTargetFilter)
 	c:RegisterEffect(e1)
 	--cannot attack
 	local e2=e1:Clone()
@@ -27,9 +27,6 @@ function c511001016.initial_effect(c)
 	e4:SetCondition(c511001016.descon)
 	e4:SetOperation(c511001016.desop)
 	c:RegisterEffect(e4)
-end
-function c511001016.tg(e,c)
-	return e:GetHandler():IsHasCardTarget(c)
 end
 function c511001016.condition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetCurrentPhase()~=PHASE_DAMAGE or not Duel.IsDamageCalculated()

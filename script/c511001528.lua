@@ -7,7 +7,7 @@ function c511001528.initial_effect(c)
 	e1:SetCode(EFFECT_SET_BASE_ATTACK)
 	e1:SetRange(LOCATION_SZONE)
 	e1:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e1:SetTarget(c511001528.atktg)
+	e1:SetTarget(aux.PersistentTargetFilter)
 	e1:SetValue(c511001528.atkval)
 	c:RegisterEffect(e1)
 	--Destroy
@@ -24,9 +24,6 @@ function c511001528.initial_effect(c)
 	e3:SetCode(EVENT_LEAVE_FIELD)
 	e3:SetOperation(c511001528.desop2)
 	c:RegisterEffect(e3)
-end
-function c511001528.atktg(e,c)
-	return e:GetHandler():IsHasCardTarget(c)
 end
 function c511001528.atkval(e,c)
 	return c:GetBaseAttack()/2

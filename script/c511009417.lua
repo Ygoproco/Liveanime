@@ -1,4 +1,5 @@
 --Dark Contract with Surplus Summons
+--fixed by MLD
 function c511009417.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
@@ -7,15 +8,17 @@ function c511009417.initial_effect(c)
 	c:RegisterEffect(e1)
 	-- spsummon
 	local e2=Effect.CreateEffect(c)
-	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e2:SetDescription(aux.Stringid(6205579,0))
+	e2:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_FUSION_SUMMON)
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetRange(LOCATION_SZONE)
 	e2:SetCountLimit(1)
-	e2:SetTarget(c511009417.target)
-	e2:SetOperation(c511009417.operation)
+	e2:SetTarget(c511009417.fustg)
+	e2:SetOperation(c511009417.fusop)
 	c:RegisterEffect(e2)
 	-- level
 	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(17330916,0))
 	e3:SetType(EFFECT_TYPE_IGNITION)
 	e3:SetRange(LOCATION_SZONE)
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
@@ -26,6 +29,7 @@ function c511009417.initial_effect(c)
 	-- damage
 	local e4=Effect.CreateEffect(c)
 	e4:SetCategory(CATEGORY_DAMAGE)
+	e4:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
 	e4:SetRange(LOCATION_SZONE)
 	e4:SetCode(EVENT_PHASE+PHASE_STANDBY)
@@ -36,16 +40,16 @@ function c511009417.initial_effect(c)
 	c:RegisterEffect(e4)
 end
 function c511009417.filter1(c,e)
-	return c:IsCanBeFusionMaterial() and not c:IsImmuneToEffect(e)
+	return c:IsOnField() and not c:IsImmuneToEffect(e)
 end
 function c511009417.filter2(c,e,tp,m,f,chkf)
 	return c:IsType(TYPE_FUSION) and c:IsSetCard(0x10af) and (not f or f(c))
 		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_FUSION,tp,false,false) and c:CheckFusionMaterial(m,nil,chkf)
 end
-function c511009417.target(e,tp,eg,ep,ev,re,r,rp,chk)
+function c511009417.fustg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		local chkf=Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and PLAYER_NONE or tp
-		local mg1=Duel.GetMatchingGroup(Card.IsCanBeFusionMaterial,tp,LOCATION_MZONE,0,nil)
+		local mg1=Duel.GetFusionMaterial(tp):Filter(Card.IsOnField,nil)
 		local res=Duel.IsExistingMatchingCard(c511009417.filter2,tp,LOCATION_EXTRA,0,1,nil,e,tp,mg1,nil,chkf)
 		if not res then
 			local ce=Duel.GetChainMaterial(tp)
@@ -60,9 +64,10 @@ function c511009417.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
 end
-function c511009417.operation(e,tp,eg,ep,ev,re,r,rp)
+function c511009417.fusop(e,tp,eg,ep,ev,re,r,rp)
+	if not e:GetHandler():IsRelateToEffect(e) then return end
 	local chkf=Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and PLAYER_NONE or tp
-	local mg1=Duel.GetMatchingGroup(c511009417.filter1,tp,LOCATION_MZONE,0,nil,e)
+	local mg1=Duel.GetFusionMaterial(tp):Filter(c511009417.filter1,nil,e)
 	local sg1=Duel.GetMatchingGroup(c511009417.filter2,tp,LOCATION_EXTRA,0,nil,e,tp,mg1,nil,chkf)
 	local mg2=nil
 	local sg2=nil
@@ -93,12 +98,11 @@ function c511009417.operation(e,tp,eg,ep,ev,re,r,rp)
 		tc:CompleteProcedure()
 	end
 end
-
 function c511009417.filter(c)
 	return c:IsFaceup() and c:GetLevel()>0 and c:IsSetCard(0xaf)
 end
 function c511009417.lvtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) and c511009417.filter(chkc) end
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and c511009417.filter(chkc) end
 	if chk==0 then return Duel.IsExistingTarget(c511009417.filter,tp,LOCATION_MZONE,0,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 	Duel.SelectTarget(tp,c511009417.filter,tp,LOCATION_MZONE,0,1,1,nil)
@@ -106,7 +110,7 @@ end
 function c511009417.lvop(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) and tc:IsFaceup() then
+	if tc and tc:IsRelateToEffect(e) and tc:IsFaceup() then
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_UPDATE_LEVEL)
@@ -115,22 +119,21 @@ function c511009417.lvop(e,tp,eg,ep,ev,re,r,rp)
 		tc:RegisterEffect(e1)
 	end
 end
-
 function c511009417.damcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnPlayer()==tp
 end
-function c511009417.ctfilter(c)
-	return bit.band(c:GetSummonType(),SUMMON_TYPE_SPECIAL)==SUMMON_TYPE_SPECIAL and c:GetSummonLocation()==LOCATION_EXTRA
+function c511009417.cfilter(c)
+	return c:GetSummonLocation()==LOCATION_EXTRA
 end
 function c511009417.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	local ct=Duel.GetMatchingGroupCount(c511009417.ctfilter,tp,LOCATION_MZONE,0,nil)
+	local ct=Duel.GetMatchingGroupCount(c511009417.cfilter,tp,LOCATION_MZONE,0,nil)
 	Duel.SetTargetPlayer(tp)
 	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,0,0,tp,ct*1000)
 end
 function c511009417.damop(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
 	local p=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER)
-	local ct=Duel.GetMatchingGroupCount(c511009417.ctfilter,tp,LOCATION_MZONE,0,nil)
+	local ct=Duel.GetMatchingGroupCount(c511009417.cfilter,tp,LOCATION_MZONE,0,nil)
 	Duel.Damage(p,ct*1000,REASON_EFFECT)
 end

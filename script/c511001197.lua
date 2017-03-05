@@ -7,7 +7,7 @@ function c511001197.initial_effect(c)
 	e1:SetCode(EFFECT_DISABLE)
 	e1:SetRange(LOCATION_SZONE)
 	e1:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e1:SetTarget(c511001197.distg)
+	e1:SetTarget(aux.PersistentTargetFilter)
 	c:RegisterEffect(e1)
 	--cannot attack
 	local e2=e1:Clone()
@@ -21,9 +21,6 @@ function c511001197.initial_effect(c)
 	e3:SetCondition(c511001197.descon)
 	e3:SetOperation(c511001197.desop)
 	c:RegisterEffect(e3)
-end
-function c511001197.distg(e,c)
-	return e:GetHandler():IsHasCardTarget(c)
 end
 function c511001197.cfilter(c)
 	return c:IsFaceup() and c:IsAttribute(ATTRIBUTE_WATER)

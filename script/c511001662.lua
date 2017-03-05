@@ -7,7 +7,7 @@ function c511001662.initial_effect(c)
 	e1:SetCode(EFFECT_DISABLE)
 	e1:SetRange(LOCATION_SZONE)
 	e1:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e1:SetTarget(c511001662.distg)
+	e1:SetTarget(aux.PersistentTargetFilter)
 	c:RegisterEffect(e1)
 	--cannot attack
 	local e2=e1:Clone()
@@ -25,9 +25,6 @@ function c511001662.initial_effect(c)
 	e2:SetTarget(c511001662.destg)
 	e2:SetOperation(c511001662.desop)
 	c:RegisterEffect(e2)
-end
-function c511001662.distg(e,c)
-	return e:GetHandler():IsHasCardTarget(c)
 end
 function c511001662.filter(c)
 	return c:IsFaceup() and c:IsSetCard(0x48)

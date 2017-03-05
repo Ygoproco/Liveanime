@@ -129,7 +129,7 @@ end
 function c511009110.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and c:IsCanBeSpecialSummoned(e,0,tp,false,false) 
-		and Duel.SelectYesNo(tp,aux.Stringid(87347365,1)) then
+		and Duel.SelectEffectYesNo(tp,c) then
 		Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
 	end
 end

@@ -9,7 +9,7 @@ function c810000084.initial_effect(c)
 	e1:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)
 	e1:SetRange(LOCATION_SZONE)
 	e1:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e1:SetTarget(c810000084.tg)
+	e1:SetTarget(aux.PersistentTargetFilter)
 	c:RegisterEffect(e1)
 	--Destroy
 	local e2=Effect.CreateEffect(c)
@@ -32,9 +32,6 @@ function c810000084.initial_effect(c)
 end
 function c810000084.filter(c)
 	return c:IsPosition(POS_FACEUP_DEFENSE) and c:IsRace(RACE_INSECT)
-end
-function c810000084.tg(e,c)
-	return e:GetHandler():IsHasCardTarget(c)
 end
 function c810000084.con(e,tp,eg,ep,ev,re,r,rp)
 	local tg=e:GetHandler():GetFirstCardTarget()

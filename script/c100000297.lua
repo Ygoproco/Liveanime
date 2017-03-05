@@ -22,7 +22,7 @@ function c100000297.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local eq=e:GetHandler():GetEquipTarget()
 	if chk==0 then return eq and c:GetDestination()==LOCATION_GRAVE 
 		and Duel.IsExistingMatchingCard(c100000297.filter,tp,LOCATION_MZONE,0,1,eq) end
-	if Duel.SelectYesNo(tp,aux.Stringid(100000297,0)) then
+	if Duel.SelectEffectYesNo(tp,c) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_EQUIP)
 		local g=Duel.SelectMatchingCard(tp,c100000297.filter,tp,LOCATION_MZONE,0,1,1,eq)
 		e:SetLabelObject(g:GetFirst())

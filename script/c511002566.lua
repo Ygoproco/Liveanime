@@ -7,7 +7,7 @@ function c511002566.initial_effect(c)
 	e1:SetCode(EFFECT_UPDATE_ATTACK)
 	e1:SetRange(LOCATION_SZONE)
 	e1:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e1:SetTarget(c511002566.tg)
+	e1:SetTarget(aux.PersistentTargetFilter)
 	e1:SetValue(-800)
 	c:RegisterEffect(e1)
 	--indes
@@ -23,9 +23,6 @@ function c511002566.initial_effect(c)
 	e2:SetCondition(c511002566.descon)
 	e2:SetOperation(c511002566.desop)
 	c:RegisterEffect(e2)
-end
-function c511002566.tg(e,c)
-	return e:GetHandler():IsHasCardTarget(c)
 end
 function c511002566.condition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetCurrentPhase()~=PHASE_DAMAGE or not Duel.IsDamageCalculated()
