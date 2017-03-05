@@ -57,7 +57,7 @@ function c511009508.spcon(e,tp,eg,ep,ev,re,r,rp)
 end
 function c511009508.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if c:IsXyzSummonable(nil) and Duel.SelectYesNo(tp,aux.Stringid(4003,7)) then
+	if c:IsXyzSummonable(nil) and Duel.SelectYesNo(tp,aux.Stringid(4003,5)) then
 		Duel.XyzSummon(tp,c,nil)
 	end
 end
@@ -141,19 +141,20 @@ end
 function c511009508.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return not Duel.IsPlayerAffectedByEffect(tp,59822133)
 		and Duel.GetLocationCount(tp,LOCATION_MZONE)>1 and e:GetHandler():GetFlagEffect(511009508)==0
-		and Duel.IsExistingMatchingCard(c511009508.spfilter2,tp,LOCATION_EXTRA,0,2,nil,e,tp) end
+		and Duel.IsExistingMatchingCard(c511009508.spfilter2,tp,LOCATION_GRAVE,0,2,nil,e,tp) end
 	e:GetHandler():RegisterFlagEffect(511009508,RESET_CHAIN,0,0)
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,2,tp,LOCATION_EXTRA)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,2,tp,LOCATION_GRAVE)
 end
 function c511009508.filter(c)
 	return c:IsFaceup() and c:IsType(TYPE_XYZ)
 end
 function c511009508.spop2(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.IsPlayerAffectedByEffect(tp,59822133) or Duel.GetLocationCount(tp,LOCATION_MZONE)<2 then return end
-	local g=Duel.GetMatchingGroup(c511009508.spfilter2,tp,LOCATION_EXTRA,0,nil,e,tp)
+	local g=Duel.GetMatchingGroup(aux.NecroValleyFilter(c511009508.spfilter2),tp,LOCATION_GRAVE,0,nil,e,tp)
 	if g:GetCount()>=2 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 		local sg=g:Select(tp,2,2,nil)
+		Duel.HintSelection(sg)
 		if Duel.SpecialSummon(sg,0,tp,tp,false,false,POS_FACEUP)==0 then return end
 		local ag=Duel.GetMatchingGroup(c511009508.filter,tp,0,LOCATION_MZONE,nil)
 		local tc=ag:GetFirst()

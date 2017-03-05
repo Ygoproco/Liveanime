@@ -21,7 +21,7 @@ end
 function c511005074.negop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=c:GetEquipTarget()
-	if c:GetFlagEffect(511005074)==0 and tc and Duel.SelectYesNo(tep,aux.Stringid(4001,13)) then
+	if c:GetFlagEffect(511005074)==0 and tc and Duel.SelectEffectYesNo(tp,tc) then
 		Duel.Hint(HINT_CARD,0,tc:GetOriginalCode())
 		if not tc:IsDisabled() then
 			Duel.NegateAttack()

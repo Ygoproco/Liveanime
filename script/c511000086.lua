@@ -69,7 +69,7 @@ function c511000086.activate2(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc and tc:IsRelateToEffect(e) then
 		if tc:IsType(TYPE_PENDULUM) then
-			local token=Duel.CreateToken(tp,tc:GetOriginalCode())
+			local token=Duel.CreateToken(tc:GetOwner(),tc:GetOriginalCode())
 			Duel.MoveToField(token,tp,tp,LOCATION_SZONE,POS_FACEUP,true)
 			Duel.SendtoDeck(tc,nil,-2,REASON_EFFECT)
 		else
