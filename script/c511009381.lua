@@ -1,5 +1,6 @@
---グリーディー・ヴェノム・フュージョン・ドラゴン
+--Greedy Venom Fusion Dragon (Anime)
 --fixed by MLD
+--effect corrected by CCM
 function c511009381.initial_effect(c)
 	--Fusion Proc
 	aux.AddFusionProcFun2(c,aux.FilterBoolFunction(Card.IsFusionSetCard,0x10f3),c511009381.ffilter,true)
@@ -20,7 +21,6 @@ function c511009381.initial_effect(c)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e2:SetCountLimit(1)
-	e2:SetCost(c511009381.atkcost)
 	e2:SetTarget(c511009381.atktg)
 	e2:SetOperation(c511009381.atkop)
 	c:RegisterEffect(e2)
@@ -31,41 +31,9 @@ function c511009381.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e3:SetCode(EVENT_DESTROYED)
 	e3:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
-	e3:SetCost(c511009381.atkcost)
 	e3:SetTarget(c511009381.destg)
 	e3:SetOperation(c511009381.desop)
 	c:RegisterEffect(e3)
-	if not c511009381.global_check then
-		c511009381.global_check=true
-		--Greedy Venom
-		c511009381[0]=true
-		c511009381[1]=true
-		--Greedy Venom Material
-		c511009381[2]=true
-		c511009381[3]=true
-		local ge1=Effect.CreateEffect(c)
-		ge1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-		ge1:SetCode(EVENT_CHAINING)
-		ge1:SetOperation(c511009381.checkop)
-		Duel.RegisterEffect(ge1,0)
-		local ge2=Effect.CreateEffect(c)
-		ge2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-		ge2:SetCode(EVENT_ADJUST)
-		ge2:SetCountLimit(1)
-		ge2:SetOperation(c511009381.clear)
-		Duel.RegisterEffect(ge2,0)
-	end
-end
-function c511009381.checkop(e,tp,eg,ep,ev,re,r,rp)
-	if re and re:GetOwner() and re:GetOwner():GetOriginalCode()==51570882 then
-		c511009381[rp+2]=false
-	end
-end
-function c511009381.clear(e,tp,eg,ep,ev,re,r,rp)
-	c511009381[0]=true
-	c511009381[1]=true
-	c511009381[2]=true
-	c511009381[3]=true
 end
 function c511009381.ffilter(c)
 	return c:IsFusionAttribute(ATTRIBUTE_DARK) and c:IsLevelAbove(8)
@@ -108,17 +76,8 @@ function c511009381.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(c511009381.cfilter,1,nil,tp)
 end
 function c511009381.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsAbleToRemoveAsCost() and c511009381[tp+2] end
+	if chk==0 then return e:GetHandler():IsAbleToRemoveAsCost() end
 	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_COST)
-	c511009381[tp]=false
-	local e1=Effect.CreateEffect(e:GetHandler())
-	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_OATH)
-	e1:SetCode(EFFECT_CANNOT_TRIGGER)
-	e1:SetTargetRange(1,0)
-	e1:SetValue(c511009381.aclimit)
-	e1:SetReset(RESET_PHASE+PHASE_END)
-	Duel.RegisterEffect(e1,tp)
 end
 function c511009381.aclimit(e,re,tp)
 	return re:GetHandler():GetOriginalCode()==51570882
@@ -138,10 +97,14 @@ function c511009381.spop(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()>0 then
 		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
 	end
-end
-function c511009381.atkcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return c511009381[tp] end
-	c511009381[tp+2]=false
+	local e1=Effect.CreateEffect(e:GetHandler())
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e1:SetCode(EFFECT_CANNOT_TRIGGER)
+	e1:SetTargetRange(1,0)
+	e1:SetValue(c511009381.aclimit)
+	e1:SetReset(RESET_PHASE+PHASE_END)
+	Duel.RegisterEffect(e1,tp)
 end
 function c511009381.atktg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(1-tp) and chkc:IsLocation(LOCATION_MZONE) and chkc:IsFaceup() end
