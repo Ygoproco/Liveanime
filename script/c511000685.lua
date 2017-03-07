@@ -16,7 +16,7 @@ function c511000685.filter1(c,e,tp)
 		and c:IsCode(84013237) and c:GetOverlayGroup():GetCount()>=2
 end
 function c511000685.filter2(c,rk,e,tp,mc,code)
-	if c:GetOriginalCode()==6165656 and code~=48995978 then return false end
+	if c.rum_limit_code and code~=c.rum_limit_code then return false end
 	return (c:GetRank()==rk+1 or c:GetRank()==rk+2) and mc:IsCanBeXyzMaterial(c) 
 		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
 end
@@ -44,10 +44,12 @@ function c511000685.activate(e,tp,eg,ep,ev,re,r,rp)
 		Duel.BreakEffect()
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
 		local ou1=ou:Select(tp,1,1,nil)
+		g:GetFirst():SetMaterial(Group.FromCards(tc))
 		Duel.Overlay(g:GetFirst(),ou1)
 		ou=tc:GetOverlayGroup()
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
 		local ou2=ou:Select(tp,1,1,ou1:GetFirst())
+		g:GetNext():SetMaterial(Group.FromCards(tc))
 		Duel.Overlay(g:GetNext(),ou2)
 		g:GetFirst():CompleteProcedure()
 		g:GetNext():CompleteProcedure()
