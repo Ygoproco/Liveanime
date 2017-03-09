@@ -1,6 +1,6 @@
 --coded by Lyris
 --Clock Knight No. 3
-==modified by MLD
+--modified by MLD
 function c511007015.initial_effect(c)
 	--
 	local e1=Effect.CreateEffect(c)
