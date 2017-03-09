@@ -55,7 +55,7 @@ function c511009567.atkcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoGrave(g,REASON_COST)
 end
 function c511009567.cfilter(c)
-	return c:IsSetCard(0xba) and c:IsAbleToRemoveAsCost()
+	return c:IsSetCard(0xba) and c:IsType(TYPE_XYZ) and c:IsAbleToRemoveAsCost()
 end
 function c511009567.atkop(e,tp,eg,ep,ev,re,r,rp)
 		local c=e:GetHandler()
@@ -86,5 +86,12 @@ function c511009567.atcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.Remove(g,POS_FACEUP,REASON_COST)
 end
 function c511009567.atop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
 	Duel.ChainAttack()
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(EFFECT_CANNOT_DIRECT_ATTACK)
+	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+	e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_BATTLE)
+	Duel.GetAttacker():RegisterEffect(e1)
 end
