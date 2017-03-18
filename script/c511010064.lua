@@ -67,7 +67,7 @@ function c511010064.spop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SpecialSummonComplete()
 end
 function c511010064.ifilter(c)
-	return c:IsFaceup() and c:Code(39972130)
+	return c:IsFaceup() and c:IsCode(39972130)
 end
 function c511010064.indcon(e)
 	return Duel.IsExistingMatchingCard(c511010064.ifilter,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,e:GetHandler())
