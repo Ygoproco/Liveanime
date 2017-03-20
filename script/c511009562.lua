@@ -19,11 +19,11 @@ function c511009562.atcon(e,tp,eg,ep,ev,re,r,rp)
 	local d=Duel.GetAttackTarget()
 	if not d then return end
 	if d:IsControler(tp) then
+		e:SetLabelObject(d)
+		return a and d:IsRelateToBattle()
+	elseif a:IsControler(tp) then
 		e:SetLabelObject(a)
 		return d and a:IsRelateToBattle() 
-	elseif a:IsControler(tp) then
-		e:SetLabelObject(d)
-		return a and d:IsRelateToBattle() 
 	end
 	return false
 end
@@ -33,7 +33,7 @@ function c511009562.atkup(e,tp,eg,ep,ev,re,r,rp,chk)
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_UPDATE_ATTACK)
-		e1:SetReset(RESET_EVENT+0x1fe0000+PHASE_STANDBY+RESET_SELF_TURN)
+		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_STANDBY+RESET_SELF_TURN)
 		e1:SetValue(400)
 		tc:RegisterEffect(e1)
 	
