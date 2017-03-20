@@ -24,7 +24,7 @@ c511009469.collection={
 	[14886469]=true;[30494314]=true;[81354330]=true;[86445415]=true;[100000562]=true;
 	[34475451]=true;[40975574]=true;[37132349]=true;[61019812]=true;[19025379]=true;
 	[76547525]=true;[55888045]=true;[97489701]=true;[67030233]=true;[65338781]=true;
-	[45313993]=true;[8706701]=true;[21142671]=true;
+	[45313993]=true;[8706701]=true;[21142671]=true;[66141736]=true;
 }
 function c511009469.filter(c,e,tp)
 	return c:IsFaceup() and (c:IsSetCard(0x3b) or c:IsSetCard(0x1045) or c:IsSetCard(0x89b) or c511009469.collection[c:GetCode()]) 

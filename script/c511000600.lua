@@ -18,8 +18,11 @@ function c511000600.initial_effect(c)
 	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e3)
 end
+function c511000600.cfilter(c,tp)
+	return c:GetSummonPlayer()~=tp
+end
 function c511000600.con(e,tp,eg,ep,ev,re,r,rp)
-	return ep~=tp
+	return eg:IsExists(c511000600.cfilter,1,nil,tp)
 end
 function c511000600.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToGraveAsCost() end
@@ -44,9 +47,7 @@ function c511000600.op(e,tp,eg,ep,ev,re,r,rp)
 	Duel.MoveToField(tc,tp,tp,LOCATION_SZONE,POS_FACEUP,true)
 	Duel.Hint(HINT_CARD,0,tc:GetCode())
 	tc:CreateEffectRelation(te)
-	if not tc:IsHasEffect(EFFECT_REMAIN_FIELD) then
-		tc:CancelToGrave(false)
-	end
+	tc:CancelToGrave(false)
 	if co then co(te,tp,eg,ep,ev,re,r,rp,1) end
 	if tg then tg(te,tp,eg,ep,ev,re,r,rp,1) end
 	Duel.BreakEffect()

@@ -1,6 +1,6 @@
 --Cardian - Sakura ni Maku
 function c511001697.initial_effect(c)
-	c:EnableUnsummonable()
+	c:EnableReviveLimit()
 	--spsummon
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(511001697,0))
@@ -27,7 +27,7 @@ function c511001697.spcon(c,e)
 	if c==nil or not e then return false end
 	local tp=c:GetControler()
 	return Duel.GetLocationCount(tp,LOCATION_MZONE)>-1 and Duel.CheckReleaseGroup(tp,c511001697.filter,1,nil) 
-		and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+		and c:IsCanBeSpecialSummoned(e,0,tp,true,false)
 end
 function c511001697.filter(c)
 	local re=c:GetReasonEffect()
@@ -42,7 +42,7 @@ function c511001697.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c511001697.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>-1 and c:IsCanBeSpecialSummoned(e,0,tp,false,false) 
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>-1 and c:IsCanBeSpecialSummoned(e,0,tp,true,false) 
 		and Duel.IsPlayerCanDraw(tp,1) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,c,1,0,0)
 	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,1)
@@ -50,7 +50,7 @@ end
 function c511001697.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then return end
-	if Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP) then
+	if Duel.SpecialSummon(c,0,tp,tp,true,false,POS_FACEUP)>0 then
 		local g=Duel.GetDecktopGroup(tp,1)
 		local tc=g:GetFirst()
 		Duel.Draw(tp,1,REASON_EFFECT)

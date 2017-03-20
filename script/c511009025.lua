@@ -46,7 +46,7 @@ end
 function c511009025.effcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local g=c:GetMaterial()
-	return c:GetSummonType()==SUMMON_TYPE_FUSION and g:FilterCount(Card.IsPreviousLocation,nil,LOCATION_MZONE)==g:GetCount()
+	return c:GetSummonType()==SUMMON_TYPE_FUSION and g:FilterCount(Card.IsPreviousLocation,nil,LOCATION_ONFIELD)==g:GetCount()
 end
 function c511009025.regop(e,tp,eg,ep,ev,re,r,rp)
 	e:GetHandler():RegisterFlagEffect(511009025,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,1)
