@@ -12,8 +12,8 @@ function c511001180.initial_effect(c)
 end
 function c511001180.atkcon(e,tp,eg,ep,ev,re,r,rp)
 	local a=Duel.GetAttacker()
-	local att=Duel.GetAttackTarget()
-	return ep==tp and (a:IsSetCard(0x1048) or (att and att:IsSetCard(0x1048)))
+	local d=Duel.GetAttackTarget()
+	return ep==tp and ((a:IsSetCard(0x1048) and a:IsControler(1-tp)) or (d and d:IsSetCard(0x1048) and d:IsControler(1-tp)))
 end
 function c511001180.tgfilter(c,code,e,tp)
 	return c:IsCode(code) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)

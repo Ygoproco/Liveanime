@@ -1,8 +1,9 @@
 --CNo.32 海咬龍シャーク・ドレイク・バイス (Anime)
+--fixed by MLD
 function c511010132.initial_effect(c)
 	--xyz summon
 	c:EnableReviveLimit()
-	aux.AddXyzProcedure(c,nil,4,4,c511010132.ovfilter,aux.Stringid(511010132,0))
+	aux.AddXyzProcedure(c,nil,4,4,c511010132.ovfilter,aux.Stringid(49221191,0))
 	--atk/def
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(511010132,1))
@@ -20,7 +21,7 @@ function c511010132.initial_effect(c)
 	e2:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 	e2:SetCode(EFFECT_SELF_DESTROY)
 	e2:SetRange(LOCATION_MZONE)
-	e2:SetCondition(c511010132.condition)
+	e2:SetCondition(c511010132.descon)
 	c:RegisterEffect(e2)
 	--battle indestructable
 	local e6=Effect.CreateEffect(c)
@@ -54,56 +55,44 @@ c511010132.collection={
 	[14306092]=true;[84224627]=true;[511001163]=true;[511001169]=true;[511001858]=true;
 }
 function c511010132.rfilter(c)
-	return c:IsType(TYPE_MONSTER) and (c:IsSetCard(0x2D56) or c:IsSetCard(0x321) or c511010132.collection[c:GetCode()]) and c:IsAbleToRemoveAsCost()
+	return c:IsType(TYPE_MONSTER) and (c:IsSetCard(0x321) or c511010132.collection[c:GetCode()]) and c:IsAbleToRemoveAsCost()
 end
 function c511010132.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():CheckRemoveOverlayCard(tp,1,REASON_COST)
-		and (Duel.IsExistingMatchingCard(c511010132.rfilter,tp,LOCATION_GRAVE,0,1,nil) or e:GetHandler():GetOverlayGroup():IsExists(c511010132.rfilter,1,nil)) end
-	if Duel.IsExistingMatchingCard(c511010132.rfilter,tp,LOCATION_GRAVE,0,1,nil) then
+		and Duel.IsExistingMatchingCard(c511010132.rfilter,tp,LOCATION_GRAVE,0,1,nil) end
 	e:GetHandler():RemoveOverlayCard(tp,1,1,REASON_COST)
-	else 
-	local og=e:GetHandler():GetOverlayGroup()
-	if og:GetCount()>0 then
-		local mg=og:FilterSelect(tp,c511010132.rfilter,1,1,nil)
-			Duel.SendtoGrave(mg,REASON_COST)
-			Duel.RaiseSingleEvent(e:GetHandler(),EVENT_DETACH_MATERIAL,e,0,0,0,0)
-		end
-	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 	local g=Duel.SelectMatchingCard(tp,c511010132.rfilter,tp,LOCATION_GRAVE,0,1,1,nil)
 	Duel.Remove(g,POS_FACEUP,REASON_COST)
-	e:SetLabelObject(g:GetFirst())
-end
-function c511010132.filter(c)
-	return c:IsFaceup() and (c:GetAttack()>0 or c:GetDefense()>0)
+	e:SetLabel(g:GetFirst():GetAttack())
 end
 function c511010132.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) and c511010132.filter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(c511010132.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and chkc:IsFaceup() end
+	if chk==0 then return Duel.IsExistingTarget(Card.IsFaceup,tp,0,LOCATION_MZONE,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-	Duel.SelectTarget(tp,c511010132.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
+	Duel.SelectTarget(tp,Card.IsFaceup,tp,0,LOCATION_MZONE,1,1,nil)
+	Duel.SetTargetParam(e:GetLabel())
+	e:SetLabel(0)
 end
 function c511010132.operation(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	local tr=e:GetLabelObject()
-	if tc:IsRelateToEffect(e) and tc:IsFaceup() then
-		local atk=tc:GetAttack()-tr:GetAttack()
+	local atk=Duel.GetChainInfo(0,CHAININFO_TARGET_PARAM)
+	if tc and tc:IsRelateToEffect(e) and tc:IsFaceup() then
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
-		e1:SetCode(EFFECT_SET_ATTACK_FINAL)
-		e1:SetValue(atk)
+		e1:SetCode(EFFECT_UPDATE_ATTACK)
+		e1:SetValue(-atk)
 		e1:SetReset(RESET_EVENT+0x1fe0000)
 		tc:RegisterEffect(e1)
 	end
 end
-function c511010132.condition(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetLP(tp)>=1000
+function c511010132.descon(e)
+	return Duel.GetLP(e:GetHandlerPlayer())>=1000
 end
 function c511010132.numchk(e,tp,eg,ep,ev,re,r,rp)
-	Duel.CreateToken(tp,84124261)
-	Duel.CreateToken(1-tp,84124261)
+	Duel.CreateToken(tp,49221191)
+	Duel.CreateToken(1-tp,49221191)
 end
 function c511010132.indes(e,c)
-return not c:IsSetCard(0x48)
+	return not c:IsSetCard(0x48)
 end
