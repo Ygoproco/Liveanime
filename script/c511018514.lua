@@ -6,14 +6,14 @@ function c511018514.initial_effect(c)
 	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE)
 	e1:SetCode(EFFECT_SPSUMMON_PROC)
 	e1:SetRange(LOCATION_HAND)
-	e1:SetCondition(c21999001.sprcon)
+	e1:SetCondition(c511018514.sprcon)
 	c:RegisterEffect(e1)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetCode(511001225)
 	c:RegisterEffect(e2)
 end
-function c21999001.sprcon(e,c)
+function c511018514.sprcon(e,c)
 	if c==nil then return true end
 	local tp=c:GetControler()
 	return Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)==0
