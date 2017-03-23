@@ -1,4 +1,4 @@
---Galaxy-Eyes Cipher Dragon
+--Galaxy-Eyes Cipher Dragon (Anime)
 function c511018515.initial_effect(c)
 	--xyz summon
 	aux.AddXyzProcedure(c,nil,8,2)
