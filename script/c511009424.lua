@@ -1,4 +1,5 @@
 --Predaplant Ophrys Scorpio (anime)
+--fixed by MLD
 function c511009424.initial_effect(c)
 	--summon
 	local e1=Effect.CreateEffect(c)
@@ -6,8 +7,7 @@ function c511009424.initial_effect(c)
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCode(EVENT_SUMMON_SUCCESS)
-	e1:SetProperty(EFFECT_FLAG_DELAY)
-	e1:SetCountLimit(1)
+	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
 	e1:SetCost(c511009424.spcost)
 	e1:SetTarget(c511009424.sptg)
 	e1:SetOperation(c511009424.spop)

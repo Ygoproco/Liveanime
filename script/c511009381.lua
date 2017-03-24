@@ -1,6 +1,6 @@
 --Greedy Venom Fusion Dragon (Anime)
---fixed by MLD
 --effect corrected by CCM
+--refixed by MLD
 function c511009381.initial_effect(c)
 	--Fusion Proc
 	aux.AddFusionProcFun2(c,aux.FilterBoolFunction(Card.IsFusionSetCard,0x10f3),c511009381.ffilter,true)
@@ -54,7 +54,7 @@ function c511009381.op(e,tp,eg,ep,ev,re,r,rp)
 		--special summon
 		local e1=Effect.CreateEffect(tc)
 		e1:SetDescription(aux.Stringid(18175965,0))
-		e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_QUICK_O)
+		e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 		e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
 		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
 		e1:SetCode(EVENT_TO_GRAVE)
@@ -80,7 +80,7 @@ function c511009381.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_COST)
 end
 function c511009381.aclimit(e,re,tp)
-	return re:GetHandler():GetOriginalCode()==51570882
+	return re:GetHandler():GetOriginalCode()==511009381
 end
 function c511009381.spfilter(c,e,tp)
 	return c:IsCode(51570882) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
@@ -100,8 +100,8 @@ function c511009381.spop(e,tp,eg,ep,ev,re,r,rp)
 	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e1:SetCode(EFFECT_CANNOT_TRIGGER)
-	e1:SetTargetRange(1,0)
+	e1:SetCode(EFFECT_CANNOT_ACTIVATE)
+	e1:SetTargetRange(1,1)
 	e1:SetValue(c511009381.aclimit)
 	e1:SetReset(RESET_PHASE+PHASE_END)
 	Duel.RegisterEffect(e1,tp)

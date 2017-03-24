@@ -233,6 +233,11 @@ function scard.op(e,tp,eg,ep,ev,re,r,rp)
 	if packopen then e:Reset() return end
 	packopen=true
 	Duel.DisableShuffleCheck()
+	if not Duel.SelectYesNo(1-tp,aux.Stringid(4006,9)) or not Duel.SelectYesNo(tp,aux.Stringid(4006,9)) then
+		local sg=Duel.GetMatchingGroup(Card.IsCode,tp,0x7f,0x7f,nil,511005092)
+		Duel.SendtoDeck(sg,nil,-2,REASON_RULE)
+		return
+	end
 	--Hint
 	Duel.Hint(HINT_CARD,0,s_id)
 	for p=0,1 do

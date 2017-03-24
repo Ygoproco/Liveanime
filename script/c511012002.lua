@@ -26,7 +26,7 @@ function c511012002.initial_effect(c)
 end
 function c511012002.spcfilter(c,e,tp)
 	return c:GetPreviousControler()==tp and c:IsPreviousLocation(LOCATION_ONFIELD) and c:IsCanBeEffectTarget(e) 
-		and (c:IsLocation(LOCATION_SZONE+LOCATION_EXTRA+LOCATION_GRAVE) or (c:IsLocation(LOCATION_REMOVED) and c:IsFaceup()))
+		and (c:IsLocation(LOCATION_SZONE+LOCATION_EXTRA+LOCATION_GRAVE+LOCATION_HAND) or (c:IsLocation(LOCATION_REMOVED) and c:IsFaceup()))
 end
 function c511012002.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
@@ -39,7 +39,7 @@ function c511012002.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c511012002.spcfilterchk(c,e,tp)
 	return c:GetPreviousControler()==tp and c:IsPreviousLocation(LOCATION_ONFIELD) and c:IsRelateToEffect(e) 
-		and (c:IsLocation(LOCATION_SZONE+LOCATION_EXTRA+LOCATION_GRAVE) or (c:IsLocation(LOCATION_REMOVED) and c:IsFaceup()))
+		and (c:IsLocation(LOCATION_SZONE+LOCATION_EXTRA+LOCATION_GRAVE+LOCATION_HAND) or (c:IsLocation(LOCATION_REMOVED) and c:IsFaceup()))
 		and not Duel.GetFieldCard(tp,c:GetPreviousLocation(),c:GetPreviousSequence())
 end
 function c511012002.spop(e,tp,eg,ep,ev,re,r,rp)
@@ -50,8 +50,6 @@ function c511012002.spop(e,tp,eg,ep,ev,re,r,rp)
 		g:KeepAlive()
 		--spsummon
 		local e1=Effect.CreateEffect(c)
-		e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
-		e1:SetDescription(aux.Stringid(45894482,0))
 		e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
 		e1:SetCode(EVENT_CUSTOM+511012002)
 		e1:SetLabelObject(g)
@@ -75,7 +73,7 @@ function c511012002.retop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=g:GetFirst()
 	while tc do
 		local seq=tc:GetPreviousSequence()
-		Duel.MoveToField(tc,tp,tc:GetPreviousControler(),tc:GetPreviousLocation(),tc:GetPreviousPosition(),true)
+		Duel.MoveToField(tc,tp,tp,tc:GetPreviousLocation(),tc:GetPreviousPosition(),true)
 		if tc:GetSequence()~=seq then
 			Duel.MoveSequence(tc,seq)
 		end
