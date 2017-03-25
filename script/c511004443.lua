@@ -1,0 +1,96 @@
+--Vulcan Dragni the Cubic King (movie)
+function c511004443.initial_effect(c)
+	--spsummon
+	local e1=Effect.CreateEffect(c)
+	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e1:SetType(EFFECT_TYPE_QUICK_O)
+	e1:SetCode(EVENT_FREE_CHAIN)
+	e1:SetRange(LOCATION_HAND)
+	e1:SetCountLimit(1)
+	e1:SetCondition(c511004443.condition)
+	e1:SetTarget(c511004443.target)
+	e1:SetOperation(c511004443.operation)
+	c:RegisterEffect(e1)
+	--damage
+	local e2=Effect.CreateEffect(c)
+	e2:SetCategory(CATEGORY_DAMAGE)
+	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
+	e2:SetTarget(c511004443.target0)
+	e2:SetOperation(c511004443.operation0)
+	c:RegisterEffect(e2)
+	--atk update
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_SINGLE)
+	e3:SetCode(EFFECT_SET_BASE_ATTACK)
+	e3:SetValue(function (e) return 800*e:GetHandler():GetOverlayGroup():FilterCount(Card.IsType,nil,TYPE_MONSTER) end)
+	c:RegisterEffect(e3)
+	--add effect
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e4:SetCode(EVENT_BATTLED)
+	e4:SetTarget(c511004443.target1)
+	e4:SetOperation(c511004443.operation1)
+	c:RegisterEffect(e4)
+end
+function c511004443.condition(e,tp,eg,ev,ep,re,r,rp)
+	return Duel.GetTurnPlayer()==tp
+end
+function c511004443.filter(c,sc)
+	return c:IsType(TYPE_MONSTER) and (c:IsSetCard(0x10e3) or c:IsCode(15610297)) and c:IsCanBeXyzMaterial(sc)
+end
+function c511004443.target(e,tp,eg,ev,ep,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(c511004443.filter,tp,LOCATION_MZONE,0,2,nil,e:GetHandler()) and e:GetHandler():IsCanBeSpecialSummoned(e,SUMMON_TYPE_SPECIAL,tp,true,false) end
+	local tg=Duel.SelectMatchingCard(tp,c511004443.filter,tp,LOCATION_MZONE,0,2,2,nil,e:GetHandler())
+	Duel.SetTargetCard(tg)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,e:GetHandler(),1,0,0)
+end
+function c511004443.operation(e,tp,eg,ev,ep,re,r,rp)
+	local c=e:GetHandler()
+	local tg=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
+	if tg and tg:GetCount()>0 then
+		local mg=tg:Clone()
+		local tc=tg:GetFirst()
+		while tc do
+			if tc:GetOverlayCount()~=0 then mg:Merge(tc:GetOverlayGroup()) end
+			tc=tg:GetNext()
+		end
+		c:SetMaterial(mg)
+		Duel.Overlay(c,mg)
+		Duel.SpecialSummon(c,SUMMON_TYPE_SPECIAL,tp,tp,true,false,POS_FACEUP)
+	end
+end
+function c511004443.target0(e,tp,eg,ev,ep,re,r,rp,chk)
+	if chk==0 then return true end
+	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,0,0,1-tp,800)
+end
+function c511004443.operation0(e,tp,eg,ev,ep,re,r,rp)
+	if e:GetHandler():IsRelateToEffect(e) then
+		Duel.Damage(1-tp,800,REASON_EFFECT)
+	end
+end
+function c511004443.filter1(c)
+	return c:IsAbleToHand() and c:IsCode(3775068)
+end
+function c511004443.target1(e,tp,eg,ev,ep,re,r,rp,chk)
+	local c=e:GetHandler()
+	if chk==0 then return c:IsAbleToHand() and Duel.IsExistingMatchingCard(c511004443.filter1,tp,LOCATION_DECK,0,1,nil) end
+	local tg=Duel.SelectTarget(tp,c511004443.filter1,tp,LOCATION_DECK,0,1,1,nil)
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,tg:AddCard(c),2,0,0)
+end
+function c511004443.spfilter(c,e,tp)
+	return c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_SPECIAL,tp,true,false) and c:IsType(TYPE_MONSTER) and (c:IsSetCard(0x10e3) or c:IsCode(15610297))
+end
+function c511004443.operation1(e,tp,eg,ev,ep,re,r,rp)
+	local tc=Duel.GetFirstTarget()
+	local c=e:GetHandler()
+	local mg=c:GetOverlayGroup()
+	if tc and tc:IsRelateToEffect(e) and Duel.SendtoHand(c,nil,REASON_EFFECT) then
+		Duel.SendtoHand(tc,nil,REASON_EFFECT)
+		local count=mg:GetCount()
+		mg=mg:Filter(c511004443.spfilter,nil,e,tp)
+		if mg:GetCount()<count then return end
+		if Duel.GetLocationCount(tp,LOCATION_MZONE)<mg:GetCount() or (Duel.IsPlayerAffectedByEffect(tp,59822133) and mg:GetCount()>1) then return end
+		Duel.SpecialSummon(mg,SUMMON_TYPE_SPECIAL,tp,tp,true,false,POS_FACEUP)
+	end
+end

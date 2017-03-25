@@ -41,7 +41,7 @@ function c450000354.condition(e,tp,eg,ev,ep,re,r,rp)
 	return Duel.IsExistingMatchingCard(c450000354.filterloli,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil,nil)
 end
 function c450000354.filter(c,e,tp)
-	return c:IsType(TYPE_MONSTER) and c:IsFaceup() and not c:IsImmuneToEffect(e)
+	return c:IsType(TYPE_MONSTER) and c:IsFaceup() and not c:IsImmuneToEffect(e) and not c:IsDisabled()
 end
 function c450000354.target(e,tp,eg,ev,ep,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c450000354.filter,tp,0,LOCATION_ONFIELD,1,nil,e,tp) end
