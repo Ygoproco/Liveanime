@@ -39,20 +39,22 @@ function c511000685.activate(e,tp,eg,ep,ev,re,r,rp)
 	if ou:GetCount()<2 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local g=Duel.SelectMatchingCard(tp,c511000685.filter2,tp,LOCATION_EXTRA,0,2,2,nil,tc:GetRank(),e,tp,tc,tc:GetCode())
-	if Duel.SpecialSummonStep(g:GetFirst(),SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)~=0 and
-		Duel.SpecialSummonStep(g:GetNext(),SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)~=0 then
+	local tc1=g:GetFirst()
+	local tc2=g:GetNext()
+	if Duel.SpecialSummonStep(tc1,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)~=0 and
+		Duel.SpecialSummonStep(tc2,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)~=0 then
 		Duel.BreakEffect()
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
 		local ou1=ou:Select(tp,1,1,nil)
-		g:GetFirst():SetMaterial(Group.FromCards(tc))
-		Duel.Overlay(g:GetFirst(),ou1)
+		tc1:SetMaterial(Group.FromCards(tc))
+		Duel.Overlay(tc1,ou1)
 		ou=tc:GetOverlayGroup()
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
 		local ou2=ou:Select(tp,1,1,ou1:GetFirst())
-		g:GetNext():SetMaterial(Group.FromCards(tc))
-		Duel.Overlay(g:GetNext(),ou2)
-		g:GetFirst():CompleteProcedure()
-		g:GetNext():CompleteProcedure()
+		tc2:SetMaterial(Group.FromCards(tc))
+		Duel.Overlay(tc2,ou2)
+		tc1:CompleteProcedure()
+		tc2:CompleteProcedure()
 	end
 	Duel.SpecialSummonComplete()
 end
