@@ -48,7 +48,7 @@ function c511004441.operation(e,tp,eg,ev,ep,re,r,rp)
 		local mg=tg:Clone()
 		local tc=tg:GetFirst()
 		while tc do
-			if tc:GetOverlayCount()~=0 then mg:Merge(tc:GetOverlayGroup()) end
+			if tc:GetOverlayCount()~=0 then Duel.SendtoGrave(tc:GetOverlayGroup(),REASON_RULE) end
 			tc=tg:GetNext()
 		end
 		c:SetMaterial(mg)
