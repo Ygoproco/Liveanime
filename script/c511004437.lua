@@ -14,7 +14,7 @@ function c511004437.initial_effect(c)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetCode(EFFECT_SET_BASE_ATTACK)
-	e2:SetValue(function (e) return 800*e:GetHandler():GetOverlayGroup():FilterCount(Card.IsType,nil,TYPE_MONSTER) end)
+	e2:SetValue(function (e) return 1000*e:GetHandler():GetOverlayGroup():FilterCount(Card.IsType,nil,TYPE_MONSTER) end)
 	c:RegisterEffect(e2)
 	--battle destroying
 	local e3=Effect.CreateEffect(c)
@@ -41,7 +41,7 @@ function c511004437.operation(e,tp,eg,ev,ep,re,r,rp)
 		local mg=tg:Clone()
 		local tc=tg:GetFirst()
 		while tc do
-			if tc:GetOverlayCount()~=0 then mg:Merge(tc:GetOverlayGroup()) end
+			if tc:GetOverlayCount()~=0 then Duel.SendtoGrave(tc:GetOverlayGroup(),REASON_RULE) end
 			tc=tg:GetNext()
 		end
 		c:SetMaterial(mg)
