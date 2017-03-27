@@ -10,7 +10,7 @@ c420.OCGAlligator={
 [66451379]=true;
 }
 function c420.IsAlligator(c)
-	return c:IsSetCard(0x1310) or c420.OCGAlligator[c:GetCode()]
+	return c:IsSetCard(0x41e) or c420.OCGAlligator[c:GetCode()]
 end
 -- Angel (archetype)
 c420.OCGAngel={
@@ -22,7 +22,10 @@ c420.OCGAngel={
 [96470883]=true;
 }
 function c420.IsAngel(c)
-	return c:IsSetCard(0x1407) or c420.OCGAngel[c:GetCode()] or c:IsSetCard(0xef) or c:IsSetCard(86)
+	return c:IsSetCard(0x1407) or c420.OCGAngel[c:GetCode()] or c:IsSetCard(0xef) or c:IsSetCard(0x86)
+end
+function c420.IsAngelFusion(c)
+	return c:IsFusionSetCard(0x1407) or c420.OCGAngel[c:GetFusionCode()] or c:IsFusionSetCard(0xef) or c:IsFusionSetCard(0x86)
 end
 -- Anti
 c420.OCGAnti={
@@ -107,7 +110,10 @@ c511009141.OCGCelestial={
 	[69865139]=true;[25472513]=true;
 }
 function c420.IsCelestial(c)
-	return c:IsSetCard(0x211) or c420.OCGCelestial[c:GetCode()]
+	return c:IsSetCard(0x2407) or c420.OCGCelestial[c:GetCode()]
+end
+function c420.IsCelestialFusion(c)
+	return c:IsFusionSetCard(0x2407) or c420.OCGCelestial[c:GetFusionCode()]
 end
 -- Champion
 c511009141.OCGChampion={
@@ -182,6 +188,9 @@ c511002014.earth_collection={
 function c420.IsEarth(c)
 	return c:IsSetCard(0x21f) or c420.OCGEarth[c:GetCode()] or c420.IsEarthbound(c)
 end
+function c420.IsEarthFusion(c)
+	return c:IsFusionSetCard(0x21f) or c420.OCGEarth[c:GetFusionCode()] or c420.IsEarthboundFusion(c)
+end
 -- Earthbound
 c511009329.OCGEarthbound={
 [67105242]=true;
@@ -190,6 +199,10 @@ c511009329.OCGEarthbound={
 function c420.IsEarthbound(c)
 	return c:IsSetCard(0x121f) or c420.OCGEarthbound[c:GetCode()] 
 	or c:IsSetCard(0x21)
+end
+function c420.IsEarthboundFusion(c)
+	return c:IsFusionSetCard(0x121f) or c420.OCGEarthbound[c:GetFusionCode()] 
+	or c:IsFusionSetCard(0x21)
 end
 -- Elf
 c511004108.OCGElf={
@@ -248,6 +261,9 @@ c420.OCGGoyo={
 }
 function c420.IsGoyo(c)
 	return c:IsSetCard(0x204) or c420.OCGGoyo[c:GetCode()] 
+end
+function c420.IsGoyoFusion(c)
+	return c:IsFusionSetCard(0x204) or c420.OCGGoyo[c:GetFusionCode()] 
 end
 -- Hand (archetype)
 c420.OCGHand={
@@ -363,7 +379,9 @@ c420.OCGMelodiousSongstress={
 function c420.IsMelodiousSongtress(c)
 	return c:IsSetCard(0x209b) or c420.OCGMelodiousSongstress[c:GetCode()] 
 end
-
+function c420.IsMelodiousSongtressFusion(c)
+	return c:IsFusionSetCard(0x209b) or c420.OCGMelodiousSongstress[c:GetFusionCode()] 
+end
 -- Mosquito
 c420.OCGMosquito={
 	[33695750]=true;[50074522]=true;[17285476]=true;
@@ -460,14 +478,27 @@ function c420.IsShining(c)
 end
 -- Sky
 function c420.IsSky(c)
-	return (c:IsSetCard(0x407) or c420.OCGSky[c:GetCode()]) or c420.IsAngel(c)
+	return (c:IsSetCard(0x407) 
+	or c420.OCGSky[c:GetCode()]) 
+	or c420.IsAngel(c) 
+	or c420.IsCelestial(c) 
+	or c:IsSetCard(0xf6)
+	or c:IsSetCard(0x3042)
+end
+function c420.IsSkyFusion(c)
+	return (c:IsFusionSetCard(0x407) 
+	or c420.OCGSky[c:GetFusionCode()]) 
+	or c420.IsAngelFusion(c) 
+	or c420.IsCelestialFusion(c) 
+	or c:IsFusionSetCard(0xf6)
+	or c:IsFusionSetCard(0x3042)
 end
 -- Slime
 function c420.IsSlime(c)
 	return (c:IsSetCard(0x207) or c420.OCGSlime[c:GetCode()]) 
 end
 -- Sphere
-c420.OCGRed={
+c420.OCGSphere={
 [60202749]=true;[75886890]=true;
 [32559361]=true;[14466224]=true;[82693042]=true;
 [26302522]=true;[29552709]=true;[60417395]=true;
@@ -480,6 +511,9 @@ end
 -- Spirit (archetype)
 function c420.IsSpirit(c)
 	return (c:IsSetCard(0x414) or c420.OCGSpirit[c:GetCode()]) 
+end
+function c420.IsSpiritFusion(c)
+	return (c:IsFusionSetCard(0x414) or c420.OCGSpirit[c:GetFusionCode()]) 
 end
 -- Starship
 function c420.IsStarship(c)
@@ -544,7 +578,7 @@ function c420.IsYomi(c)
 	return (c:IsSetCard(0x437) or c420.OCGYomi[c:GetCode()]) 
 end
 -- Yubel (archetype)
-c420.OCGTachyonDragon={
+c420.OCGYubel={
 -- Yubel
 -- Yubel terror
 -- Yubel nighmare
