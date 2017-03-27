@@ -17,8 +17,7 @@ function c511000685.filter1(c,e,tp)
 end
 function c511000685.filter2(c,rk,e,tp,mc,code)
 	if c.rum_limit_code and code~=c.rum_limit_code then return false end
-	return (c:GetRank()==rk+1 or c:GetRank()==rk+2) and mc:IsCanBeXyzMaterial(c) 
-		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
+	return (c:GetRank()==rk+1 or c:GetRank()==rk+2) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
 end
 function c511000685.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_MZONE) and c511000685.filter1(chkc,e,tp) end
