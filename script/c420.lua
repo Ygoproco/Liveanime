@@ -22,10 +22,10 @@ c420.OCGAngel={
 [96470883]=true;
 }
 function c420.IsAngel(c)
-	return c:IsSetCard(0x1407) or c420.OCGAngel[c:GetCode()] or c:IsSetCard(0xef) or c:IsSetCard(0x86)
+	return c:IsSetCard(0x1407) or c420.OCGAngel[c:GetCode()] or c:IsSetCard(0xef) 
 end
 function c420.IsAngelFusion(c)
-	return c:IsFusionSetCard(0x1407) or c420.OCGAngel[c:GetFusionCode()] or c:IsFusionSetCard(0xef) or c:IsFusionSetCard(0x86)
+	return c:IsFusionSetCard(0x1407) or c420.OCGAngel[c:GetFusionCode()] or c:IsFusionSetCard(0xef)
 end
 -- Anti
 c420.OCGAnti={
@@ -42,7 +42,7 @@ c420.OCGAssassin={
 [77558536]=true;
 }
 function c420.IsAssassin(c)
-	return c:IsSetCard(0x41e) or c420.OCGAssassin[c:GetCode()]
+	return c:IsSetCard(0x41f) or c420.OCGAssassin[c:GetCode()]
 end
 -- Astral
 c420.OCGAstral={
@@ -242,7 +242,7 @@ end
 function c420.IsForest(c)
 	return c:IsSetCard(0x308) or c420.OCGForest[c:GetCode()] 
 end
--- Fossil
+-- Fossil (not finished)
 function c420.IsFossil(c)
 	return c:IsSetCard(0x1304) or c420.OCGFossil[c:GetCode()] 
 end
@@ -287,7 +287,7 @@ c511009061.OCGHell={
 function c420.IsHell(c)
 	return c:IsSetCard(0x21b) or c420.OCGHell[c:GetCode()] 
 end
--- Heraldic
+-- Heraldic (not finished)
 function c420.IsHeraldic(c)
 	return c:IsSetCard(0x427) or c420.OCGHeraldic[c:GetCode()]
 end
@@ -298,7 +298,7 @@ c511009061.OCGHeraldic={
 function c420.IsHeraldic(c)
 	return c:IsSetCard(0x428) or c420.OCGHeraldic[c:GetCode()] or c:IsSetCard(0x76) 
 end
--- Inu
+-- Inu (not finished)
 
 -- Ivy
 c511009061.OCGIvy={
@@ -318,12 +318,12 @@ end
 function c420.IsJutte(c)
 	return c:IsSetCard(0x416) or c:IsCode(60410769)
 end
--- King
+-- King (not finished)
 function c420.IsKing(c)
 	return c:IsSetCard(0x21a) or c420.OCGKing[c:GetCode()] 
 	or c420.IsChampion(c)
 end
--- Knight
+-- Knight (not finished)
 function c420.IsKnight(c)
 	return c:IsSetCard(0x416) 
 end
@@ -346,8 +346,17 @@ function c420.IsKoala(c)
 	return c:IsSetCard(0x42a) or c420.OCGKoala[c:GetCode()]
 end
 -- Lamp
+c420.OCGLandstar={
+[54912977]=true;
+[97590747]=true;
+[98049915]=true;
+[99510761]=true;
+[91584698]=true;
+[42002073]=true;
+[63545455]=true;
+}
 function c420.IsLamp(c)
-	return c:IsSetCard(0x400) 
+	return c:IsSetCard(0x400) or c420.OCGLamp[c:GetCode()] 
 end
 -- Landstar
 c420.OCGLandstar={
@@ -368,7 +377,7 @@ end
 function c420.IsMagnet(c)
 	return c:IsSetCard(0x800) or c:IsSetCard(0x2066)
 end
--- Mantis
+-- Mantis (not finished)
 function c420.IsMantis(c)
 	return c:IsSetCard(0x2048) or c420.OCGMantis[c:GetCode()] or c:IsCode(58818411)
 end
@@ -389,15 +398,15 @@ c420.OCGMosquito={
 function c420.IsMosquito(c)
 	return c:IsSetCard(0x21d) or c420.OCGMosquito[c:GetCode()] 
 end
--- Motor
+-- Motor (not finished)
 function c420.IsMotor(c)
 	return c:IsSetCard(0x219) or c420.OCGMotor[c:GetCode()] or c:IsCode(82556058)
 end
--- Neko
+-- Neko (not finished)
 
--- Number 39: Utopia (archetype)
+-- Number 39: Utopia (archetype) (not finished)
 
--- Number C39: Utopia Ray (archetype)
+-- Number C39: Utopia Ray (archetype) (not finished)
 
 -- Number S
 c420.OCGNumberS={
@@ -406,7 +415,7 @@ c420.OCGNumberS={
 function c420.IsNumberS(c)
 	return c:IsSetCard(0x2048) or c420.OCGNumberS[c:GetCode()] 
 end
--- Numeron ヌメロン
+-- Numeron ヌメロン 
 c420.OCGNumeron={
 	[57314798]=true;[48333324]=true;[71345905]=true;
 }
@@ -417,7 +426,7 @@ end
 function c420.IsPaleozoic(c)
 	return c:IsSetCard(0x8304) or c420.OCGPaleozoic[c:GetCode()] 
 end
--- Papillon
+-- Papillon (not finished)
 function c420.IsPapillon(c)
 	return c:IsSetCard(0x312) or c420.OCGPapillon[c:GetCode()] 
 end
@@ -428,19 +437,19 @@ c420.OCGParasite={
 function c420.IsParasite(c)
 	return c:IsSetCard(0x410) or c420.OCGParasite[c:GetCode()] 
 end
--- Pixie
+-- Pixie (not finished)
 function c420.IsPixie(c)
 	return c:IsSetCard(0x413) or c420.OCGPixie[c:GetCode()] 
 end
--- Priestess
+-- Priestess (not finished)
 function c420.IsPriestess(c)
 	return c:IsSetCard(0x404) or c420.OCGPriestess[c:GetCode()] 
 end
--- Puppet
+-- Puppet (not finished)
 function c420.IsPuppet(c)
 	return c:IsSetCard(0x42d) or c:IsSetCard(0x83) or c420.OCGPuppet[c:GetCode()] 
 end
--- Raccoon
+-- Raccoon (not finished)
 function c420.IsRaccoon(c)
 	return c:IsSetCard(0x42e) or c420.OCGRaccoon[c:GetCode()] 
 end
@@ -456,27 +465,27 @@ c420.OCGRed={
 function c420.IsRed(c)
 	return c:IsSetCard(0x42f) or c:IsSetCard(0x3b) or c:IsSetCard(0x1045) or c420.OCGRed[c:GetCode()] 
 end
--- Rose
+-- Rose (not finished)
 function c420.IsRose(c)
 	return c:IsSetCard(0x218) or c420.OCGRose[c:GetCode()] 
 end
--- Seal
+-- Seal (not finished)
 function c420.IsSeal(c)
 	return c:IsSetCard(0x430) or c420.OCGSeal[c:GetCode()] 
 end
--- Shaman
+-- Shaman (not finished)
 function c420.IsShaman(c)
 	return c:IsSetCard(0x309) or c420.OCGShaman[c:GetCode()] 
 end
--- Shark (archetype)
-function c420.IsShark(c)
+-- Shark (archetype)(not finished)
+function c420.IsShark(c) 
 	return c:IsSetCard(0x321) or c420.OCGShark[c:GetCode()] 
 end
--- Shining
+-- Shining (not finished)
 function c420.IsShining(c)
 	return (c:IsSetCard(0x311) or c420.OCGShining[c:GetCode()]) 
 end
--- Sky
+-- Sky (not finished)
 function c420.IsSky(c)
 	return (c:IsSetCard(0x407) 
 	or c420.OCGSky[c:GetCode()]) 
@@ -493,7 +502,7 @@ function c420.IsSkyFusion(c)
 	or c:IsFusionSetCard(0xf6)
 	or c:IsFusionSetCard(0x3042)
 end
--- Slime
+-- Slime (not finished)
 function c420.IsSlime(c)
 	return (c:IsSetCard(0x207) or c420.OCGSlime[c:GetCode()]) 
 end
@@ -508,41 +517,24 @@ c420.OCGSphere={
 function c420.IsSphere(c)
 	return (c:IsSetCard(0x417) or c420.OCGSphere[c:GetCode()]) 
 end
--- Spirit (archetype)
+-- Spirit (archetype) (not finished)
 function c420.IsSpirit(c)
 	return (c:IsSetCard(0x414) or c420.OCGSpirit[c:GetCode()]) 
 end
 function c420.IsSpiritFusion(c)
 	return (c:IsFusionSetCard(0x414) or c420.OCGSpirit[c:GetFusionCode()]) 
 end
--- Starship
+-- Starship (not finished)
 function c420.IsStarship(c)
 	return (c:IsSetCard(0x431) or c420.OCGStarship[c:GetCode()]) 
 end
--- Statue
+-- Statue (not finished)
 function c420.IsStatue(c)
 	return (c:IsSetCard(0x21e) or c420.OCGStatue[c:GetCode()]) 
 end
 
--- Supreme King
-c420.OCGSupremeKing={
--- Odd-Eyes Raging Dragon 
--- Odd-Eyes Rebellion Dragon
--- Supreme King Dragon Zarc
--- Number C80: Requiem in Berserk
--- Number 80: Rhapsody in Berserk
--- D/D/D Supreme King Kaiser
--- King of Yamimakai
-[86238081]=true;[45627618]=true;[13331639]=true;
-[69455834]=true;[20563387]=true;[93568288]=true;
-[44186624]=true;
-}
-function c420.IsSupremeKing(c)
-	return (c:IsSetCard(0x1fb) or c420.OCGSupremeKing[c:GetCode()]) 
-end
 -- Tachyon
 c420.OCGTachyon={
-
 -- Tachyon Transmigrassion
 -- Tachyon Chaos Hole
 [8038143]=true;
@@ -570,10 +562,31 @@ function c420.IsToyArcV(c)
 	return c:IsSetCard(0x435) or c:IsSetCard(0xad) or c420.OCGToyArcV[c:GetCode()] 
 end
 -- White
+c420.OCGWhite={
+[1571945]=true;
+[3557275]=true;
+[9433350]=true;
+[13429800]=true;
+[15150365]=true;
+[20193924]=true;
+[24644634]=true;
+[32269855]=true;
+[38517737]=true;
+[73398797]=true;
+[73891874]=true;
+[79473793]=true;
+[79814787]=true;
+[89631139]=true;
+[92409659]=true;
+[98024118]=true;
+[22804410]=true;
+[71039903]=true;
+[84812868]=true;
+}
 function c420.IsWhite(c)
 	return (c:IsSetCard(0x202) or c420.OCGWhite[c:GetCode()]) 
 end
--- Yomi
+-- Yomi (not finished)
 function c420.IsYomi(c)
 	return (c:IsSetCard(0x437) or c420.OCGYomi[c:GetCode()]) 
 end
