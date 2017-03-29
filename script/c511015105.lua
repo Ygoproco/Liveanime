@@ -120,7 +120,7 @@ function c511015105.filter4(c,e,tp,syn,odd)
 	local code=c:GetOriginalCode()
 	local mt=_G["c" .. code]
 	
-	return c:IsType(TYPE_SYNCHRO) --and c:IsType(TYPE_PENDULUM)
+	return c:IsType(TYPE_SYNCHRO) and c:IsType(TYPE_PENDULUM)
 		and c:GetLevel()==syn:GetSynchroLevel(c)+odd:GetSynchroLevel(c) 
 		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_SYNCHRO,tp,false,false)
 		and mt.sync and mt.minntct and mt.minntct==1 
