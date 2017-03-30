@@ -107,7 +107,7 @@ function c511015106.activate(e,tp,eg,ep,ev,re,r,rp)
 		--destroy
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP)
+		e1:SetProperty(EFFECT_FLAG_DELAY)
 		e1:SetRange(LOCATION_SZONE)
 		e1:SetCode(EVENT_LEAVE_FIELD)
 		e1:SetCondition(c511015106.descon)
