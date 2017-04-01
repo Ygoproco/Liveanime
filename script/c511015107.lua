@@ -80,7 +80,7 @@ function c511015107.ArmFilter(c,lv,syncard)
 		and (lv2==0 or g:CheckWithSumEqual(Card.GetSynchroLevel,lv2,mt.minntct-1,mt.maxntct-1,syncard))
 end
 function c511015107.filter(c,e,tp)
-	return c:IsType(TYPE_SYNCHRO) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_SYNCHRO,tp,true,false) c:IsSetCard(0x10af)
+	return c:IsType(TYPE_SYNCHRO) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_SYNCHRO,tp,true,false) and c:IsSetCard(0x10af)
 		and Duel.IsExistingMatchingCard(c511015107.matfilter1,tp,LOCATION_ONFIELD+LOCATION_HAND,0,1,nil,c,e)
 end
 function c511015107.matfilter1(c,syncard,e)
