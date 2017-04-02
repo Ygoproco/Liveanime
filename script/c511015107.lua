@@ -67,7 +67,7 @@ function c511015107.initial_effect(c)
 	e1:SetOperation(c511015107.activate)
 	c:RegisterEffect(e1)
 end
-function c511015107.ArmFilter(c,lv,syncard)
+function c511015107.ArmFilter(c,lv,syncard,onField)
 	local code=syncard:GetOriginalCode()
 	local mt=_G["c" .. code]
 	
@@ -76,7 +76,21 @@ function c511015107.ArmFilter(c,lv,syncard)
 	
 	local lv2 = lv-c:GetSynchroLevel(syncard)
 	
-	return c:IsCode(47198668) and mt.nontuner_filter and mt.nontuner_filter(c)
+	local b = true
+	if onField then b = c:IsOnField() end
+	return b and c:IsCode(47198668) and mt.nontuner_filter and mt.nontuner_filter(c)
+		and (lv2==0 or g:CheckWithSumEqual(Card.GetSynchroLevel,lv2,mt.minntct-1,mt.maxntct-1,syncard))
+end
+function c511015107.fieldFilter(c,lv,syncard)
+	local code=syncard:GetOriginalCode()
+	local mt=_G["c" .. code]
+	
+	local g = Duel.GetMatchingGroup(c511015107.matfilter2,tp,LOCATION_ONFIELD+LOCATION_HAND,0,nil,syncard)
+	g:RemoveCard(c)
+	
+	local lv2 = lv-c:GetSynchroLevel(syncard)
+	
+	return c:IsOnField() and mt.nontuner_filter and mt.nontuner_filter(c)
 		and (lv2==0 or g:CheckWithSumEqual(Card.GetSynchroLevel,lv2,mt.minntct-1,mt.maxntct-1,syncard))
 end
 function c511015107.filter(c,e,tp)
@@ -87,22 +101,29 @@ function c511015107.matfilter1(c,syncard,e)
 	local code=syncard:GetOriginalCode()
 	local mt=_G["c" .. code]
 	
+	local tp = e:GetHandler():GetControler()
+	
 	local zone = LOCATION_ONFIELD+LOCATION_HAND
-	if Duel.GetLocationCount(e:GetHandler():GetControler(),LOCATION_MZONE)==0 and not c:IsLocation(LOCATION_MZONE) then
-		zone = LOCATION_MZONE
-	end
+	
+	local fieldFull = Duel.GetLocationCount(tp,LOCATION_MZONE)==0 and not c:IsLocation(LOCATION_MZONE)
 	
 	local g = Duel.GetMatchingGroup(c511015107.matfilter2,tp,zone,0,nil,syncard) 
 	local lv = syncard:GetLevel()-c:GetSynchroLevel(syncard)
 	if e:GetHandler()==c then
 		lv=lv-2
-	
-		return g:IsExists(c511015107.ArmFilter,1,nil,lv,syncard)
+
+		return g:IsExists(c511015107.ArmFilter,1,nil,lv,syncard,fieldFull)
 			and mt.tuner_filter and mt.tuner_filter(c)
 	else	
-		return (c:IsLocation(LOCATION_HAND) or c:IsFaceup()) 
-			and c:IsType(TYPE_TUNER) and mt.tuner_filter and mt.tuner_filter(c)
-			and g:CheckWithSumEqual(Card.GetSynchroLevel,lv,mt.minntct,mt.maxntct,syncard)
+		if fieldFull then
+			return (c:IsLocation(LOCATION_HAND) or c:IsFaceup()) 
+				and c:IsType(TYPE_TUNER) and mt.tuner_filter and mt.tuner_filter(c)
+				and g:IsExists(c511015107.fieldFilter,1,nil,lv,syncard)
+		else	
+			return (c:IsLocation(LOCATION_HAND) or c:IsFaceup()) 
+				and c:IsType(TYPE_TUNER) and mt.tuner_filter and mt.tuner_filter(c)
+				and g:CheckWithSumEqual(Card.GetSynchroLevel,lv,mt.minntct,mt.maxntct,syncard)
+		end
 	end
 end
 function c511015107.matfilter2(c,syncard)
@@ -130,16 +151,24 @@ function c511015107.activate(e,tp,eg,ep,ev,re,r,rp)
 		local mt=_G["c" .. code]
 		local gMat = Duel.GetMatchingGroup(c511015107.matfilter2,tp,LOCATION_ONFIELD+LOCATION_HAND,0,nil,tc) 
 		
+		local fieldFull = Duel.GetLocationCount(tp,LOCATION_MZONE)==0 and not matTun:IsLocation(LOCATION_MZONE)
+		
 		local lv = -1
 		local matArm = nil
 		if matTun == e:GetHandler() then
 			lv = tc:GetLevel()-2
 			
-			matArm=gMat:FilterSelect(tp,c511015107.ArmFilter,1,1,nil,lv,tc):GetFirst()
+			matArm=gMat:FilterSelect(tp,c511015107.ArmFilter,1,1,nil,lv,tc,fieldFull):GetFirst()
 			gMat:RemoveCard(matArm)
 			lv = lv-matArm:GetSynchroLevel(tc)
 		else
 			lv = tc:GetLevel()-matTun:GetSynchroLevel(tc)
+			
+			if fieldFull then
+				matArm=gMat:FilterSelect(tp,c511015107.fieldFilter,1,1,nil,lv,tc):GetFirst()
+				gMat:RemoveCard(matArm)
+				lv = lv-matArm:GetSynchroLevel(tc)
+			end
 		end
 		
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SMATERIAL)
