@@ -52,7 +52,7 @@ function c511009587.initial_effect(c)
 	c:RegisterEffect(e5)
 end
 function c511009587.op(e,tp,eg,ep,ev,re,r,rp)
-	if and ep==tp and e:GetHandler():GetFlagEffect(511009587)~=0 then
+	if ep==tp and e:GetHandler():GetFlagEffect(511009587)==0 then
 		e:GetHandler():RegisterFlagEffect(511009587,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,1)
 		Duel.ChangeBattleDamage(tp,0)
 	end
@@ -70,15 +70,15 @@ end
 function c511009587.atkcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():GetFlagEffect(511009588)~=0
 end
-function c511009587.filter(c)
+function c511009587.atkfilter(c)
 	return c:IsFaceup()
 end
 function c511009587.atktg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(c511009587.filter,tp,0,LOCATION_MZONE,1,nil) end
+	if chk==0 then return Duel.IsExistingMatchingCard(c511009587.atkfilter,tp,0,LOCATION_MZONE,1,nil) end
 end
 function c511009587.atkop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local g=Duel.GetMatchingGroup(c511009587.filter,tp,0,LOCATION_MZONE,nil)
+	local g=Duel.GetMatchingGroup(c511009587.atkfilter,tp,0,LOCATION_MZONE,nil)
 	if g:GetCount()>0 then
 		local atk=0
 		local tc=g:GetFirst()
@@ -124,15 +124,15 @@ function c511009587.disop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 -----------------------
-function c80696379.filter(c,e,tp)
+function c511009587.filter(c,e,tp)
 	return (c:GetSequence()==6 or c:GetSequence()==7) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function c511009587.pentg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chkc then return chkc:IsLocation(LOCATION_SZONE) and chkc:IsControler(tp) and c80696379.filter(chkc,e,tp) end
+	if chkc then return chkc:IsLocation(LOCATION_SZONE) and chkc:IsControler(tp) and c511009587.filter(chkc,e,tp) end
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingTarget(c80696379.filter,tp,LOCATION_SZONE,0,1,nil,e,tp) end
+		and Duel.IsExistingTarget(c511009587.filter,tp,LOCATION_SZONE,0,1,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectTarget(tp,c80696379.filter,tp,LOCATION_SZONE,0,1,1,nil,e,tp)
+	local g=Duel.SelectTarget(tp,c511009587.filter,tp,LOCATION_SZONE,0,1,1,nil,e,tp)
 	local g2=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,1,0,0)
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g2,g2:GetCount(),0,0)
