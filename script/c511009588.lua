@@ -5,10 +5,9 @@ function c511009588.initial_effect(c)
 	c:EnableReviveLimit()
 	--pendulum summon
 	aux.EnablePendulumAttribute(c,false)
-	
 	--negate
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(810000081,0))
+	e1:SetDescription(aux.Stringid(21250202,1))
 	e1:SetCategory(CATEGORY_DISABLE)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_QUICK_O)
 	e1:SetCode(EVENT_CHAINING)
@@ -20,6 +19,7 @@ function c511009588.initial_effect(c)
 	c:RegisterEffect(e1)
 	--destroy and gain atk
 	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(6924874,0))
 	e2:SetCategory(CATEGORY_ATKCHANGE+CATEGORY_DESTROY)
 	e2:SetType(EFFECT_TYPE_QUICK_O)
 	e2:SetCode(EVENT_FREE_CHAIN)
@@ -114,7 +114,7 @@ function c511009588.desop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,e:GetHandler())
 	if g:GetCount()>0 and Duel.Destroy(g,REASON_EFFECT)~=0 then
 		local dg=Duel.GetOperatedGroup()
-		if dg:IsContains(e:GetHandler()) then
+		if dg:IsContains(tc) then
 			local e1=Effect.CreateEffect(c)
 			e1:SetType(EFFECT_TYPE_SINGLE)
 			e1:SetCode(EFFECT_UPDATE_ATTACK)
