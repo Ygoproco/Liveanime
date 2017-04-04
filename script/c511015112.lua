@@ -1,4 +1,5 @@
 --Performapal Odd-Eyes Dissolver
+--scripted by Sahim & Cybercatman 
 function c511015112.initial_effect(c)
 	--pendulum summon
 	aux.EnablePendulumAttribute(c)
@@ -29,6 +30,7 @@ function c511015112.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_QUICK_O)
 	e3:SetCode(EVENT_PRE_DAMAGE_CALCULATE)
 	e3:SetRange(LOCATION_HAND)
+	e3:SetCountLimit(1)
 	e3:SetCondition(c511015112.sumcon)
 	e3:SetTarget(c511015112.sumtarget)
 	e3:SetOperation(c511015112.sumop)
