@@ -70,11 +70,10 @@ function c511015101.activate(e,tp,eg,ep,ev,re,r,rp)
 			local mat1 = nil
 			if mg1:IsContains(e:GetHandler()) and Duel.SelectYesNo(tp,aux.Stringid(511015101,0)) then
 				local mat2 = mg1:FilterSelect(tp,c511015101.Armfilter,1,1,nil,e):GetFirst()
-				mat1=Duel.SelectFusionMaterial(tp,tc,mg1,e:GetHandler(),mat2)
-				mat1:AddCard(mat2)
+				mat1=Duel.SelectFusionMaterial(tp,tc,mg1,mat2,chkf)
 			else
 				mg1:RemoveCard(e:GetHandler())
-				mat1=Duel.SelectFusionMaterial(tp,tc,mg1)
+				mat1=Duel.SelectFusionMaterial(tp,tc,mg1,nil,chkf)
 			end
 
 			tc:SetMaterial(mat1)
