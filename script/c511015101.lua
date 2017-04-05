@@ -65,28 +65,18 @@ function c511015101.activate(e,tp,eg,ep,ev,re,r,rp)
 		local sg=sg1:Clone()
 		if sg2 then sg:Merge(sg2) end
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		local tg=sg:Select(tp,1,1,nil)
-		local tc=tg:GetFirst()
+		local tc=sg:Select(tp,1,1,nil):GetFirst()
 		if sg1:IsContains(tc) and (sg2==nil or not sg2:IsContains(tc) or not Duel.SelectYesNo(tp,ce:GetDescription())) then
-			local mat1=Group.CreateGroup()
-			while not tc:CheckFusionMaterial(mat1,nil,chkf) do	
-				local c1 = mg1:Select(tp,1,1,nil):GetFirst()
-				mg1:RemoveCard(c1)
-				mat1:AddCard(c1)
-				
-				if c1==e:GetHandler() and not tc:CheckFusionMaterial(mat1,nil,chkf) then
-					c1 = mg1:FilterSelect(tp,c511015101.Armfilter,1,1,nil,e):GetFirst()
-					mg1:RemoveCard(c1)
-					mat1:AddCard(c1)
-				else			
-					local g = mat1:Clone()
-					g:AddCard(e:GetHandler())
-					if tc:CheckFusionMaterial(g,nil,chkf) and not mat1:IsExists(c511015101.Armfilter,1,nil,e) then
-						mg1:RemoveCard(e:GetHandler())
-					end
-				end
-				
+			local mat1 = nil
+			if mg1:IsContains(e:GetHandler()) and Duel.SelectYesNo(tp,aux.Stringid(511015101,0)) then
+				local mat2 = mg1:FilterSelect(tp,c511015101.Armfilter,1,1,nil,e):GetFirst()
+				mat1=Duel.SelectFusionMaterial(tp,tc,mg1,e:GetHandler(),mat2)
+				mat1:AddCard(mat2)
+			else
+				mg1:RemoveCard(e:GetHandler())
+				mat1=Duel.SelectFusionMaterial(tp,tc,mg1)
 			end
+
 			tc:SetMaterial(mat1)
 			Duel.SendtoGrave(mat1,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)
 			Duel.BreakEffect()
