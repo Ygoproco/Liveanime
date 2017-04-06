@@ -49,12 +49,12 @@ function c511015102.operation(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetRange(LOCATION_HAND)
 		e2:SetTargetRange(LOCATION_HAND,0)
 		e2:SetValue(c511015102.aclimit)
+		e2:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 		tc:RegisterEffect(e2)
-		e2:SetLabelObject(tc)
 	end
 end
 function c511015102.aclimit(e,re,tp)
-	return re:IsHasType(EFFECT_TYPE_ACTIVATE) and re:IsActiveType(TYPE_SPELL) and re:GetHandler()==e:GetLabelObject()
+	return re:IsHasType(EFFECT_TYPE_ACTIVATE) and re:IsActiveType(TYPE_SPELL) and re:GetHandler()==e:GetHandler()
 end
 
 function c511015102.setcon(e,tp,eg,ep,ev,re,r,rp)
