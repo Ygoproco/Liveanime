@@ -87,7 +87,7 @@ function c513000060.rankupregop(e,tp,eg,ep,ev,re,r,rp)
 	e3:SetCost(c513000060.spcost)
 	e3:SetTarget(c513000060.sptg)
 	e3:SetOperation(c513000060.spop)
-	e33:SetReset(RESET_EVENT+0x1fe0000)
+	e3:SetReset(RESET_EVENT+0x1fe0000)
 	c:RegisterEffect(e3)
 end
 function c513000060.atkcon(e)
