@@ -37,7 +37,11 @@ end
 function c511002601.activate(e,tp,eg,ep,ev,re,r,rp)
 	local h1=Duel.GetFieldGroupCount(turnp,LOCATION_HAND,0)
 	local h2=Duel.GetFieldGroupCount(turnp,0,LOCATION_HAND)
-	local turnp=Duel.GetTurnPlayer()
+	if e:GetHandlerPlayer()==Duel.GetTurnPlayer() then
+		turnp=Duel.GetTurnPlayer()
+	else
+		turnp=1-tp
+	end
 	local g1
 	if h1==0 then
 		h1=1
