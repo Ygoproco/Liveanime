@@ -25,8 +25,15 @@ function c511015115.operation(e,tp,eg,ep,ev,re,r,rp)
 	local m=Duel.GetMatchingGroup(c511015115.cfilter,tp,LOCATION_MZONE,0,nil)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local g=Duel.SelectMatchingCard(tp,c511015115.filter,tp,LOCATION_EXTRA,0,1,1,nil,e,tp)
-	if g:GetCount()>0 and m:GetCount()>1 then
+	if e:GetHandler():IsRelateToEffect(e) and g:GetCount()>0 and m:GetCount()>1 then
 		local tc=g:GetFirst()
+		
+		local c=m:GetFirst()
+		while c do
+			Duel.Overlay(tc,c:GetOverlayGroup())	
+			c=m:GetNext()
+		end
+		
 		Duel.Overlay(tc,m)
 		Duel.SpecialSummon(tc,0,tp,tp,true,false,POS_FACEUP)
 			
