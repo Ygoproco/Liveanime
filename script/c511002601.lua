@@ -35,9 +35,13 @@ function c511002601.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,PLAYER_ALL,1)
 end
 function c511002601.activate(e,tp,eg,ep,ev,re,r,rp)
+	if e:GetHandlerPlayer()==Duel.GetTurnPlayer() then
+		turnp=Duel.GetTurnPlayer()
+	else
+		turnp=1-tp
+	end
 	local h1=Duel.GetFieldGroupCount(turnp,LOCATION_HAND,0)
 	local h2=Duel.GetFieldGroupCount(turnp,0,LOCATION_HAND)
-	local turnp=Duel.GetTurnPlayer()
 	local g1
 	if h1==0 then
 		h1=1
