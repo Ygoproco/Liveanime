@@ -58,7 +58,7 @@ end
 function c511004434.operation(e,tp,eg,ev,ep,re,r,rp)
 	local c=e:GetHandler()
 	local tg=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
-	if tg and tg:GetCount()>0 then
+	if c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_SPECIAL,tp,true,false) and tg and tg:GetCount()>0 then
 		local mg=tg:Clone()
 		local tc=tg:GetFirst()
 		while tc do
