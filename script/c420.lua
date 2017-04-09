@@ -97,7 +97,7 @@ function c420.IsButterfly(c)
 	return c:IsSetCard(0x421) or c420.OCGButterfly[c:GetCode()]
 end
 -- Cat
-c511009141.OCGCat={
+c420.OCGCat={
 	[84224627]=true;[43352213]=true;[88032456]=true;[2729285]=true;
 	[32933942]=true;[5506791]=true;[25531465]=true;[96501677]=true;
 	[51777272]=true;[11439455]=true;[14878871]=true;[52346240]=true;
@@ -116,21 +116,21 @@ function c420.IsCelestialFusion(c)
 	return c:IsFusionSetCard(0x2407) or c420.OCGCelestial[c:GetFusionCode()]
 end
 -- Champion
-c511009141.OCGChampion={
+c420.OCGChampion={
 	[82382815]=true;[27503418]=true;
 }
 function c420.IsChampion(c)
 	return c:IsSetCard(0x121a) or c420.OCGChampion[c:GetCode()]
 end
 -- Clear
-c511009141.OCGClear={
+c420.OCGClear={
 	[97811903]=true;[82044279]=true;
 }
 function c420.IsClear(c)
 	return c:IsSetCard(0x306) or c420.OCGClear[c:GetCode()]
 end
 -- Comics Hero
-c511009141.OCGComicsHero={
+c420.OCGComicsHero={
 	[77631175]=true;[13030280]=true;
 }
 function c420.IsComicsHero(c)
@@ -141,7 +141,7 @@ function c420.IsDart(c)
 	return c:IsSetCard(0x210) or c420.OCGDart[c:GetCode()] or c:IsSetCode(43061293)
 end
 -- Dice (archetype)
-c511009141.OCGDice={
+c420.OCGDice={
 	[16725505]=true;[27660735]=true;
 	[69893315]=true;[59905358]=true;
 	[3549275]=true;[88482761]=true;
@@ -151,7 +151,7 @@ function c420.IsDice(c)
 	return c:IsSetCard(0x41a) or c420.OCGDice[c:GetCode()]
 end
 -- Dog
-c511009141.OCGDog={
+c420.OCGDog={
 	[72714226]=true;[79182538]=true;[42878636]=true;[34379489]=true;
 	[15475415]=true;[57346400]=true;[29491334]=true;[86652646]=true;
 	[12076263]=true;[96930127]=true;[11987744]=true;[86889202]=true;
@@ -162,7 +162,7 @@ function c420.IsDog(c)
 	return c:IsSetCard(0x402) or c420.OCGDog[c:GetCode()]
 end
 -- Doll
-c511009141.OCGDoll={
+c420.OCGDoll={
 	[72657739]=true;[91939608]=true;[85639257]=true;[92418590]=true;
 	[2903036]=true;[39806198]=true;[49563947]=true;[82579942]=true;
 }
@@ -181,7 +181,7 @@ function c420.IsDyson(c)
 	return c:IsSetCard(0x41b) or c:IsCode(1992816) or c:IsCode(32559361)
 end
 -- Earth (archetype)
-c511002014.earth_collection={
+c420.earth_collection={
 	[42685062]=true;[76052811]=true;[71564150]=true;[77827521]=true;
 	[75375465]=true;[70595331]=true;[94773007]=true;[45042329]=true;
 }
@@ -192,7 +192,7 @@ function c420.IsEarthFusion(c)
 	return c:IsFusionSetCard(0x21f) or c420.OCGEarth[c:GetFusionCode()] or c420.IsEarthboundFusion(c)
 end
 -- Earthbound
-c511009329.OCGEarthbound={
+c420.OCGEarthbound={
 [67105242]=true;
 [67987302]=true;
  }
@@ -205,7 +205,7 @@ function c420.IsEarthboundFusion(c)
 	or c:IsFusionSetCard(0x21)
 end
 -- Elf
-c511004108.OCGElf={
+c420.OCGElf={
 [44663232]=true;[98582704]=true;[39897277]=true;
 [93221206]=true;[97170107]=true;[85239662]=true;
 [68625727]=true;[59983499]=true;[21417692]=true;
@@ -221,7 +221,7 @@ function c420.IsEmissaryOfDarkness(c)
 end
 -- Fairy (archetype)
 --OCG Fairy collection
-c511009329.OCGFairy={
+c420.OCGFairy={
 [51960178]=true; 	
 [25862681]=true; 	
 [23454876]=true; 	
@@ -274,14 +274,14 @@ function c420.IsHand(c)
 	return c:IsSetCard(0x425) or c420.OCGHand[c:GetCode()] 
 end
 -- Heavy Industry
-c511009061.OCGHeavyIndustry={
+c420.OCGHeavyIndustry={
 [42851643]=true;[29515122]=true;[13647631]=true;
 }
 function c420.IsHeavyIndustry(c)
 	return c:IsSetCard(0x426) or c420.OCGHeavyIndustry[c:GetCode()] 
 end
 -- Hell
-c511009061.OCGHell={
+c420.OCGHell={
 [36029076]=true;
 }
 function c420.IsHell(c)
@@ -292,7 +292,7 @@ function c420.IsHeraldic(c)
 	return c:IsSetCard(0x427) or c420.OCGHeraldic[c:GetCode()]
 end
 -- Hunder
-c511009061.OCGHeraldic={
+c420.OCGHeraldic={
 [23649496]=true;[47387961]=true;
 }
 function c420.IsHeraldic(c)
@@ -301,14 +301,14 @@ end
 -- Inu (not finished)
 
 -- Ivy
-c511009061.OCGIvy={
+c420.OCGIvy={
 [30069398]=true;
 }
 function c420.IsIvy(c)
 	return c:IsSetCard(0x429) or c420.OCGIvy[c:GetCode()]
 end
 -- Jester
-c511009061.OCGJester={
+c420.OCGJester={
 [72992744]=true;[8487449]=true;[88722973]=true;
 }
 function c420.IsJester(c)
