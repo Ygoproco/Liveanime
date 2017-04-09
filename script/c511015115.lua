@@ -44,20 +44,35 @@ function c511015115.operation(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetOperation(c511015115.desop)
 		e:GetHandler():RegisterEffect(e1)
 		e1:SetLabelObject(tc)
+		
+		-- Adjust
+		local e2=Effect.CreateEffect(e:GetHandler())
+		e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+		e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+		e2:SetCode(EVENT_ADJUST)	
+		e2:SetRange(LOCATION_MZONE)
+		e2:SetOperation(c511015115.adjop)
+		e:GetHandler():RegisterEffect(e2)
+		e2:SetLabelObject(tc)
 	end
 end
-
-function c511015115.desop(e,tp,eg,ep,ev,re,r,rp)
+function c511015115.con(e,tp,eg,ep,ev,re,r,rp)
+	return e:GetHandler():IsDisabled()
+end
+function c511015115.desop(e,tp,eg,ep,ev,re,r,rp)	
 	local tc=e:GetLabelObject()
-	if tc and tc:IsLocation(LOCATION_MZONE) then
-		local m = tc:GetOverlayGroup():Filter(Card.IsCanBeSpecialSummoned,nil,e,0,tp,false,false)
-		if m:GetCount()>0 and Duel.Destroy(tc,REASON_EFFECT)>0 then
-			local zones = Duel.GetLocationCount(tp,LOCATION_MZONE)
-			if m:GetCount()>zones then
-				m=m:Select(tp,zones,zones,nil)
-			end
-			Duel.SpecialSummon(m,0,tp,tp,true,false,POS_FACEUP)
+	local m = tc:GetOverlayGroup():Filter(Card.IsCanBeSpecialSummoned,nil,e,0,tp,false,false)
+	if tc and tc:IsLocation(LOCATION_MZONE) and Duel.Destroy(tc,REASON_EFFECT)>0 and m:GetCount()>0 then	
+		local zones = Duel.GetLocationCount(tp,LOCATION_MZONE)
+		if m:GetCount()>zones then
+			m=m:Select(tp,zones,zones,nil)
 		end
+		Duel.SpecialSummon(m,0,tp,tp,false,false,POS_FACEUP)
 	end
 	e:Reset()
+end
+function c511015115.adjop(e,tp,eg,ep,ev,re,r,rp)	
+	if e:GetLabelObject() and e:GetHandler():IsDisabled() then
+		c511015115.desop(e,tp,eg,ep,ev,re,r,rp)
+	end
 end
