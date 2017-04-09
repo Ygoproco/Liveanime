@@ -56,9 +56,6 @@ function c511015115.operation(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetLabelObject(tc)
 	end
 end
-function c511015115.con(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():IsDisabled()
-end
 function c511015115.desop(e,tp,eg,ep,ev,re,r,rp)	
 	local tc=e:GetLabelObject()
 	local m = tc:GetOverlayGroup():Filter(Card.IsCanBeSpecialSummoned,nil,e,0,tp,false,false)
