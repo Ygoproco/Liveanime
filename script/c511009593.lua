@@ -18,14 +18,9 @@ function c511009593.initial_effect(c)
 	local e2=e1:Clone()
 	e2:SetCode(EFFECT_INDESTRUCTABLE_EFFECT)
 	c:RegisterEffect(e2)
-	--cannot be target
-	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_FIELD)
+	-- cannot be target
+	local e3=e1:Clone()
 	e3:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
-	e3:SetProperty(EFFECT_FLAG_IMMEDIATELY_APPLY+EFFECT_FLAG_IGNORE_IMMUNE)
-	e3:SetRange(LOCATION_PZONE)
-	e3:SetTargetRange(LOCATION_MZONE,0)
-	e3:SetTarget(aux.TargetBoolFunction(Card.IsType,TYPE_FUSION))
 	e3:SetValue(aux.tgoval)
 	c:RegisterEffect(e3)
 	
@@ -46,15 +41,16 @@ function c511009593.initial_effect(c)
 	e5:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e5:SetCountLimit(1)
 	e5:SetRange(LOCATION_MZONE)
-	e5:SetTarget(c511009593.target)
-	e5:SetOperation(c511009593.operation)
+	e5:SetTarget(c511009593.damtg)
+	e5:SetOperation(c511009593.damop)
 	c:RegisterEffect(e5)
 	--return atk
 	local e6=Effect.CreateEffect(c)
 	e6:SetCategory(CATEGORY_ATKCHANGE)
 	e6:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e6:SetDescription(aux.Stringid(7845138,0))
 	e6:SetCode(EVENT_BATTLE_START)
-	e6:SetRange(LOCATION_PZONE)
+	e6:SetRange(LOCATION_MZONE)
 	e6:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e6:SetCountLimit(1)
 	e6:SetCondition(c511009593.atkcon)
@@ -95,7 +91,7 @@ end
 function c511009593.atktg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local tc=e:GetLabelObject()
 	if chkc then return chkc==tc end
-	if chk==0 then return tc:IsOnField() and tc:IsCanBeEffectTarget(e) end
+	if chk==0 then return tc:IsOnField() and tc:IsCanBeEffectTarget(e) and tc:GetAttack()~=tc:GetBaseAttack()  end
 	Duel.SetTargetCard(tc)
 end
 function c511009593.atkop(e,tp,eg,ep,ev,re,r,rp)
@@ -106,7 +102,7 @@ function c511009593.atkop(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_SET_ATTACK_FINAL)
 		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_DAMAGE)
-		e1:SetValue(c:GetBaseAttack())
+		e1:SetValue(tc:GetBaseAttack())
 		tc:RegisterEffect(e1)
 	end
 end
