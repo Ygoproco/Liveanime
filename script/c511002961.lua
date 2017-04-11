@@ -22,6 +22,13 @@ function c511002961.initial_effect(c)
 	e3:SetCode(511002961)
 	e3:SetRange(LOCATION_ONFIELD)
 	c:RegisterEffect(e3)
+	--destroy sub
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_EQUIP)
+	e4:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
+	e4:SetCode(EFFECT_DESTROY_SUBSTITUTE)
+	e4:SetValue(c511002961.repval)
+	c:RegisterEffect(e4)
 end
 function c511002961.subcon(e)
 	return e:GetHandler():IsFaceup() and e:GetHandler():IsOnField()
@@ -100,4 +107,6 @@ end
 function c511002961.eqlimit(e,c)
 	return e:GetLabelObject()==c
 end
-
+function c511002961.repval(e,re,r,rp)
+	return bit.band(r,REASON_BATTLE+REASON_EFFECT)~=0
+end

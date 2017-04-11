@@ -33,7 +33,7 @@ function c511000659.atop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local a=Duel.GetAttacker()
 	local d=Duel.GetAttackTarget()
-	if a:GetControler()==d:GetControler() and Duel.IsPlayerAffectedByEffect(tp,511000659) then
+	if a and d and a:GetControler()==d:GetControler() and Duel.IsPlayerAffectedByEffect(tp,511000659) then
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_UPDATE_ATTACK)

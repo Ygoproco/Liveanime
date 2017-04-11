@@ -1,7 +1,6 @@
---Clear Phantom
---Moddified by Gamemaster(GM)
+--クリアー・ファントム
 function c100000161.initial_effect(c)
-	--while on field remove dark attribute
+	--
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetRange(LOCATION_MZONE)
@@ -9,7 +8,7 @@ function c100000161.initial_effect(c)
 	e1:SetCode(EFFECT_REMOVE_ATTRIBUTE)
 	e1:SetValue(ATTRIBUTE_DARK)
 	c:RegisterEffect(e1)
-	--When destroyed in battle/discard 3 card of opponents deck
+	--destroy
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(100000161,0))
 	e2:SetCategory(CATEGORY_DESTROY+CATEGORY_DECKDES)
@@ -20,7 +19,6 @@ function c100000161.initial_effect(c)
 	e2:SetOperation(c100000161.operation)
 	c:RegisterEffect(e2)
 end
-
 function c100000161.condition(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	return c:IsLocation(LOCATION_GRAVE) and c:GetPreviousControler()==tp

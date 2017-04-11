@@ -7,6 +7,7 @@ function c511000694.initial_effect(c)
 	e2:SetCode(EVENT_ADJUST)
 	e2:SetRange(LOCATION_SZONE)
 	e2:SetOperation(c511000694.atkop)
+	e2:SetLabel(0)
 	c:RegisterEffect(e2)
 	--Destroy on Draw
 	local e3=Effect.CreateEffect(c)
@@ -42,7 +43,7 @@ function c511000694.atkop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local eq=c:GetEquipTarget()
 	local g=Duel.GetMatchingGroup(c511000694.chkfilter,tp,LOCATION_SZONE,LOCATION_SZONE,c,eq)
-	if eq and c:GetFlagEffect(511000695)==0 then
+	if eq and c:GetFlagEffect(511000695)==0 and e:GetLabel()~=g:GetCount()+1 then
 		c:ResetEffect(RESET_DISABLE,RESET_EVENT)
 		local tc=g:GetFirst()
 		while tc do
@@ -59,5 +60,6 @@ function c511000694.atkop(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetValue(atk)
 		e1:SetReset(RESET_EVENT+0x1ff0000)
 		c:RegisterEffect(e1)
+		e:SetLabel(g:GetCount()+1)
 	end
 end

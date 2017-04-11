@@ -12,11 +12,11 @@ function c511000685.initial_effect(c)
 end
 function c511000685.filter1(c,e,tp)
 	local rk=c:GetRank()
-	return rk>0 and c:IsFaceup() and Duel.IsExistingMatchingCard(c511000685.filter2,tp,LOCATION_EXTRA,0,2,nil,rk,e,tp,c,c:GetCode())
+	return rk>0 and c:IsFaceup() and Duel.IsExistingMatchingCard(c511000685.filter2,tp,LOCATION_EXTRA,0,2,nil,rk,e,tp)
 		and c:IsCode(84013237) and c:GetOverlayGroup():GetCount()>=2
 end
-function c511000685.filter2(c,rk,e,tp,mc,code)
-	if c.rum_limit_code and code~=c.rum_limit_code then return false end
+function c511000685.filter2(c,rk,e,tp)
+	if c.rum_limit_code then return false end
 	return (c:GetRank()==rk+1 or c:GetRank()==rk+2) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
 end
 function c511000685.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
@@ -34,24 +34,32 @@ function c511000685.activate(e,tp,eg,ep,ev,re,r,rp)
 	if ect~=nil and ect<2 then return end
 	local tc=Duel.GetFirstTarget()
 	if not tc or tc:IsFacedown() or not tc:IsRelateToEffect(e) or tc:IsControler(1-tp) or tc:IsImmuneToEffect(e) then return end
-	local ou=tc:GetOverlayGroup()
-	if ou:GetCount()<2 then return end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectMatchingCard(tp,c511000685.filter2,tp,LOCATION_EXTRA,0,2,2,nil,tc:GetRank(),e,tp,tc,tc:GetCode())
-	local tc1=g:GetFirst()
-	local tc2=g:GetNext()
-	if Duel.SpecialSummonStep(tc1,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)~=0 and
-		Duel.SpecialSummonStep(tc2,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)~=0 then
-		Duel.BreakEffect()
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
-		local ou1=ou:Select(tp,1,1,nil)
-		Duel.Overlay(tc1,ou1)
-		ou=tc:GetOverlayGroup()
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
-		local ou2=ou:Select(tp,1,1,ou1:GetFirst())
-		Duel.Overlay(tc2,ou2)
-		tc1:CompleteProcedure()
-		tc2:CompleteProcedure()
+	local ov=tc:GetOverlayGroup()
+	if ov:GetCount()<2 then return end
+	local g=Duel.GetMatchingGroup(c511000685.filter2,tp,LOCATION_EXTRA,0,nil,tc:GetRank(),e,tp)
+	if g:GetCount()>=2 then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+		local sg=g:Select(tp,2,2,nil)
+		local ct=Duel.SpecialSummon(sg,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)
+		local spc=sg:GetFirst()
+		while spc do
+			spc:CompleteProcedure()
+			spc=sg:GetNext()
+		end
+		if ct>1 then
+			Duel.BreakEffect()
+			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
+			local ovg=ov:Select(tp,2,2,nil)
+			Duel.SendtoGrave(ovg,REASON_EFFECT)
+			for i=1,2 do
+				Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
+				local ovsg=ovg:Select(tp,1,1,nil)
+				local osg=sg:Select(tp,1,1,nil)
+				Duel.HintSelection(osg)
+				Duel.Overlay(osg:GetFirst(),ovsg)
+				ovg:Sub(ovsg)
+				sg:Sub(osg)
+			end
+		end
 	end
-	Duel.SpecialSummonComplete()
 end

@@ -16,18 +16,26 @@ function c511009469.initial_effect(c)
 	e2:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
 	e2:SetCondition(c511009469.actcon)
 	c:RegisterEffect(e2)
+	if not c511009469.global_check then
+		c511009469.global_check=true
+		local ge2=Effect.CreateEffect(c)
+		ge2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+		ge2:SetCode(EVENT_ADJUST)
+		ge2:SetCountLimit(1)
+		ge2:SetProperty(EFFECT_FLAG_NO_TURN_RESET)
+		ge2:SetOperation(c511009469.archchk)
+		Duel.RegisterEffect(ge2,0)
+	end
 end
---red collection
-c511009469.collection={
-	[58831685]=true;[10202894]=true;[65570596]=true;[511001464]=true;[511001094]=true;
-	[68722455]=true;[58165765]=true;[45462639]=true;[511001095]=true;[511000365]=true;
-	[14886469]=true;[30494314]=true;[81354330]=true;[86445415]=true;[100000562]=true;
-	[34475451]=true;[40975574]=true;[37132349]=true;[61019812]=true;[19025379]=true;
-	[76547525]=true;[55888045]=true;[97489701]=true;[67030233]=true;[65338781]=true;
-	[45313993]=true;[8706701]=true;[21142671]=true;[66141736]=true;
-}
+function c511009515.archchk(e,tp,eg,ep,ev,re,r,rp)
+	if Duel.GetFlagEffect(0,420)==0 then 
+		Duel.CreateToken(tp,420)
+		Duel.CreateToken(1-tp,420)
+		Duel.RegisterFlagEffect(0,420,0,0,0)
+	end
+end
 function c511009469.filter(c,e,tp)
-	return c:IsFaceup() and (c:IsSetCard(0x3b) or c:IsSetCard(0x1045) or c:IsSetCard(0x89b) or c511009469.collection[c:GetCode()]) 
+	return c:IsFaceup() and c420.IsRed(c) 
 end
 function c511009469.condition(e,tp,eg,ep,ev,re,r,rp)
 	return re:IsHasType(EFFECT_TYPE_ACTIVATE) and Duel.IsChainNegatable(ev) 

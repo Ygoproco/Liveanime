@@ -1,4 +1,5 @@
 --D/D/D Superdoom King Purplish Armageddon
+--cleaned up by MLD
 function c511009593.initial_effect(c)
 	--Fusion summon
 	aux.AddFusionProcFun2(c,aux.FilterBoolFunction(Card.IsFusionSetCard,0x10af),aux.FilterBoolFunction(Card.IsFusionSetCard,0xaf),true)
@@ -11,7 +12,7 @@ function c511009593.initial_effect(c)
 	e1:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)
 	e1:SetRange(LOCATION_PZONE)
 	e1:SetTargetRange(LOCATION_MZONE,0)
-	e1:SetProperty(EFFECT_FLAG_IMMEDIATELY_APPLY+EFFECT_FLAG_IGNORE_IMMUNE)
+	e1:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
 	e1:SetTarget(aux.TargetBoolFunction(Card.IsType,TYPE_FUSION))
 	e1:SetValue(1)
 	c:RegisterEffect(e1)
@@ -23,7 +24,6 @@ function c511009593.initial_effect(c)
 	e3:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
 	e3:SetValue(aux.tgoval)
 	c:RegisterEffect(e3)
-	
 	--pend indes
 	local e4=Effect.CreateEffect(c)
 	e4:SetType(EFFECT_TYPE_FIELD)
@@ -68,7 +68,7 @@ function c511009593.damtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 function c511009593.damop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) then
+	if tc and tc:IsRelateToEffect(e) then
 		local atk=tc:GetAttack()
 		if atk<0 or tc:IsFacedown() then atk=0 end
 		if Duel.Destroy(tc,REASON_EFFECT)~=0 then
@@ -76,9 +76,6 @@ function c511009593.damop(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 end
-
-
-
 function c511009593.atkcon(e,tp,eg,ep,ev,re,r,rp)
 	local a=Duel.GetAttacker()
 	local d=Duel.GetAttackTarget()
@@ -91,13 +88,12 @@ end
 function c511009593.atktg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local tc=e:GetLabelObject()
 	if chkc then return chkc==tc end
-	if chk==0 then return tc:IsOnField() and tc:IsCanBeEffectTarget(e) and tc:GetAttack()~=tc:GetBaseAttack()  end
+	if chk==0 then return tc and tc:IsOnField() and tc:IsCanBeEffectTarget(e) and tc:GetAttack()~=tc:GetBaseAttack()  end
 	Duel.SetTargetCard(tc)
 end
 function c511009593.atkop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) then return end
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) and tc:IsFaceup() then
+	if tc and tc:IsRelateToEffect(e) and tc:IsFaceup() then
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_SET_ATTACK_FINAL)

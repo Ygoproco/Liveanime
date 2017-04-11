@@ -93,7 +93,7 @@ function c511004421.sumop(e,tp,eg,ev,ep,re,r,rp)
 		end
 		sc:SetMaterial(Group.FromCards(tc))
 		Duel.Overlay(sc,Group.FromCards(tc))
-		Duel.SpecialSummon(sc,TYPE_XYZ,tp,tp,false,false,POS_FACEUP)
+		Duel.SpecialSummon(sc,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)
 		sc:CompleteProcedure()
 	end
 end
