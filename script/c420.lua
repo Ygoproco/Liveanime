@@ -14,7 +14,7 @@ function c420.IsAlligator(c)
 end
 -- Angel (archetype)
 c420.OCGAngel={
-[79575620]=true;;[68007326]=true;[39996157]=true;[11398951]=true;
+[79575620]=true;[68007326]=true;[39996157]=true;[11398951]=true;
 [15914410]=true;[32224143]=true;[16972957]=true;[16946849]=true;[42216237]=true;
 [42418084]=true;[59509952]=true;[18378582]=true;[81146288]=true;[85399281]=true;
 [47852924]=true;[74137509]=true;[17653779]=true;[9032529]=true;[79571449]=true;
