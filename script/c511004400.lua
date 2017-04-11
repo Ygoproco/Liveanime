@@ -17,6 +17,7 @@ function c511004400.aco(e,tp,eg,ev,ep,re,r,rp)
 end
 function c511004400.aop(e,tp,eg,ev,ep,re,r,rp)
 	local c=e:GetHandler()
+	Duel.Hint(HINT_CARD,0,511004400)
 	local lol=LOCATION_ONFIELD+LOCATION_GRAVE+LOCATION_REMOVED+LOCATION_DECK
 	Duel.DisableShuffleCheck()
 	Duel.SendtoDeck(c,tp,-2,REASON_RULE)
