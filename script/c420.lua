@@ -106,7 +106,7 @@ function c420.IsCat(c)
 	return c:IsSetCard(0x305) or c420.OCGCat[c:GetCode()]
 end
 -- Celestial
-c511009141.OCGCelestial={
+c420.OCGCelestial={
 	[69865139]=true;[25472513]=true;
 }
 function c420.IsCelestial(c)
@@ -170,7 +170,7 @@ function c420.IsDoll(c)
 	return c:IsSetCard(0x20b) or c:IsSetCard(0x9d) or c420.OCGDoll[c:GetCode()]
 end
 -- Druid
-c511009141.OCGDruid={
+c420.OCGDruid={
 	[24062258]=true;[97064649]=true;[7183277]=true;
 }
 function c420.IsDruid(c)
