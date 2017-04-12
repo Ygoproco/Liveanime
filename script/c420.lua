@@ -465,7 +465,15 @@ c420.OCGRed={
 function c420.IsRed(c)
 	return c:IsSetCard(0x42f) or c:IsSetCard(0x3b) or c:IsSetCard(0x1045) or c420.OCGRed[c:GetCode()] 
 end
--- Rose (not finished)
+-- Rose 
+c420.OCGRose={
+	[49674183]=true;[96470883]=true;[31986288]=true;[41160533]=true;[51085303]=true;
+	[41201555]=true;[75252099]=true;[58569561]=true;[96385345]=true;[17720747]=true;
+	[98884569]=true;[23087070]=true;[1557341]=true;[12469386]=true;[2986553]=true;
+	[51852507]=true;[44125452]=true;[61049315]=true;[79531196]=true;[89252157]=true;
+	[32485271]=true;[33698022]=true;[73580471]=true;[4290468]=true;[25090294]=true;
+	[45247637]=true;[71645243]=true;[73580471]=true;[4290468]=true;[25090294]=true;
+}
 function c420.IsRose(c)
 	return c:IsSetCard(0x218) or c420.OCGRose[c:GetCode()] 
 end
