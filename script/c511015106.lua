@@ -62,7 +62,8 @@ end
 function c511015106.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		local mc1=Duel.GetFirstMatchingCard(c511015106.filter1,tp,LOCATION_EXTRA,0,nil,e,tp)
-		return Duel.GetLocationCount(tp,LOCATION_MZONE)>1 and mc1
+		return not Duel.IsPlayerAffectedByEffect(tp,59822133)
+			and Duel.GetLocationCount(tp,LOCATION_MZONE)>1 and mc1
 			and Duel.IsExistingMatchingCard(c511015106.filter2,tp,LOCATION_GRAVE,0,1,nil,e,tp,mc1)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
