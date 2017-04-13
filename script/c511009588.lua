@@ -152,16 +152,14 @@ function c511009588.repfilter(c,tp)
 	return c:IsFaceup() and c:IsSetCard(0x99) and c:IsOnField() and c:IsControler(tp) and c:IsReason(REASON_BATTLE)
 end
 function c511009588.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckLocation(tp,LOCATION_SZONE,6) or Duel.CheckLocation(tp,LOCATION_SZONE,7) end
-	return Duel.SelectYesNo(tp,aux.Stringid(43266605,0))
+	if chk==0 then return eg:IsExists(c511009588.repfilter,1,nil,tp) and Duel.CheckLocation(tp,LOCATION_SZONE,6) or Duel.CheckLocation(tp,LOCATION_SZONE,7) end
+	return Duel.SelectYesNo(tp,aux.Stringid(86238081,0))
 end
 function c511009588.repval(e,c)
 	return c511009588.repfilter(c,e:GetHandlerPlayer())
 end
 function c511009588.repop(e,tp,eg,ep,ev,re,r,rp)
-if not Duel.CheckLocation(tp,LOCATION_SZONE,6) and not Duel.CheckLocation(tp,LOCATION_SZONE,7) then return false end
+	if not ((Duel.CheckLocation(tp,LOCATION_SZONE,6) or Duel.CheckLocation(tp,LOCATION_SZONE,7)))  then return false end
 	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) then
-		Duel.MoveToField(c,tp,tp,LOCATION_SZONE,POS_FACEUP,true)
-	end
+	Duel.MoveToField(e:GetHandler(),tp,tp,LOCATION_SZONE,POS_FACEUP,true)
 end

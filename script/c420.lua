@@ -14,7 +14,7 @@ function c420.IsAlligator(c)
 end
 -- Angel (archetype)
 c420.OCGAngel={
-[79575620]=true;;[68007326]=true;[39996157]=true;[11398951]=true;
+[79575620]=true;[68007326]=true;[39996157]=true;[11398951]=true;
 [15914410]=true;[32224143]=true;[16972957]=true;[16946849]=true;[42216237]=true;
 [42418084]=true;[59509952]=true;[18378582]=true;[81146288]=true;[85399281]=true;
 [47852924]=true;[74137509]=true;[17653779]=true;[9032529]=true;[79571449]=true;
@@ -106,7 +106,7 @@ function c420.IsCat(c)
 	return c:IsSetCard(0x305) or c420.OCGCat[c:GetCode()]
 end
 -- Celestial
-c511009141.OCGCelestial={
+c420.OCGCelestial={
 	[69865139]=true;[25472513]=true;
 }
 function c420.IsCelestial(c)
@@ -170,7 +170,7 @@ function c420.IsDoll(c)
 	return c:IsSetCard(0x20b) or c:IsSetCard(0x9d) or c420.OCGDoll[c:GetCode()]
 end
 -- Druid
-c511009141.OCGDruid={
+c420.OCGDruid={
 	[24062258]=true;[97064649]=true;[7183277]=true;
 }
 function c420.IsDruid(c)
@@ -465,7 +465,15 @@ c420.OCGRed={
 function c420.IsRed(c)
 	return c:IsSetCard(0x42f) or c:IsSetCard(0x3b) or c:IsSetCard(0x1045) or c420.OCGRed[c:GetCode()] 
 end
--- Rose (not finished)
+-- Rose 
+c420.OCGRose={
+	[49674183]=true;[96470883]=true;[31986288]=true;[41160533]=true;[51085303]=true;
+	[41201555]=true;[75252099]=true;[58569561]=true;[96385345]=true;[17720747]=true;
+	[98884569]=true;[23087070]=true;[1557341]=true;[12469386]=true;[2986553]=true;
+	[51852507]=true;[44125452]=true;[61049315]=true;[79531196]=true;[89252157]=true;
+	[32485271]=true;[33698022]=true;[73580471]=true;[4290468]=true;[25090294]=true;
+	[45247637]=true;[71645243]=true;[73580471]=true;[4290468]=true;[25090294]=true;
+}
 function c420.IsRose(c)
 	return c:IsSetCard(0x218) or c420.OCGRose[c:GetCode()] 
 end
