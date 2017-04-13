@@ -12,7 +12,7 @@ function c511009582.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function c511009582.filter(c)
-	return c:IsFaceup() and c:IsType(TYPE_PENDULUM) and c:IsDestructable()
+	return c:IsFaceup() and c:IsType(TYPE_PENDULUM) and c:IsType(TYPE_MONSTER) and c:IsDestructable()
 end
 function c511009582.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c511009582.filter,tp,LOCATION_ONFIELD,0,2,nil) end
