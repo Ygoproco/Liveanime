@@ -272,7 +272,7 @@ function c511004322.spelloperation(e,tp,eg,ep,ev,re,r,rp)
 			--re organize forbidden list
 			for i=an+1,n do
 				forbidden[tp][i]=forbidden[tp][i+1]
-			end   
+			end
 		else
 			forbidden[tp][an+1]=true
 			Duel.Hint(HINT_MESSAGE,tp,aux.Stringid(4002,9))
