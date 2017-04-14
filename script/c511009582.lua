@@ -11,13 +11,13 @@ function c511009582.initial_effect(c)
 	e1:SetOperation(c511009582.activate)
 	c:RegisterEffect(e1)
 end
-function c511009582.filter(c)
-	return c:IsFaceup() and c:IsType(TYPE_PENDULUM) and c:IsType(TYPE_MONSTER) and c:IsDestructable()
+function c511009582.filter(c,e)
+	return c:IsFaceup() and c:IsType(TYPE_PENDULUM) and c:IsDestructable(e)
 end
 function c511009582.cost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(c511009582.filter,tp,LOCATION_ONFIELD,0,2,nil) end
+	if chk==0 then return Duel.IsExistingMatchingCard(c511009582.filter,tp,LOCATION_MZONE,0,2,nil,e) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local g=Duel.SelectMatchingCard(tp,c511009582.filter,tp,LOCATION_ONFIELD,0,2,2,nil)
+	local g=Duel.SelectMatchingCard(tp,c511009582.filter,tp,LOCATION_MZONE,0,2,2,nil,e)
 	Duel.Destroy(g,REASON_COST)
 end
 function c511009582.target(e,tp,eg,ep,ev,re,r,rp,chk)
