@@ -125,6 +125,7 @@ function c511004322.activeoperation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SendtoDeck(sg,nil,-2,REASON_RULE)
 		return
 	end
+	--place a card into opponent removed zone and you removed zone
 	local tc=Duel.CreateToken(1-tp,511004322)
 	Duel.Remove(tc,POS_FACEUP,REASON_RULE)
 	Duel.Remove(c,POS_FACEUP,REASON_RULE)
@@ -134,13 +135,13 @@ function c511004322.activeoperation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SendtoDeck(hand2,1-tp,0,REASON_RULE)
 	--if duel is using obsolete ruling change the draw count to 0 to avoid player from draw the first card.
 	if Duel.IsDuelType(DUEL_OBSOLETE_RULING) then
-			local e1=Effect.CreateEffect(c)
-			e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-			e1:SetType(EFFECT_TYPE_FIELD)
-			e1:SetCode(EFFECT_DRAW_COUNT)
-			e1:SetTargetRange(1,1)
-			e1:SetValue(0)
-			Duel.RegisterEffect(e1,tp)
+		local e1=Effect.CreateEffect(c)
+		e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+		e1:SetType(EFFECT_TYPE_FIELD)
+		e1:SetCode(EFFECT_DRAW_COUNT)
+		e1:SetTargetRange(1,1)
+		e1:SetValue(0)
+		Duel.RegisterEffect(e1,tp)
 	end
 end
 --normal/set
