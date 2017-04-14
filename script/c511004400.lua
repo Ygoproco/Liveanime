@@ -18,6 +18,11 @@ end
 function c511004400.aop(e,tp,eg,ev,ep,re,r,rp)
 	local c=e:GetHandler()
 	Duel.Hint(HINT_CARD,0,511004400)
+	if not Duel.SelectYesNo(1-tp,aux.Stringid(4007,0)) or not Duel.SelectYesNo(tp,aux.Stringid(4007,0)) then
+		local sg=Duel.GetMatchingGroup(Card.IsCode,tp,0x7f,0x7f,nil,511004400)
+		Duel.SendtoDeck(sg,nil,-2,REASON_RULE)
+		return
+	end
 	local lol=LOCATION_ONFIELD+LOCATION_GRAVE+LOCATION_REMOVED+LOCATION_DECK
 	Duel.DisableShuffleCheck()
 	Duel.SendtoDeck(c,tp,-2,REASON_RULE)

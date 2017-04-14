@@ -1,29 +1,20 @@
 --concentration duel
 function c511004322.initial_effect(c)
-	--card Confirm for test
-	local ea=Effect.CreateEffect(c)
-	ea:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE)
-	ea:SetDescription(aux.Stringid(100100,15))
-	ea:SetType(EFFECT_TYPE_QUICK_O)
-	ea:SetRange(LOCATION_REMOVED)
-	ea:SetCode(EVENT_FREE_CHAIN)
-	ea:SetOperation(c511004322.hax)
-	--c:RegisterEffect(ea)
 	--protection
-	local eb=Effect.CreateEffect(c)
-	eb:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
-	eb:SetType(EFFECT_TYPE_SINGLE)
-	eb:SetCode(EFFECT_CANNOT_TO_GRAVE)
+	local ea=Effect.CreateEffect(c)
+	ea:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	ea:SetType(EFFECT_TYPE_SINGLE)
+	ea:SetCode(EFFECT_CANNOT_TO_GRAVE)
+	c:RegisterEffect(ea)
+	local eb=ea:Clone()
+	eb:SetCode(EFFECT_CANNOT_TO_HAND)
 	c:RegisterEffect(eb)
-	local ec=eb:Clone()
-	ec:SetCode(EFFECT_CANNOT_TO_HAND)
+	local ec=ea:Clone()
+	ec:SetCode(EFFECT_CANNOT_TO_DECK) 
 	c:RegisterEffect(ec)
-	local ed=eb:Clone()
-	ed:SetCode(EFFECT_CANNOT_TO_DECK) 
+	local ed=ea:Clone()
+	ed:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
 	c:RegisterEffect(ed)
-	local ee=eb:Clone()
-	ee:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
-	c:RegisterEffect(ee)
 	--clean forbidden love
 	local e0=Effect.CreateEffect(c) --turn end
 	e0:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE)
@@ -106,10 +97,6 @@ forbidden[1]={}
 function c511004322.cflcon(e,tp,eg,ep,ev,re,r,rp)
 	return re and re:GetHandler()~=e:GetHandler()
 end
-function c511004322.hax(e,tp,eg,ep,ev,re,r,rp)
-	--Duel.ConfirmDecktop(tp,Duel.GetMatchingGroupCount(Card.GetControler,tp,LOCATION_DECK,0,nil))
-	Duel.ConfirmCards(tp,Duel.GetMatchingGroup(Card.GetControler,tp,LOCATION_DECK,0,nil))
-end
 function c511004322.cfl(e,tp,eg,ep,ev,re,r,rp)
 	forbidden[tp]={}
 end
@@ -117,14 +104,14 @@ function c511004322.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return re and re:GetHandler()~=e:GetHandler() and not re:GetHandler():IsCode(511004322) end
 end
 function c511004322.damop(e,tp,eg,ep,ev,re,r,rp)
-    local sg=eg
-    if sg:GetCount()>0 then
-        Duel.SendtoDeck(sg,nil,0,REASON_RULE)
-        if sg:IsExists(Card.IsControler,1,nil,tp) then
-            Duel.ShuffleDeck(tp)
-            forbidden[tp]={}
-        end
-    end
+	local sg=eg
+	if sg:GetCount()>0 then
+		Duel.SendtoDeck(sg,nil,0,REASON_RULE)
+		if sg:IsExists(Card.IsControler,1,nil,tp) then
+			Duel.ShuffleDeck(tp)
+			forbidden[tp]={}
+		end
+	end
 end
 --active condition+operation
 function c511004322.activecondition(e,tp,eg,ep,ev,re,r,rp)
@@ -132,6 +119,14 @@ function c511004322.activecondition(e,tp,eg,ep,ev,re,r,rp)
 end
 function c511004322.activeoperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
+	Duel.Hint(HINT_CARD,0,511004322)
+	if not Duel.SelectYesNo(1-tp,aux.Stringid(4007,1)) or not Duel.SelectYesNo(tp,aux.Stringid(4007,1)) then
+		local sg=Duel.GetMatchingGroup(Card.IsCode,tp,0x7f,0x7f,nil,511004322)
+		Duel.SendtoDeck(sg,nil,-2,REASON_RULE)
+		return
+	end
+	local tc=Duel.CreateToken(1-tp,511004322)
+	Duel.Remove(tc,POS_FACEUP,REASON_RULE)
 	Duel.Remove(c,POS_FACEUP,REASON_RULE)
 	local hand1=Duel.GetMatchingGroup(Card.GetControler,tp,LOCATION_HAND,0,nil)
 	Duel.SendtoDeck(hand1,tp,0,REASON_RULE)
@@ -139,13 +134,13 @@ function c511004322.activeoperation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SendtoDeck(hand2,1-tp,0,REASON_RULE)
 	--if duel is using obsolete ruling change the draw count to 0 to avoid player from draw the first card.
 	if Duel.IsDuelType(DUEL_OBSOLETE_RULING) then
-        	local e1=Effect.CreateEffect(c)
-		e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-        	e1:SetType(EFFECT_TYPE_FIELD)
-        	e1:SetCode(EFFECT_DRAW_COUNT)
-        	e1:SetTargetRange(1,1)
-        	e1:SetValue(0)
-        	Duel.RegisterEffect(e1,tp)
+			local e1=Effect.CreateEffect(c)
+			e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+			e1:SetType(EFFECT_TYPE_FIELD)
+			e1:SetCode(EFFECT_DRAW_COUNT)
+			e1:SetTargetRange(1,1)
+			e1:SetValue(0)
+			Duel.RegisterEffect(e1,tp)
 	end
 end
 --normal/set
@@ -276,7 +271,7 @@ function c511004322.spelloperation(e,tp,eg,ep,ev,re,r,rp)
 			--re organize forbidden list
 			for i=an+1,n do
 				forbidden[tp][i]=forbidden[tp][i+1]
-			end		 
+			end   
 		else
 			forbidden[tp][an+1]=true
 			Duel.Hint(HINT_MESSAGE,tp,aux.Stringid(4002,9))

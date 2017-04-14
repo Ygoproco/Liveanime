@@ -11,7 +11,6 @@ function c450000354.initial_effect(c)
 	e1:SetTarget(c450000354.target)
 	e1:SetOperation(c450000354.operation)
 	c:RegisterEffect(e1)
-	--[[
 	if not c450000354.global_check then
 		c450000354.global_check=true
 		local ge2=Effect.CreateEffect(c)
@@ -22,7 +21,6 @@ function c450000354.initial_effect(c)
 		ge2:SetOperation(c450000354.archchk)
 		Duel.RegisterEffect(ge2,0)
 	end
-	--]]
 end
 function c450000354.archchk(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetFlagEffect(0,420)==0 then 

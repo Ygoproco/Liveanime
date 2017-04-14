@@ -9,7 +9,6 @@ function c450000353.initial_effect(c)
    e1:SetCondition(c450000353.condition)
    e1:SetOperation(c450000353.operation)
    c:RegisterEffect(e1)
-   --[[
    if not c450000353.global_check then
 		c450000353.global_check=true
 		local ge2=Effect.CreateEffect(c)
@@ -20,7 +19,6 @@ function c450000353.initial_effect(c)
 		ge2:SetOperation(c450000353.archchk)
 		Duel.RegisterEffect(ge2,0)
 	end
-	--]]
 end
 function c450000353.archchk(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetFlagEffect(0,420)==0 then 
@@ -30,8 +28,7 @@ function c450000353.archchk(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c450000353.filterloli(c)
-	return (c:IsSetCard(0x800) or c:IsSetCard(0x2066)) and c:IsType(TYPE_MONSTER) and c:IsLocation(LOCATION_ONFIELD)
-	--return c420.IsMagnet(c) and c:IsType(TYPE_MONSTER) and c:IsLocation(LOCATION_ONFIELD)
+	return c420.IsMagnet(c) and c:IsType(TYPE_MONSTER) and c:IsLocation(LOCATION_ONFIELD)
 end
 function c450000353.condition(e,tp,eg,ev,ep,re,r,rp)
 	return eg:IsExists(c450000353.filterloli,1,nil)
