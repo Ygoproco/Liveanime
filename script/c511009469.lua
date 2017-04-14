@@ -27,7 +27,7 @@ function c511009469.initial_effect(c)
 		Duel.RegisterEffect(ge2,0)
 	end
 end
-function c511009515.archchk(e,tp,eg,ep,ev,re,r,rp)
+function c511009469.archchk(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetFlagEffect(0,420)==0 then 
 		Duel.CreateToken(tp,420)
 		Duel.CreateToken(1-tp,420)
