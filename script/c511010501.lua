@@ -13,7 +13,7 @@ function c511010501.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetCode(511001225)
 	c:RegisterEffect(e2)
-	c511002760.xyzlimit2=function(mc) return mc:IsSetCard(0xe5) end
+	c511010501.xyzlimit2=function(mc) return mc:IsSetCard(0xe5) end
 end
 function c511010501.sprcon(e,c)
 	if c==nil then return true end
