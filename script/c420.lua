@@ -477,7 +477,11 @@ c420.OCGRose={
 function c420.IsRose(c)
 	return c:IsSetCard(0x218) or c420.OCGRose[c:GetCode()] 
 end
--- Seal (not finished)
+-- Seal 
+
+c420.OCGSeal={
+[63102017]=true;[29549364]=true;[25880422]=true;[58921041]=true;
+}
 function c420.IsSeal(c)
 	return c:IsSetCard(0x430) or c420.OCGSeal[c:GetCode()] 
 end
