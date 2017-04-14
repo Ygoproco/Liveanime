@@ -9,6 +9,22 @@ function c511000461.initial_effect(c)
 	e1:SetTarget(c511000461.target)
 	e1:SetOperation(c511000461.activate)
 	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
+	e2:SetCode(EFFECT_BECOME_QUICK)
+	e2:SetRange(LOCATION_SZONE+LOCATION_HAND)
+	e2:SetCondition(c511000461.condition)
+	c:RegisterEffect(e2)
+end
+function c511000461.condition(e)
+	local c=e:GetHandler()
+	if c:IsLocation(LOCATION_HAND) then
+		return c:IsHasEffect(EFFECT_TRAP_ACT_IN_HAND)
+	elseif c:IsLocation(LOCATION_SZONE) then
+		return Duel.GetTurnCount()~=c:GetTurnID() or c:IsHasEffect(EFFECT_TRAP_ACT_IN_SET_TURN)
+	end
+	return false
 end
 function c511000461.filter(c,e,tp)
 	local g=Duel.GetMatchingGroup(Card.IsType,tp,LOCATION_HAND,0,c,TYPE_MONSTER)

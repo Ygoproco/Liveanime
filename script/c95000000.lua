@@ -101,6 +101,32 @@ function c95000000.initial_effect(c)
 	e15:SetCountLimit(1)
 	e15:SetOperation(c95000000.effop)
 	c:RegisterEffect(e15)
+	local f=Duel.Win
+	Duel.Win=function(tp,r)
+		local boss0=Duel.IsExistingMatchingCard(Card.IsCode,0,LOCATION_REMOVED,0,1,nil,95000000)
+		local boss1=Duel.IsExistingMatchingCard(Card.IsCode,1,LOCATION_REMOVED,0,1,nil,95000000)
+		if tp==0 and boss1 then
+			Duel.Damage(1,8000,REASON_RULE)
+			return
+		elseif tp==1 and boss0 then
+			Duel.Damage(0,8000,REASON_RULE)
+			return
+		elseif tp==PLAYER_NONE or tp==PLAYER_ALL then
+			if boss0 and boss1 then
+				Duel.Damage(0,8000,REASON_RULE,true)
+				Duel.Damage(1,8000,REASON_RULE,true)
+				Duel.RDComplete()
+			elseif boss0 then
+				Duel.Damage(0,8000,REASON_RULE)
+				f(1,r)
+			else
+				Duel.Damage(1,8000,REASON_RULE)
+				f(0,r)
+			end
+			return
+		end
+		f(tp,r)
+	end
 end
 function c95000000.stcon(e,tp,eg,ep,ev,re,r,rp)
     return Duel.GetTurnCount()==1

@@ -15,15 +15,24 @@ function c511009514.initial_effect(c)
 	e2:SetCode(EVENT_CHAINING)
 	e2:SetCondition(c511009514.condition2)
 	c:RegisterEffect(e2)
+	if not c511009514.global_check then
+		c511009514.global_check=true
+		local ge2=Effect.CreateEffect(c)
+		ge2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+		ge2:SetCode(EVENT_ADJUST)
+		ge2:SetCountLimit(1)
+		ge2:SetProperty(EFFECT_FLAG_NO_TURN_RESET)
+		ge2:SetOperation(c511009514.archchk)
+		Duel.RegisterEffect(ge2,0)
+	end
 end
-c511009514.collection={
-	[58831685]=true;[10202894]=true;[65570596]=true;[511001464]=true;[511001094]=true;
-	[68722455]=true;[58165765]=true;[45462639]=true;[511001095]=true;[511000365]=true;
-	[14886469]=true;[30494314]=true;[81354330]=true;[86445415]=true;[100000562]=true;
-	[34475451]=true;[40975574]=true;[37132349]=true;[61019812]=true;[19025379]=true;
-	[76547525]=true;[55888045]=true;[97489701]=true;[67030233]=true;[65338781]=true;
-	[45313993]=true;[8706701]=true;[21142671]=true;[66141736]=true;
-}
+function c511009514.archchk(e,tp,eg,ep,ev,re,r,rp)
+	if Duel.GetFlagEffect(0,420)==0 then 
+		Duel.CreateToken(tp,420)
+		Duel.CreateToken(1-tp,420)
+		Duel.RegisterFlagEffect(0,420,0,0,0)
+	end
+end
 function c511009514.condition(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetAttacker()
 	local bc=tc:GetBattleTarget()
@@ -31,8 +40,7 @@ function c511009514.condition(e,tp,eg,ep,ev,re,r,rp)
 		tc=Duel.GetAttackTarget()
 		bc=Duel.GetAttacker()
 	end
-	if not tc or not bc or tc:IsHasEffect(EFFECT_INDESTRUCTABLE_BATTLE) then return false end
-	if not (tc:IsSetCard(0x3b) or tc:IsSetCard(0x1045) or tc:IsSetCard(0x89b) or tc:IsSetCard(0x42f) or c511009514.collection[tc:GetCode()]) then return false end
+	if not tc or not bc or tc:IsHasEffect(EFFECT_INDESTRUCTABLE_BATTLE) or not c420.IsRed(tc) then return false end
 	e:SetLabelObject(tc)
 	if bc==Duel.GetAttackTarget() and bc:IsDefensePos() then return false end
 	if bc:IsPosition(POS_FACEUP_DEFENSE) and bc==Duel.GetAttacker() then
@@ -78,7 +86,7 @@ function c511009514.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c511009514.cfilter(c,e,tp)
 	return c:IsOnField() and c:IsType(TYPE_MONSTER) and c:IsControler(tp) and (not e or c:IsRelateToEffect(e)) 
-		and (c:IsSetCard(0x3b) or c:IsSetCard(0x1045) or c:IsSetCard(0x42f) or c511009514.collection[c:GetCode()])
+		and c420.IsRed(c)
 end
 function c511009514.condition2(e,tp,eg,ep,ev,re,r,rp)
 	local ex,tg,tc=Duel.GetOperationInfo(ev,CATEGORY_DESTROY)

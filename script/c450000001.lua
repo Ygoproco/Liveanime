@@ -12,6 +12,7 @@ function c450000001.initial_effect(c)
 	e5:SetCode(EVENT_ADJUST)
 	e5:SetRange(LOCATION_SZONE)
 	e5:SetOperation(c450000001.atkop)
+	e5:SetLabel(0)
 	c:RegisterEffect(e5)
 	--check for doubling
 	local e6=Effect.CreateEffect(c)
@@ -36,7 +37,7 @@ function c450000001.atkop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local eq=c:GetEquipTarget()
 	local g=Duel.GetMatchingGroup(c450000001.chkfilter,tp,LOCATION_SZONE,LOCATION_SZONE,c,eq)
-	if eq and c:GetFlagEffect(511000695)==0 then
+	if eq and c:GetFlagEffect(511000695)==0 and e:GetLabel()~=g:GetCount()+1 then
 		c:ResetEffect(RESET_DISABLE,RESET_EVENT)
 		local tc=g:GetFirst()
 		while tc do
@@ -53,5 +54,6 @@ function c450000001.atkop(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetValue(atk)
 		e1:SetReset(RESET_EVENT+0x1ff0000)
 		c:RegisterEffect(e1)
+		e:SetLabel(g:GetCount()+1)
 	end
 end

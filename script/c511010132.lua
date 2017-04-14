@@ -3,7 +3,18 @@
 function c511010132.initial_effect(c)
 	--xyz summon
 	c:EnableReviveLimit()
-	aux.AddXyzProcedure(c,nil,4,4,c511010132.ovfilter,aux.Stringid(49221191,0))
+	aux.AddXyzProcedure(c,nil,4,4)
+	local e0=Effect.CreateEffect(c)
+	e0:SetType(EFFECT_TYPE_FIELD)
+	e0:SetDescription(aux.Stringid(49221191,0))
+	e0:SetCode(EFFECT_SPSUMMON_PROC)
+	e0:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	e0:SetRange(LOCATION_EXTRA)
+	e0:SetCondition(aux.XyzCondition2(c511010132.ovfilter))
+	e0:SetTarget(aux.XyzTarget2(c511010132.ovfilter))
+	e0:SetOperation(c511010132.xyzop)
+	e0:SetValue(SUMMON_TYPE_XYZ)
+	c:RegisterEffect(e0)
 	--atk/def
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(511010132,1))
@@ -41,6 +52,19 @@ function c511010132.initial_effect(c)
 	end
 end
 c511010132.xyz_number=32
+function c511010132.xyzop(e,tp,eg,ep,ev,re,r,rp,c,og,min,max)
+	local g=e:GetLabelObject()
+	local mg2=g:GetFirst():GetOverlayGroup()
+	if mg2:GetCount()~=0 then
+		Duel.Overlay(c,mg2)
+	end
+	c:SetMaterial(g)
+	Duel.Overlay(c,g)
+	if not g:GetFirst():IsCode(65676461) then
+		Duel.SendtoGrave(mg2,REASON_RULE)
+	end
+	g:DeleteGroup()
+end
 function c511010132.ovfilter(c)
 	return c:IsFaceup() and c:IsCode(65676461)
 end

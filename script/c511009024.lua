@@ -22,15 +22,6 @@ function c511009024.initial_effect(c)
 		Duel.RegisterEffect(ge1,0)
 	end
 end
---red collection
-c511009024.collection={
-	[58831685]=true;[10202894]=true;[65570596]=true;[511001464]=true;[511001094]=true;
-	[68722455]=true;[58165765]=true;[45462639]=true;[511001095]=true;[511000365]=true;
-	[14886469]=true;[30494314]=true;[81354330]=true;[86445415]=true;[100000562]=true;
-	[34475451]=true;[40975574]=true;[37132349]=true;[61019812]=true;[19025379]=true;
-	[76547525]=true;[55888045]=true;[97489701]=true;[67030233]=true;[65338781]=true;
-	[45313993]=true;[8706701]=true;[21142671]=true;[66141736]=true;
-}
 function c511009024.atkchk(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetFlagEffect(tp,419)==0 and Duel.GetFlagEffect(1-tp,419)==0 then
 		Duel.CreateToken(tp,419)
@@ -38,16 +29,19 @@ function c511009024.atkchk(e,tp,eg,ep,ev,re,r,rp)
 		Duel.RegisterFlagEffect(tp,419,nil,0,1)
 		Duel.RegisterFlagEffect(1-tp,419,nil,0,1)
 	end
+	if Duel.GetFlagEffect(0,420)==0 then 
+		Duel.CreateToken(tp,420)
+		Duel.CreateToken(1-tp,420)
+		Duel.RegisterFlagEffect(0,420,0,0,0)
+	end
 end
 function c511009024.cfilter(c,e)
 	local val=0
 	if c:GetFlagEffect(284)>0 then val=c:GetFlagEffectLabel(284) end
-	return (c:IsSetCard(0x3b) or c:IsSetCard(0x1045) or c:IsSetCard(0x89b) or c511009024.collection[c:GetCode()]) 
-		and c:IsFaceup() and c:IsType(TYPE_SYNCHRO) and c:GetAttack()~=val and (not e or c:IsCanBeEffectTarget(e))
+	return c420.IsRed(c) and c:IsFaceup() and c:IsType(TYPE_SYNCHRO) and c:GetAttack()~=val and (not e or c:IsCanBeEffectTarget(e))
 end
 function c511009024.rmfilter(c)
-	return (c:IsSetCard(0x3b) or c:IsSetCard(0x1045) or c:IsSetCard(0x89b) or c511009024.collection[c:GetCode()]) 
-		and c:IsType(TYPE_SYNCHRO) and c:IsAbleToRemove()
+	return c420.IsRed(c) and c:IsType(TYPE_SYNCHRO) and c:IsAbleToRemove()
 end
 function c511009024.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return eg:IsContains(chkc) and c511009024.cfilter(chkc) end

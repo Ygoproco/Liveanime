@@ -28,7 +28,7 @@ function c511012001.rdcon(e,tp,eg,ep,ev,re,r,rp)
 end
 function c511012001.rdop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if Duel.GetFlagEffect(tp,511012001)==0 and Duel.SelectEffectYesNo(tp,c) then
+	if c:GetFlagEffect(511012001)==0 and Duel.SelectEffectYesNo(tp,c) then
 		Duel.Hint(HINT_CARD,0,511012001)
 		c:RegisterFlagEffect(511012001,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,1)
 		Duel.ChangeBattleDamage(tp,0)

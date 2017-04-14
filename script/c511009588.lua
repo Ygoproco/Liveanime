@@ -130,15 +130,15 @@ function c511009588.disfilter(c)
 	return aux.disfilter1(c) and c:GetSummonLocation()==LOCATION_EXTRA
 end
 function c511009588.distg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) and c511009588.filter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(c511009588.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and c511009588.filter(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(c511009588.filter,tp,0,LOCATION_MZONE,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-	local g=Duel.SelectTarget(tp,c511009588.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
+	local g=Duel.SelectTarget(tp,c511009588.filter,tp,0,LOCATION_MZONE,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_DISABLE,g,1,0,0)
 end
 function c511009588.disop2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local tc=Duel.GetChainInfo(ev,CHAININFO_TARGET_CARDS):GetFirst()
+	local tc=Duel.GetFirstTarget()
 	if c:IsRelateToEffect(re) and tc:IsFaceup() and tc:IsRelateToEffect(re) then
 		c:SetCardTarget(tc)
 	end
