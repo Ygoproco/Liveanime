@@ -47,7 +47,7 @@ function c511004434.condition(e,tp,eg,ev,ep,re,r,rp)
 	return Duel.GetTurnPlayer()==tp
 end
 function c511004434.filter(c,sc)
-	return c:IsType(TYPE_MONSTER) and (c:IsSetCard(0x10e3) or c:IsCode(15610297)) and c:IsCanBeXyzMaterial(sc)
+	return c:IsType(TYPE_MONSTER) and (c:IsSetCard(0x10e3) or c:IsCode(15610297)) and c:IsFaceup()
 end
 function c511004434.target(e,tp,eg,ev,ep,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c511004434.filter,tp,LOCATION_MZONE,0,3,nil,e:GetHandler()) and e:GetHandler():IsCanBeSpecialSummoned(e,SUMMON_TYPE_SPECIAL,tp,true,false) end
@@ -96,13 +96,14 @@ function c511004434.target1(e,tp,eg,ev,ep,re,r,rp,chk)
 end
 function c511004434.operation1(e,tp,eg,ev,ep,re,r,rp)
 	local c=e:GetHandler()
-	local mg=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-	local count=mg:GetCount()
-	mg=mg:Filter(c511004434.spfilter,nil,e,tp)
-	if mg:GetCount()<count then return end
-	if Duel.GetLocationCount(tp,LOCATION_MZONE)<mg:GetCount() or (Duel.IsPlayerAffectedByEffect(tp,59822133) and mg:GetCount()>1) then return end
-	Duel.SendtoHand(c,nil,REASON_EFFECT)
-	Duel.SpecialSummon(mg,SUMMON_TYPE_SPECIAL,tp,tp,true,false,POS_FACEUP)
+	if Duel.SendtoHand(c,nil,REASON_EFFECT)~=0 then
+		local mg=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
+		local count=mg:GetCount()
+		mg=mg:Filter(c511004434.spfilter,nil,e,tp)
+		if mg:GetCount()<count then return end
+		if Duel.GetLocationCount(tp,LOCATION_MZONE)<mg:GetCount() or (Duel.IsPlayerAffectedByEffect(tp,59822133) and mg:GetCount()>1) then return end
+		Duel.SpecialSummon(mg,SUMMON_TYPE_SPECIAL,tp,tp,true,false,POS_FACEUP)
+	end
 end
 function c511004434.op(e,tp,eg,ep,ev,re,r,rp)
 	local g=e:GetHandler():GetOverlayGroup()
