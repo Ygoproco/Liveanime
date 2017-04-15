@@ -10,13 +10,30 @@ function c450000357.initial_effect(c)
 	e1:SetTarget(c450000357.target)
 	e1:SetOperation(c450000357.activate)
 	c:RegisterEffect(e1)
+	if not c450000357.global_check then
+		c450000357.global_check=true
+		local ge2=Effect.CreateEffect(c)
+		ge2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+		ge2:SetCode(EVENT_ADJUST)
+		ge2:SetCountLimit(1)
+		ge2:SetProperty(EFFECT_FLAG_NO_TURN_RESET)
+		ge2:SetOperation(c450000357.archchk)
+		Duel.RegisterEffect(ge2,0)
+	end
+end
+function c450000357.archchk(e,tp,eg,ep,ev,re,r,rp)
+	if Duel.GetFlagEffect(0,420)==0 then 
+		Duel.CreateToken(tp,420)
+		Duel.CreateToken(1-tp,420)
+		Duel.RegisterFlagEffect(0,420,0,0,0)
+	end
 end
 function c450000357.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckLPCost(tp,500) end
 	Duel.PayLPCost(tp,500)
 end
 function c450000357.filter(c,e,tp)
-	return (c:IsSetCard(0x800) or c:IsSetCard(0x2066)) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c420.IsMagnet(c) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function c450000357.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(tp) and c450000357.filter(chkc,e,tp) end
