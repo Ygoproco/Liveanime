@@ -1,4 +1,5 @@
 --Odd-eyes Venom Dragon
+--fixed by MLD
 function c511009587.initial_effect(c)
 	--fusion material
 	c:EnableReviveLimit()
@@ -12,7 +13,6 @@ function c511009587.initial_effect(c)
 	e1:SetCode(EVENT_PRE_BATTLE_DAMAGE)
 	e1:SetOperation(c511009587.op)
 	c:RegisterEffect(e1)
-	
 	--material
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
@@ -44,7 +44,8 @@ function c511009587.initial_effect(c)
 	--pendulum
 	local e5=Effect.CreateEffect(c)
 	e5:SetDescription(aux.Stringid(90036274,0))
-	e5:SetCategory(CATEGORY_DESTROY)
+	e5:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY+EFFECT_FLAG_CARD_TARGET)
+	e5:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_DESTROY+CATEGORY_DAMAGE)
 	e5:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e5:SetCode(EVENT_DESTROYED)
 	e5:SetTarget(c511009587.pentg)
@@ -57,7 +58,6 @@ function c511009587.op(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ChangeBattleDamage(tp,0)
 	end
 end
-
 function c511009587.effcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local g=c:GetMaterial()
@@ -66,24 +66,22 @@ end
 function c511009587.regop(e,tp,eg,ep,ev,re,r,rp)
 	e:GetHandler():RegisterFlagEffect(511009588,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,1)
 end
-
 function c511009587.atkcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():GetFlagEffect(511009588)~=0
 end
-function c511009587.atkfilter(c)
-	return c:IsFaceup()
-end
 function c511009587.atktg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(c511009587.atkfilter,tp,0,LOCATION_MZONE,1,nil) end
+	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsFaceup,tp,0,LOCATION_MZONE,1,nil) end
 end
 function c511009587.atkop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local g=Duel.GetMatchingGroup(c511009587.atkfilter,tp,0,LOCATION_MZONE,nil)
-	if g:GetCount()>0 then
+	if c:IsRelateToEffect(e) then
+		local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
 		local atk=0
 		local tc=g:GetFirst()
 		while tc do
-			atk=atk+tc:GetAttack()
+			if tc:GetAttack()>0 then
+				atk=atk+tc:GetAttack()
+			end
 			tc=g:GetNext()
 		end
 		local e1=Effect.CreateEffect(c)
@@ -94,15 +92,11 @@ function c511009587.atkop(e,tp,eg,ep,ev,re,r,rp)
 		c:RegisterEffect(e1)
 	end
 end
------------------------------
-function c511009587.disfilter(c)
-	return c:IsFaceup() and aux.disfilter1(c)
-end
 function c511009587.distg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and c511009587.disfilter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(c511009587.disfilter,tp,0,LOCATION_MZONE,1,nil) end
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and aux.disfilter1(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(aux.disfilter1,tp,0,LOCATION_MZONE,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
-	Duel.SelectTarget(tp,c511009587.disfilter,tp,0,LOCATION_MZONE,1,1,nil)
+	Duel.SelectTarget(tp,aux.disfilter1,tp,0,LOCATION_MZONE,1,1,nil)
 end
 function c511009587.disop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
@@ -123,7 +117,6 @@ function c511009587.disop(e,tp,eg,ep,ev,re,r,rp)
 		c:CopyEffect(code,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,1)
 	end
 end
------------------------
 function c511009587.filter(c,e,tp)
 	return (c:GetSequence()==6 or c:GetSequence()==7) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
@@ -140,24 +133,25 @@ function c511009587.pentg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c511009587.penop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) then
-		if Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP) then
-			Duel.MoveToField(c,tp,tp,LOCATION_SZONE,POS_FACEUP,true)
-			Duel.BreakEffect()
-			local g=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
-			if Duel.Destroy(g,REASON_EFFECT)>0 then
-			local dg=Duel.GetOperatedGroup()
-			local atk=0
-			local tc=dg:GetFirst()
-			while tc do
-				if tc:IsPreviousPosition(POS_FACEUP) then
-					atk=atk+tc:GetPreviousAttackOnField()
+	local tg=Duel.GetFirstTarget()
+	if tg and tg:IsRelateToEffect(e) then
+		if Duel.SpecialSummon(tg,0,tp,tp,false,false,POS_FACEUP)>0 and c:IsRelateToEffect(e) then
+			if Duel.MoveToField(c,tp,tp,LOCATION_SZONE,POS_FACEUP,true) then
+				Duel.BreakEffect()
+				local g=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
+				if Duel.Destroy(g,REASON_EFFECT)>0 then
+					local dg=Duel.GetOperatedGroup()
+					local atk=0
+					local tc=dg:GetFirst()
+					while tc do
+						if tc:IsPreviousPosition(POS_FACEUP) then
+							atk=atk+tc:GetPreviousAttackOnField()
+						end
+						tc=dg:GetNext()
+					end
+					Duel.Damage(1-tp,atk,REASON_EFFECT)
 				end
-				tc=dg:GetNext()
 			end
-			Duel.Damage(1-tp,atk,REASON_EFFECT)
-		end
 		end
 	end
 end
