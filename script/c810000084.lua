@@ -10,6 +10,7 @@ function c810000084.initial_effect(c)
 	e1:SetRange(LOCATION_SZONE)
 	e1:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
 	e1:SetTarget(aux.PersistentTargetFilter)
+	e1:SetValue(1)
 	c:RegisterEffect(e1)
 	--Destroy
 	local e2=Effect.CreateEffect(c)
