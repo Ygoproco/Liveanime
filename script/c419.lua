@@ -308,17 +308,18 @@ function c419.op4(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function c419.op5(e,tp,eg,ep,ev,re,r,rp)
-	--ATK = 285, prev ATK = 284, ATK<=0 = 286
+	--ATK = 285, prev ATK = 284
 	--LVL = 585, prev LVL = 584
 	local c=e:GetHandler()
 	local g=Duel.GetMatchingGroup(aux.TRUE,tp,0xff,0xff,nil)
 	if not g then return end
 	local tc=g:GetFirst()
 	while tc do
-		if tc:GetFlagEffect(285)==0 and tc:GetFlagEffect(286)==0 and tc:GetFlagEffect(585)==0 then
+		if tc:GetFlagEffect(285)==0 and tc:GetFlagEffect(585)==0 then
 			local atk=tc:GetAttack()
 			if atk<=0 then
-				tc:RegisterFlagEffect(286,nil,0,0)
+				tc:RegisterFlagEffect(285,nil,0,1,0)
+				tc:RegisterFlagEffect(284,nil,0,1,0)
 			else
 				tc:RegisterFlagEffect(285,nil,0,1,atk)
 				tc:RegisterFlagEffect(284,nil,0,1,atk)
@@ -331,8 +332,8 @@ function c419.op5(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c419.atkcfilter(c)
-	if c:GetFlagEffect(285)==0 and c:GetFlagEffect(286)==0 then return false end
-	return c:GetAttack()~=c:GetFlagEffectLabel(285) or (c:GetFlagEffect(286)>0 and c:GetAttack()>0)
+	if c:GetFlagEffect(285)==0 then return false end
+	return c:GetAttack()~=c:GetFlagEffectLabel(285)
 end
 function c419.lvcfilter(c)
 	if c:GetFlagEffect(585)==0 then return false end
@@ -359,14 +360,15 @@ function c419.atkraiseeff(e,tp,eg,ep,ev,re,r,rp)
 		end
 		tc:ResetFlagEffect(284)
 		tc:ResetFlagEffect(285)
-		tc:ResetFlagEffect(286)
 		if prevatk>0 then
 			tc:RegisterFlagEffect(284,nil,0,1,prevatk)
+		else
+			tc:RegisterFlagEffect(284,nil,0,1,0)
 		end
 		if tc:GetAttack()>0 then
 			tc:RegisterFlagEffect(285,nil,0,1,tc:GetAttack())
 		else
-			tc:RegisterFlagEffect(286,nil,0,0)
+			tc:RegisterFlagEffect(285,nil,0,1,0)
 		end
 		tc=g:GetNext()
 	end
@@ -415,14 +417,15 @@ function c419.atkraiseadj(e,tp,eg,ep,ev,re,r,rp)
 		end
 		tc:ResetFlagEffect(284)
 		tc:ResetFlagEffect(285)
-		tc:ResetFlagEffect(286)
 		if prevatk>0 then
 			tc:RegisterFlagEffect(284,nil,0,1,prevatk)
+		else
+			tc:RegisterFlagEffect(284,nil,0,1,0)
 		end
 		if tc:GetAttack()>0 then
 			tc:RegisterFlagEffect(285,nil,0,1,tc:GetAttack())
 		else
-			tc:RegisterFlagEffect(286,nil,0,0)
+			tc:RegisterFlagEffect(285,nil,0,1,0)
 		end
 		tc=g:GetNext()
 	end
