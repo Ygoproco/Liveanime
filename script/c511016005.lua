@@ -82,7 +82,7 @@ function c511016005.activate(e,tp,eg,ep,ev,re,r,rp)
 				e1:SetCode(EFFECT_SET_ATTACK_FINAL)
 				e1:SetValue(0)
 				e1:SetReset(RESET_EVENT+0x1fe0000)
-				tc:RegisterEffect(e1,true)
+				spgc:RegisterEffect(e1,true)
 				spgc:RegisterFlagEffect(51116005,RESET_PHASE+PHASE_END,0,1,fid)
 				spgc=spg:GetNext()
 			end
