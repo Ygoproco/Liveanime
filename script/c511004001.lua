@@ -53,13 +53,15 @@ function c511004001.op(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SetLP(1-tp,math.ceil(lp2/2))
 		--half deck
 		local dg1=Duel.GetMatchingGroup(aux.TRUE,tp,LOCATION_DECK,0,nil)
-		local ct1=math.ceil(dg1:GetCount()/2)
-		local rg1=dg1:Select(tp,ct1,ct1,nil)
-		Duel.SendtoDeck(rg1,nil,-2,REASON_RULE)
+		if dg1:GetCount()>30 then
+			local rg1=dg1:Select(tp,dg1:GetCount()-30,dg1:GetCount()-20,nil)
+			Duel.SendtoDeck(rg1,nil,-2,REASON_RULE)
+		end
 		local dg2=Duel.GetMatchingGroup(aux.TRUE,1-tp,LOCATION_DECK,0,nil)
-		local ct2=math.ceil(dg2:GetCount()/2)
-		local rg2=dg2:Select(1-tp,ct2,ct2,nil)
-		Duel.SendtoDeck(rg2,nil,-2,REASON_RULE)
+		if dg2:GetCount()>30 then
+			local rg2=dg2:Select(1-tp,dg2:GetCount()-30,dg2:GetCount()-20,nil)
+			Duel.SendtoDeck(rg2,nil,-2,REASON_RULE)
+		end
 		--reduce extra
 		local eg1=Duel.GetMatchingGroup(aux.TRUE,tp,LOCATION_EXTRA,0,nil)
 		if eg1:GetCount()>5 and eg1:GetCount()<=15 then
