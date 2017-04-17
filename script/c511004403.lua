@@ -78,7 +78,7 @@ end
 function c511004403.damcon(e,tp,eg,ep,ev,re,r,rp)
 	local ec=eg:GetFirst()
 	e:SetLabel(ev)
-	return eg:GetCount()==1 and ec:IsControler(1-tp) and ev>0
+	return eg:GetCount()==1 and ev>0
 end
 function c511004403.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
