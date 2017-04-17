@@ -26,7 +26,7 @@ function c511004437.initial_effect(c)
 	c:RegisterEffect(e3)
 end
 function c511004437.filter(c,sc)
-	return c:IsType(TYPE_MONSTER) and (c:IsSetCard(0x10e3) or c:IsCode(15610297)) and c:IsCanBeXyzMaterial(sc)
+	return c:IsType(TYPE_MONSTER) and (c:IsSetCard(0x10e3) or c:IsCode(15610297)) and c:IsFaceup()
 end
 function c511004437.target(e,tp,eg,ev,ep,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c511004437.filter,tp,LOCATION_MZONE,0,1,nil,e:GetHandler()) and e:GetHandler():IsCanBeSpecialSummoned(e,SUMMON_TYPE_SPECIAL,tp,true,false) end
@@ -54,7 +54,7 @@ function c511004437.filter1(c)
 end
 function c511004437.target0(e,tp,eg,ev,ep,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return c:IsAbleToHand() and Duel.IsExistingMatchingCard(c511004437.filter1,tp,LOCATION_DECK,0,1,nil) end
+	if chk==0 then return c:IsAbleToDeck() and Duel.IsExistingMatchingCard(c511004437.filter1,tp,LOCATION_DECK,0,1,nil) end
 	local tg=Duel.SelectTarget(tp,c511004437.filter1,tp,LOCATION_DECK,0,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,tg:AddCard(c),2,0,0)
 end
@@ -65,7 +65,7 @@ function c511004437.operation0(e,tp,eg,ev,ep,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	local c=e:GetHandler()
 	local mg=c:GetOverlayGroup()
-	if tc and tc:IsRelateToEffect(e) and Duel.SendtoHand(c,nil,REASON_EFFECT) then
+	if tc and tc:IsRelateToEffect(e) and Duel.SendtoDeck(c,nil,0,REASON_EFFECT)~=0 then
 		Duel.SendtoHand(tc,nil,REASON_EFFECT)
 		local count=mg:GetCount()
 		mg=mg:Filter(c511004437.spfilter,nil,e,tp)
