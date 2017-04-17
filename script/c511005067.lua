@@ -18,8 +18,8 @@ function scard.initial_effect(c)
   e2:SetOperation(scard.op)
   c:RegisterEffect(e2)
   --Global const
-  if not scard.global_check then
-    scard.global_check=true
+  if not scard.gl_chk then
+    scard.gl_chk=true
     local ge2=Effect.CreateEffect(c)
     ge2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
     ge2:SetCode(EVENT_ADJUST)
