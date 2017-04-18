@@ -15,6 +15,7 @@ function c511009025.initial_effect(c)
 	--atk
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_IGNITION)
+	e2:SetCategory(CATEGORY_ATKCHANGE)
 	e2:SetDescription(aux.Stringid(900787,0))
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetCountLimit(1)
