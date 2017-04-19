@@ -20,10 +20,21 @@ function scard.initial_effect(c)
   --Global const
   if not scard.gl_chk then
     scard.gl_chk=true
-    scard.seal_lst={
-      25880422,29549364,63102017,
-      58921041,511000176
-    }
+    local ge2=Effect.CreateEffect(c)
+    ge2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+    ge2:SetCode(EVENT_ADJUST)
+    ge2:SetCountLimit(1)
+    ge2:SetProperty(EFFECT_FLAG_NO_TURN_RESET)
+    ge2:SetOperation(scard.archchk)
+    Duel.RegisterEffect(ge2,0)
+  end
+end
+
+function scard.archchk(e,tp,eg,ep,ev,re,r,rp)
+  if Duel.GetFlagEffect(0,420)==0 then 
+    Duel.CreateToken(tp,420)
+    Duel.CreateToken(1-tp,420)
+    Duel.RegisterFlagEffect(0,420,0,0,0)
   end
 end
 
@@ -32,10 +43,7 @@ function scard.cd(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function scard.fil(c)
-  for i,j in pairs(scard.seal_lst) do
-    if c:IsCode(i) then return c:IsAbleToHand() end
-  end
-  return false
+  return c420.IsSeal(c) and c:IsAbleToHand()
 end
 
 function scard.op(e,tp,eg,ep,ev,re,r,rp)
