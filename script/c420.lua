@@ -514,7 +514,17 @@ function c420.IsSkyFusion(c)
 	or c:IsFusionSetCard(0xf6)
 	or c:IsFusionSetCard(0x3042)
 end
--- Slime (not finished)
+-- Slime (list to recheck)
+c420.OCGSlime={
+[31709826]=true;--revival jam
+[46821314]=true;--humanoid slime
+[3918345]=true;--magical reflect slime
+[26905245]=true;--metal reflect slime
+[5600127]=true; --humanoid worm drake
+[45206713]=true;--D/D Swirl Slime
+[72291412]=true;--D/D Necro Slime
+[21770261]=true;--slime token
+}
 function c420.IsSlime(c)
 	return (c:IsSetCard(0x207) or c420.OCGSlime[c:GetCode()]) 
 end
