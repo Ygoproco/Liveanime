@@ -19,7 +19,7 @@ function c511004405.target(e,tp,eg,ev,ep,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_CONTROL,tg,1,tp,0)
 end
 function c511004405.burnfilter(c,lv)
-	return c:IsType(TYPE_MONSTER) and c:GetLevel()<lv and c:IsControlerCanBeChanged() and not (c:IsType(TYPE_XYZ) and not (c:IsHasEffect(EFFECT_RANK_LEVEL) or c:IsHasEffect(EFFECT_RANK_LEVEL_S)))
+	return c:IsFaceup() and c:IsType(TYPE_MONSTER) and c:GetLevel()<lv and c:IsControlerCanBeChanged() and not (c:IsType(TYPE_XYZ) and not (c:IsHasEffect(EFFECT_RANK_LEVEL) or c:IsHasEffect(EFFECT_RANK_LEVEL_S)))
 end
 function c511004405.operation(e,tp,eg,ev,ep,re,r,rp)
 	local tg=Duel.GetFirstTarget()
