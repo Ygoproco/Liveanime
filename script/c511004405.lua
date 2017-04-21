@@ -19,18 +19,15 @@ function c511004405.target(e,tp,eg,ev,ep,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_CONTROL,tg,1,tp,0)
 end
 function c511004405.burnfilter(c,lv)
-	return c:IsType(TYPE_MONSTER) and c:GetLevel()<lv and c:IsControlerCanBeChanged() and not (c:IsType(TYPE_XYZ) and not (c:IsHasEffect(EFFECT_RANK_LEVEL) or c:IsHasEffect(EFFECT_RANK_LEVEL_S)))
+	return c:IsFaceup() and c:IsType(TYPE_MONSTER) and c:GetLevel()<lv and c:IsControlerCanBeChanged() and not (c:IsType(TYPE_XYZ) and not (c:IsHasEffect(EFFECT_RANK_LEVEL) or c:IsHasEffect(EFFECT_RANK_LEVEL_S)))
 end
 function c511004405.operation(e,tp,eg,ev,ep,re,r,rp)
 	local tg=Duel.GetFirstTarget()
 	local lv=tg:GetLevel()
 	local ctg=Duel.GetMatchingGroup(c511004405.burnfilter,tp,LOCATION_MZONE,0,nil,lv)
 	local space=Duel.GetLocationCount(1-tp,LOCATION_MZONE)
-	local count=ctg:GetCount()
-	if space<count then
-		count=space
-	end
-	if space>0 then
+	local count=math.min(ctg:GetCount(),space)
+	if count>0 then
 		ctg=ctg:FilterSelect(tp,Card.GetControler,count,count,nil)
 		Duel.GetControl(ctg,1-tp,RESET_PHASE+PHASE_END,1)
 	end
