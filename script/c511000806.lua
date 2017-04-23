@@ -31,7 +31,7 @@ function c511000806.synop(e,tp,eg,ep,ev,re,r,rp,syncard,f,minc,maxc)
 	local lv=syncard:GetLevel()-c:GetLevel()
 	local g1=Duel.GetMatchingGroup(c511000806.synfilter1,syncard:GetControler(),LOCATION_MZONE,LOCATION_MZONE,c,syncard,c,f)
 	local g2=Duel.GetMatchingGroup(c511000806.synfilter2,syncard:GetControler(),LOCATION_GRAVE,0,c,syncard,c,f)
-	local res=g:CheckWithSumEqual(Card.GetSynchroLevel,lv,minc,maxc,syncard)
+	local res=g1:CheckWithSumEqual(Card.GetSynchroLevel,lv,minc,maxc,syncard)
 	local res2=minc<=1 and g2:CheckWithSumEqual(Card.GetSynchroLevel,lv,1,1,syncard)
 	local sg=nil
 	if (res2 and res and Duel.SelectYesNo(tp,aux.Stringid(61965407,0)))
