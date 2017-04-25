@@ -26,8 +26,8 @@ function c511015103.xyzfilter(c,e,mg)
 	return c:IsXyzSummonable(mg)
 end
 
-function c511015103.mfilter1(c,e,mg,exg)
-	return mg:IsExists(c511015103.mfilter2,1,nil,e,Group.FromCards(c),exg)
+function c511015103.mfilter1(c,e,mg,exg,ft)
+	return mg:IsExists(c511015103.mfilter2,1,nil,e,Group.FromCards(c),exg) and (ft>1 or c:IsCode(47198668))
 end
 function c511015103.mfilter2(c,e,mg,exg)
 	local g = mg:Clone()
@@ -40,22 +40,22 @@ function c511015103.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
 	if Duel.IsPlayerAffectedByEffect(tp,59822133) and ft>1 then ft=1 end
 	local exg=Duel.GetMatchingGroup(c511015103.xyzfilter,tp,LOCATION_EXTRA,0,nil,e,mg)
-	if chk==0 then return Duel.IsPlayerCanSpecialSummonCount(tp,1)
-		and Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and exg:GetCount()>0 end
+	if chk==0 then return Duel.IsPlayerCanSpecialSummonCount(tp,1) and ft>0 and exg:GetCount()>0 
+		and mg:IsExists(c511015103.mfilter1,1,nil,e,mg,exg,ft)end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local sg1=mg:FilterSelect(tp,c511015103.mfilter1,1,1,nil,e,mg,exg)
+	local sg1=mg:FilterSelect(tp,c511015103.mfilter1,1,1,nil,e,mg,exg,ft)
 	mg:RemoveCard(sg1:GetFirst())
 	local tc1=sg1:GetFirst()
-	local continue = true
+	local continue = sg1:GetCount()<ft
 	if exg:IsExists(Card.IsXyzSummonable,1,nil,sg1,sg1:GetCount(),sg1:GetCount())
-		and mg:IsExists(c511015103.mfilter2,1,nil,e,sg1,exg) then
+		and mg:IsExists(c511015103.mfilter2,1,nil,e,sg1,exg) and continue then
 		
 		continue = Duel.SelectYesNo(tp,aux.Stringid(511015103,0))
 	end
 	while sg1:GetCount()<ft and mg:GetCount()>0 and continue do
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 		local sg2=mg:FilterSelect(tp,c511015103.mfilter2,1,1,nil,e,sg1,exg)
+		if not sg2 or sg2:GetCount()==0 then break end
 		mg:RemoveCard(sg2:GetFirst())
 		sg1:Merge(sg2)
 		
@@ -75,9 +75,8 @@ function c511015103.filter2(c,e,tp)
 end
 function c511015103.activate(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.IsPlayerAffectedByEffect(tp,59822133) then return end
-	if Duel.GetLocationCount(tp,LOCATION_MZONE)<2 then return end
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(c511015103.filter2,nil,e,tp)
-	if g:GetCount()<1 then return end
+	if g:GetCount()<1 or g:GetCount()>Duel.GetLocationCount(tp,LOCATION_MZONE) then return end
 	local tc=g:GetFirst()
 	while tc do
 		Duel.SpecialSummonStep(tc,0,tp,tp,false,false,POS_FACEUP)
