@@ -7,11 +7,11 @@ function Auxiliary.PConditionFilter(c,e,tp,lscale,rscale)
 		lv=c:GetLevel()
 	end
 	return (c:IsLocation(LOCATION_HAND) or (c:IsFaceup() and c:IsType(TYPE_PENDULUM)))
-		and ((lv>lscale and lv<rscale) or (c:IsCode(511004423) and Duel.IsExistingMatchingCard(Card.IsSetCard,tp,LOCATION_EXTRA,0,1,nil,0x99))) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_PENDULUM,tp,false,false)
+		and ((lv>lscale and lv<rscale) or c:IsHasEffect(511004423)) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_PENDULUM,tp,false,false)
 		and not c:IsForbidden()
 end
 function c511004423.initial_effect(c)
-	--pendulum sokan
+	--pendulum sokan (pendulum e0/e1+can bypass scale e2)
 	local e0=Effect.CreateEffect(c)
 	e0:SetDescription(1160)
 	e0:SetType(EFFECT_TYPE_ACTIVATE)
@@ -28,27 +28,25 @@ function c511004423.initial_effect(c)
 	e1:SetOperation(c511004423.operation())
 	e1:SetValue(SUMMON_TYPE_PENDULUM)
 	c:RegisterEffect(e1)
-	--attack
 	local e2=Effect.CreateEffect(c)
-	e2:SetCategory(CATEGORY_ATKCHANGE)
-	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
-	e2:SetCode(EVENT_ATTACK_ANNOUNCE)
-	e2:SetRange(LOCATION_MZONE)
-	e2:SetCondition(c511004423.con)
-	e2:SetTarget(c511004423.tg)
-	e2:SetOperation(c511004423.op)
+	e2:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetCode(511004423)
+	e2:SetCondition(c511004423.ospcondition)
 	c:RegisterEffect(e2)
+	--attack
+	local e3=Effect.CreateEffect(c)
+	e3:SetCategory(CATEGORY_ATKCHANGE)
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
+	e3:SetCode(EVENT_ATTACK_ANNOUNCE)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetCondition(c511004423.con)
+	e3:SetTarget(c511004423.tg)
+	e3:SetOperation(c511004423.op)
+	c:RegisterEffect(e3)
 end
-function c511004423.conditionfilter(c,e,tp,lscale,rscale)
-	local lv=0
-	if c.pendulum_level then
-		lv=c.pendulum_level
-	else
-		lv=c:GetLevel()
-	end
-	return (c:IsLocation(LOCATION_HAND) or (c:IsFaceup() and c:IsType(TYPE_PENDULUM)))
-		and ((lv>lscale and lv<rscale) or (c:IsCode(511004423) and Duel.IsExistingMatchingCard(Card.IsSetCard,tp,LOCATION_EXTRA,0,1,nil,0x99))) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_PENDULUM,tp,false,false)
-		and not c:IsForbidden()
+function c511004423.ospcondition(c)
+	return Duel.IsExistingMatchingCard(Card.IsSetCard,tp,LOCATION_EXTRA,0,1,nil,0x99)
 end
 function c511004423.condition()
 	return  function(e,c,og)
@@ -64,9 +62,9 @@ function c511004423.condition()
 				local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
 				if ft<=0 then return false end
 				if og then
-					return og:IsExists(c511004423.conditionfilter,1,nil,e,tp,lscale,rscale)
+					return og:IsExists(Auxiliary.PConditionFilter,1,nil,e,tp,lscale,rscale)
 				else
-					return Duel.IsExistingMatchingCard(c511004423.conditionfilter,tp,LOCATION_HAND+LOCATION_EXTRA,0,1,nil,e,tp,lscale,rscale)
+					return Duel.IsExistingMatchingCard(Auxiliary.PConditionFilter,tp,LOCATION_HAND+LOCATION_EXTRA,0,1,nil,e,tp,lscale,rscale)
 				end
 			end
 end
@@ -81,9 +79,9 @@ function c511004423.operation()
 				if Duel.IsPlayerAffectedByEffect(tp,59822133) then ft=1 end
 				local tg=nil
 				if og then
-					tg=og:Filter(tp,c511004423.conditionfilter,nil,e,tp,lscale,rscale)
+					tg=og:Filter(tp,Auxiliary.PConditionFilter,nil,e,tp,lscale,rscale)
 				else
-					tg=Duel.GetMatchingGroup(c511004423.conditionfilter,tp,LOCATION_HAND+LOCATION_EXTRA,0,nil,e,tp,lscale,rscale)
+					tg=Duel.GetMatchingGroup(Auxiliary.PConditionFilter,tp,LOCATION_HAND+LOCATION_EXTRA,0,nil,e,tp,lscale,rscale)
 				end
 				local ect=c29724053 and Duel.IsPlayerAffectedByEffect(tp,29724053) and c29724053[tp]
 				if ect and (ect<=0 or ect>ft) then ect=nil end
