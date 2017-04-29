@@ -34,14 +34,8 @@ function c511004404.prefilter(c,tp)
 	return c:GetPreviousControler()==tp and bit.band(c:GetPreviousTypeOnField(),TYPE_MONSTER)==TYPE_MONSTER and c:GetFlagEffect(511004404)~=0 and not (c:IsType(TYPE_XYZ) and not (c:IsHasEffect(EFFECT_RANK_LEVEL) or c:IsHasEffect(EFFECT_RANK_LEVEL_S)))
 end
 function c511004404.con(e,tp,eg,ev,ep,re,r,rp)
-	local lv=0
-	local c=eg:GetFirst()
-	while c do
-		if c:GetPreviousControler()==tp and bit.band(c:GetPreviousTypeOnField(),TYPE_MONSTER)==TYPE_MONSTER and c:GetFlagEffect(511004404)~=0 and not (c:IsType(TYPE_XYZ) and not (c:IsHasEffect(EFFECT_RANK_LEVEL) or c:IsHasEffect(EFFECT_RANK_LEVEL_S))) and c:GetLevel()>lv then
-			lv=c:GetLevel()
-		end
-		c=eg:GetNext()
-	end
+	local cg=eg:Filter(c511004404.prefilter,nil,tp)
+	local rg,lv=eg:GetMaxGroup(Card.GetLevel)
 	e:SetLabel(lv)
 	return eg:IsExists(c511004404.prefilter,1,nil,tp)
 end
