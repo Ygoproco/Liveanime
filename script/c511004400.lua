@@ -23,6 +23,7 @@ function c511004400.aop(e,tp,eg,ev,ep,re,r,rp)
 		Duel.SendtoDeck(sg,nil,-2,REASON_RULE)
 		return
 	end
+	Duel.RegisterFlagEffect(0,511004400,0,0,0)
 	local lol=LOCATION_ONFIELD+LOCATION_GRAVE+LOCATION_REMOVED+LOCATION_DECK
 	Duel.DisableShuffleCheck()
 	Duel.SendtoDeck(c,tp,-2,REASON_RULE)
@@ -33,13 +34,14 @@ function c511004400.aop(e,tp,eg,ev,ep,re,r,rp)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetCode(EFFECT_CANNOT_ACTIVATE)
-	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_IGNORE_IMMUNE)
 	e1:SetCondition(c511004400.condition)
 	e1:SetTargetRange(1,1)
 	e1:SetValue(c511004400.aclimit)
 	Duel.RegisterEffect(e1,tp)
 	--disable
 	local e2=Effect.CreateEffect(c)
+	e2:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
 	e2:SetType(EFFECT_TYPE_FIELD)
 	e2:SetCondition(c511004400.condition)
 	e2:SetTargetRange(lol,lol)
@@ -51,18 +53,20 @@ function c511004400.condition()
    return Duel.GetFlagEffect(0,511004401)==0
 end
 function c511004400.aclimit(e,re,tp)
-	return re:IsActiveType(TYPE_MONSTER)
+	return re:IsActiveType(TYPE_MONSTER) and re:GetHandler():GetFlagEffect(511004399)==0
 end
 function c511004400.disable(e,c)
-	return c:IsType(TYPE_MONSTER)
+	return c:IsType(TYPE_MONSTER) and c:GetFlagEffect(511004399)==0
 end
 --[[
-"vanilla mode" reference
-1:majesty's fiend
-2:skill drain
-3:vector pendulum
-4:concentration duel
-5:Red supremacy
-ability yeil currennt id:
-51100441
+	"vanilla mode" reference
+	1:majesty's fiend
+	2:skill drain
+	3:vector pendulum
+	4:concentration duel
+	5:Red supremacy
+	ability yell currennt id:
+	511004401
+	potential yell current id:
+	511004399
 --]]

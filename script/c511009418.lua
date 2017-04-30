@@ -11,7 +11,7 @@ function c511009418.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function c511009418.filter(c)
-	return c:IsFaceup() and Duel.IsExistingMatchingCard(c65612386.filter2,tp,0,LOCATION_ONFIELD,1,nil,c:GetCode())
+	return c:IsFaceup() and Duel.IsExistingMatchingCard(c511009418.filter2,tp,0,LOCATION_ONFIELD,1,nil,c:GetCode())
 end
 function c511009418.filter2(c,code)
 	return c:IsFaceup() and c:IsCode(code) 
