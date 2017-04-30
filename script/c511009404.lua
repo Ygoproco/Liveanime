@@ -36,14 +36,14 @@ function c511009404.initial_effect(c)
 	e3:SetOperation(c511009404.desop)
 	c:RegisterEffect(e3)
 end
-function c511009404.filter(c)
+function c511009404.cfilter(c)
 	return c:IsFaceup() and c:IsCode(73734821) and Duel.IsExistingMatchingCard(c511009404.filter,tp,LOCATION_MZONE,0,1,c)
 end
 function c511009404.filter(c)
 	return c:IsFaceup() and c:IsRace(RACE_SPELLCASTER) 
 end
 function c511009404.condition(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsExistingMatchingCard(c511009404.filter,tp,LOCATION_MZONE,0,1,nil)
+	return Duel.IsExistingMatchingCard(c511009404.cfilter,tp,LOCATION_MZONE,0,1,nil)
 end
 function c511009404.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
