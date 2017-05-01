@@ -108,6 +108,7 @@ function c511015106.activate(e,tp,eg,ep,ev,re,r,rp)
 		
 		tc = Duel.SelectMatchingCard(tp,c511015106.filter4,tp,LOCATION_EXTRA,0,1,1,nil,e,tp,tc2,tc1):GetFirst()
 		Duel.XyzSummon(tp,tc,sg)
+		tc:CompleteProcedure()
 		
 		--destroy
 		local e1=Effect.CreateEffect(e:GetHandler())
