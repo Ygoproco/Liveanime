@@ -45,7 +45,8 @@ function c511004423.initial_effect(c)
 	e3:SetOperation(c511004423.op)
 	c:RegisterEffect(e3)
 end
-function c511004423.ospcondition(c)
+function c511004423.ospcondition(e)
+	local tp=e:GetHandlerPlayer()
 	return Duel.IsExistingMatchingCard(Card.IsSetCard,tp,LOCATION_EXTRA,0,1,nil,0x99)
 end
 function c511004423.condition()
