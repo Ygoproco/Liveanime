@@ -32,7 +32,7 @@ function c511004423.filter(c)
 	return c:IsFaceup() and c:IsType(TYPE_PENDULUM)
 end
 function c511004423.op(e,tp,eg,ev,ep,re,r,rp)
-	local g=Duel.GetMatchingGroupCount(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
+	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
 	local ct=Duel.GetMatchingGroupCount(c511004423.filter,tp,LOCATION_EXTRA,0,nil)*1000
 	local tc=g:GetFirst()
 	while tc do
