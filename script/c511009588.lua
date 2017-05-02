@@ -139,7 +139,7 @@ function c511009588.repfilter(c,tp)
 end
 function c511009588.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckLocation(tp,LOCATION_SZONE,6) or Duel.CheckLocation(tp,LOCATION_SZONE,7) end
-	return Duel.SelectYesNo(tp,aux.Stringid(43266605,0))
+	return Duel.SelectYesNo(tp,aux.Stringid(45974017,0))
 end
 function c511009588.repval(e,c)
 	return c511009588.repfilter(c,e:GetHandlerPlayer())

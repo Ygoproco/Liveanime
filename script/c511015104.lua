@@ -87,6 +87,7 @@ function c511015104.activate(e,tp,eg,ep,ev,re,r,rp)
 		tc:SetMaterial(sg)
 		Duel.SendtoGrave(sg,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)
 		Duel.SpecialSummon(tc,SUMMON_TYPE_FUSION,tp,tp,false,false,POS_FACEUP)
+		tc:CompleteProcedure()
 		
 		--destroy
 		local e1=Effect.CreateEffect(e:GetHandler())
