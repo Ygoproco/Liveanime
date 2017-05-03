@@ -7,7 +7,6 @@ function c511018004.initial_effect(c)
 	e1:SetTarget(c511018004.target)
 	e1:SetOperation(c511018004.operation)
 	c:RegisterEffect(e1)
-	e1:SetLabelObject(g)
 end
 function c511018004.filter(c)
 	return c:IsCode(511002428) and c:IsPosition(POS_ATTACK)
