@@ -1,4 +1,5 @@
 --Cubic Ascension
+--fixed by MLD
 function c511009101.initial_effect(c)
 	--activate
 	local e1=Effect.CreateEffect(c)
@@ -15,18 +16,21 @@ function c511009101.condition(e,tp,eg,ev,ep,re,r,rp)
 	return a and a:IsControler(1-tp)
 end
 function c511009101.spfilter(c,e,tp)
-	return c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_SPECIAL,tp,true,false) and c:IsType(TYPE_MONSTER) and c:IsCode(15610297)
+	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsCode(15610297)
 end
 function c511009101.target(e,tp,eg,ev,ep,re,r,rp,chk)
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.IsExistingMatchingCard(c511009101.spfilter,tp,LOCATION_DECK,0,1,nil,e,tp) end
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 
+		and Duel.IsExistingMatchingCard(c511009101.spfilter,tp,LOCATION_DECK,0,1,nil,e,tp) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK)
 end
 function c511009101.operation(e,tp,eg,ev,ep,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectMatchingCard(tp,c511009101.spfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
-	local tc=g:GetFirst()
-	if tc and tc:IsRelateToEffect(e) and Duel.SpecialSummon(tc,SUMMON_TYPE_SPECIAL,tp,tp,true,false,POS_FACEUP)~=0 then
-		Duel.ChangeAttackTarget(tc)
+	local tc=Duel.SelectMatchingCard(tp,c511009101.spfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp):GetFirst()
+	if tc and Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)~=0 then
+		local a=Duel.GetAttacker()
+		if a:IsAttackable() and not a:IsImmuneToEffect(e) then
+			Duel.CalculateDamage(a,tc)
+		end
 	end
 end
