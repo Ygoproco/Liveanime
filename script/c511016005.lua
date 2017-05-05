@@ -136,12 +136,19 @@ function c511016005.activate(e,tp,eg,ep,ev,re,r,rp)
 				e3:SetOperation(c511016005.desop)
 				e3:SetReset(RESET_PHASE+PHASE_END)
 				Duel.RegisterEffect(e3,tp)
+				local e4=Effect.CreateEffect(e:GetHandler())
+				e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+				e4:SetCode(EVENT_BE_MATERIAL)
+				e4:SetLabelObject(spg)
+				e4:SetOperation(c511016005.checkop)
+				e4:SetReset(RESET_PHASE+PHASE_END)
+				Duel.RegisterEffect(e4,tp)
 			end
 		end
 	end
 end
 function c511016005.chkfilter(c,fid)
-	return c:GetFlagEffectLabel(51116005)==fid and c:IsReason(REASON_MATERIAL) and c:IsReason(REASON_SYNCHRO+REASON_XYZ)
+	return c:GetFlagEffectLabel(51116005)==fid and c:GetFlagEffect(511016005)>0
 end
 function c511016005.descon(e,tp,eg,ep,ev,re,r,rp)
 	local g=e:GetLabelObject()
@@ -160,5 +167,20 @@ function c511016005.desop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.BreakEffect()
 		local dam=dg:GetSum(Card.GetPreviousAttackOnField)
 		Duel.Damage(tp,dam,REASON_EFFECT)
+	end
+end
+function c511016005.filter(c,g)
+	return g:IsContains(c)
+end
+function c511016005.checkop(e,tp,eg,ep,ev,re,r,rp)
+	local g=e:GetLabelObject()
+	if not g then return end
+	local sg=eg:Filter(c511016005.filter,nil,g)
+	if sg:GetCount()>0 and (r==REASON_SYNCHRO or r==REASON_XYZ) then
+		local tc=sg:GetFirst()
+		while tc do
+			tc:RegisterFlagEffect(511016005,RESET_PHASE+PHASE_END,0,0)
+			tc=sg:GetNext()
+		end
 	end
 end
