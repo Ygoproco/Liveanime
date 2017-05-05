@@ -49,7 +49,7 @@ function c511009588.initial_effect(c)
 	e4:SetCode(EFFECT_DISABLE)
 	e4:SetRange(LOCATION_MZONE)
 	e4:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e4:SetTarget(c511009588.distg3)
+	e4:SetTarget(aux.PersistentTargetFilter)
 	c:RegisterEffect(e4)
 	--destroy replace
 	local e5=Effect.CreateEffect(c)
@@ -61,7 +61,6 @@ function c511009588.initial_effect(c)
 	e5:SetOperation(c511009588.repop)
 	c:RegisterEffect(e5)
 end
-
 function c511009588.discon1(e,tp,eg,ep,ev,re,r,rp)
 	return not e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) and Duel.IsChainDisablable(ev) and re:IsActiveType(TYPE_MONSTER)
 end
@@ -127,12 +126,9 @@ end
 function c511009588.disop2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	if c:IsRelateToEffect(e) and tc and tc:IsFaceup() and tc:IsRelateToEffect(re) then
+	if c:IsRelateToEffect(e) and tc and tc:IsFaceup() and tc:IsRelateToEffect(e) then
 		c:SetCardTarget(tc)
 	end
-end
-function c511009588.distg3(e,c)
-	return e:GetHandler():IsHasCardTarget(c)
 end
 function c511009588.repfilter(c,tp)
 	return c:IsFaceup() and c:IsSetCard(0x99) and c:IsOnField() and c:IsControler(tp) and c:IsReason(REASON_BATTLE)
