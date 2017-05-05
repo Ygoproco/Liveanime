@@ -7,7 +7,7 @@ function c511009084.initial_effect(c)
 	c:RegisterEffect(e1)
 	--double level
 	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(95100770,0))
+	e4:SetDescription(aux.Stringid(3606728,0))
 	e4:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e4:SetType(EFFECT_TYPE_QUICK_O)
 	e4:SetCode(EVENT_FREE_CHAIN)
