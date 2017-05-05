@@ -34,6 +34,7 @@ function c511000987.activate(e,tp,eg,ep,ev,re,r,rp)
 	local ct=mg:GetCount()
 	local sumable=true
 	local sumtype=tc:GetSummonType()
+	local p=tc:GetControler()
 	local op=0
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_EFFECT)
 	if tc:IsAbleToExtra() and tc:IsAbleToGrave() then
@@ -52,10 +53,10 @@ function c511000987.activate(e,tp,eg,ep,ev,re,r,rp)
 		ch=Duel.SendtoDeck(tc,nil,0,REASON_EFFECT)
 	end
 	if ch~=0 and bit.band(sumtype,SUMMON_TYPE_FUSION)==SUMMON_TYPE_FUSION
-		and ct>0 and ct<=Duel.GetLocationCount(tp,LOCATION_MZONE)
-		and mg:FilterCount(aux.NecroValleyFilter(c511000987.mgfilter),nil,e,tp,tc,mg)==ct
-		and (ct<=1 or not Duel.IsPlayerAffectedByEffect(tp,59822133)) then
+		and ct>0 and ct<=Duel.GetLocationCount(p,LOCATION_MZONE)
+		and mg:FilterCount(aux.NecroValleyFilter(c511000987.mgfilter),nil,e,p,tc,mg)==ct
+		and (ct<=1 or not Duel.IsPlayerAffectedByEffect(p,59822133)) then
 		Duel.BreakEffect()
-		Duel.SpecialSummon(mg,0,tp,tp,false,false,POS_FACEUP)
+		Duel.SpecialSummon(mg,0,tp,p,false,false,POS_FACEUP)
 	end
 end
