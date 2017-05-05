@@ -34,7 +34,7 @@ function c511009546.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	
 	local g=Duel.GetMatchingGroup(c511009546.filter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,g:GetCount(),0,0)
-	local dam=g1:GetSum(Card.GetAttack)
+	local dam=g:GetSum(Card.GetAttack)
 	if g:FilterCount(Card.IsControler,nil,1-tp)==0 then
 		Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,tp,dam)
 	elseif g:FilterCount(Card.IsControler,nil,tp)==0 then
