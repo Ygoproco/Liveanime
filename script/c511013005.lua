@@ -1,5 +1,5 @@
 --エクスプロード・ウィング・ドラゴン
-function c998994.initial_effect(c)
+function c511013005.initial_effect(c)
 	--synchro summon
 	aux.AddSynchroProcedure(c,nil,aux.NonTuner(nil),1)
 	c:EnableReviveLimit()
@@ -9,11 +9,11 @@ function c998994.initial_effect(c)
 	e1:SetCategory(CATEGORY_DESTROY+CATEGORY_DAMAGE)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCode(EVENT_BATTLE_START)
-	e1:SetTarget(c998994.destg)
-	e1:SetOperation(c998994.desop)
+	e1:SetTarget(c511013005.destg)
+	e1:SetOperation(c511013005.desop)
 	c:RegisterEffect(e1)
 end
-function c998994.destg(e,tp,eg,ep,ev,re,r,rp,chk)
+function c511013005.destg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	local tc=Duel.GetAttacker()
 	if tc==c then tc=Duel.GetAttackTarget() end
@@ -21,7 +21,7 @@ function c998994.destg(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,tc,1,0,0)
 	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,tc:GetAttack())
 end
-function c998994.desop(e,tp,eg,ep,ev,re,r,rp)
+function c511013005.desop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetAttacker()
 	if tc==c then tc=Duel.GetAttackTarget() end
