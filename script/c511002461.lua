@@ -34,9 +34,9 @@ e5:SetCode(EVENT_FLIP_SUMMON_SUCCESS)
 c:RegisterEffect(e5)
 end
 
-c511002461.collection={ [31709826]=true; [46821314]=true; [3918345]=true; 
-[26905245]=true; [511001208]=true;[511001205]=true; 
-[511000482]=true; [511001207]=true; [100000706]=true;[511001206]=true; 
+c511002461.collection={ [31709826]=true; [46821314]=true; [3918345]=true; 
+[26905245]=true; [511001208]=true;[511001205]=true; 
+[511000482]=true; [511001207]=true; [100000706]=true;[511001206]=true; 
 [511000285]=true; [5600127]=true;   [21770261]=true; }
 
 function c511002461.spcon(e,tp,eg,ep,ev,re,r,rp)
