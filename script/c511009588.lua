@@ -14,6 +14,7 @@ function c511009588.initial_effect(c)
 	e1:SetCode(EVENT_CHAINING)
 	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 	e1:SetRange(LOCATION_PZONE)
+	e1:SetCountLimit(1)
 	e1:SetCondition(c511009588.discon1)
 	e1:SetTarget(c511009588.distg1)
 	e1:SetOperation(c511009588.disop1)
@@ -76,15 +77,18 @@ function c511009588.disop1(e,tp,eg,ep,ev,re,r,rp)
 	end
 	if Duel.NegateEffect(ev) then
 		local e1=Effect.CreateEffect(c)
-		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetCode(EFFECT_DISABLE)
-		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
-		rc:RegisterEffect(e1)
-		local e2=Effect.CreateEffect(c)
-		e2:SetType(EFFECT_TYPE_SINGLE)
-		e2:SetCode(EFFECT_DISABLE_EFFECT)
-		e2:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
-		rc:RegisterEffect(e2)
+		e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+		e1:SetCode(EVENT_CHAIN_SOLVING)
+		e1:SetRange(LOCATION_MZONE)
+		e1:SetLabelObject(re)
+		e1:SetOperation(c511009588.disop)
+		e1:SetReset(RESET_PHASE+PHASE_END)
+		Duel.RegisterEffect(e1,tp)
+	end
+end
+function c511009588.disop(e,tp,eg,ep,ev,re,r,rp)
+	if re==e:GetLabelObject() then
+		Duel.NegateEffect(ev)
 	end
 end
 function c511009588.descon(e,tp,eg,ep,ev,re,r,rp)
