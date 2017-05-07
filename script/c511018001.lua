@@ -1,5 +1,5 @@
 --Clear Kuriboh (Anime)
-function c511004451.initial_effect(c)
+function c511018001.initial_effect(c)
 	--negate
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(46613515,0))
@@ -8,10 +8,10 @@ function c511004451.initial_effect(c)
 	e1:SetCode(EVENT_CHAINING)
 	e1:SetRange(LOCATION_HAND)
 	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
-	e1:SetCondition(c511004451.negcon)
-	e1:SetCost(c511004451.negcost)
-	e1:SetTarget(c511004451.negtg)
-	e1:SetOperation(c511004451.negop)
+	e1:SetCondition(c511018001.negcon)
+	e1:SetCost(c511001801.negcost)
+	e1:SetTarget(c511001801.negtg)
+	e1:SetOperation(c511001801.negop)
 	c:RegisterEffect(e1)
 	--draw
 	local e2=Effect.CreateEffect(c)
@@ -20,39 +20,39 @@ function c511004451.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_ATTACK_ANNOUNCE)
 	e2:SetRange(LOCATION_GRAVE)
-	e2:SetCondition(c511004451.drcon)
-	e2:SetCost(c511004451.drcost)
-	e2:SetTarget(c511004451.drtg)
-	e2:SetOperation(c511004451.drop)
+	e2:SetCondition(c511001801.drcon)
+	e2:SetCost(c511001801.drcost)
+	e2:SetTarget(c511001801.drtg)
+	e2:SetOperation(c511001801.drop)
 	c:RegisterEffect(e2)
 end
-function c511004451.negcon(e,tp,eg,ep,ev,re,r,rp)
+function c511001801.negcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsChainNegatable(ev) and (aux.damcon1(e,tp,eg,ep,ev,re,r,rp) or aux.damcon1(e,1-tp,eg,ep,ev,re,r,rp))
 		and re:IsActiveType(TYPE_MONSTER) and ep~=tp
 end
-function c511004451.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
+function c511001801.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsDiscardable() end
 	Duel.SendtoGrave(e:GetHandler(),REASON_COST+REASON_DISCARD)
 end
-function c511004451.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
+function c511001801.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	Duel.SetOperationInfo(0,CATEGORY_NEGATE,eg,1,0,0)
 end
-function c511004451.negop(e,tp,eg,ep,ev,re,r,rp)
+function c511001801.negop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.NegateActivation(ev)
 end
-function c511004451.drcon(e,tp,eg,ep,ev,re,r,rp)
+function c511001801.drcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetAttacker():IsControler(1-tp) and Duel.GetAttackTarget()==nil
 end
-function c511004451.drcost(e,tp,eg,ep,ev,re,r,rp,chk)
+function c511001801.drcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToRemoveAsCost() end
 	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_COST)
 end
-function c511004451.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
+function c511001801.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,1) end
 	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,1)
 end
-function c511004451.drop(e,tp,eg,ep,ev,re,r,rp)
+function c511001801.drop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if Duel.Draw(tp,1,REASON_EFFECT)==0 then return end
 	local tc=Duel.GetOperatedGroup():GetFirst()
@@ -74,7 +74,7 @@ function c511004451.drop(e,tp,eg,ep,ev,re,r,rp)
 					e2:SetType(EFFECT_TYPE_FIELD)
 					e2:SetCode(EFFECT_CANNOT_SELECT_BATTLE_TARGET)
 					e2:SetTargetRange(0,LOCATION_MZONE)
-					e2:SetValue(c511004451.actlimit)
+					e2:SetValue(c511001801.actlimit)
 					e2:SetLabelObject(tc)
 					e2:SetReset(RESET_PHASE+PHASE_DAMAGE)
 					Duel.RegisterEffect(e2,tp)
@@ -83,7 +83,7 @@ function c511004451.drop(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 end
-function c511004451.actlimit(e,c)
+function c511001801.actlimit(e,c)
 	return not c==e:GetLabelObject()
 end
 --[[
