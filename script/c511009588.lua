@@ -135,10 +135,12 @@ function c511009588.disop2(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c511009588.repfilter(c,tp)
-	return c:IsFaceup() and c:IsSetCard(0x99) and c:IsOnField() and c:IsControler(tp) and c:IsReason(REASON_BATTLE)
+	return c:IsFaceup() and c:IsSetCard(0x99) and c:IsOnField() and c:IsControler(tp) and c:IsReason(REASON_BATTLE) 
+		and not c:IsReason(REASON_REPLACE)
 end
 function c511009588.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckLocation(tp,LOCATION_SZONE,6) or Duel.CheckLocation(tp,LOCATION_SZONE,7) end
+	if chk==0 then return (Duel.CheckLocation(tp,LOCATION_SZONE,6) or Duel.CheckLocation(tp,LOCATION_SZONE,7)) 
+		and eg:IsExists(c511009588.repfilter,1,nil,tp) end
 	return Duel.SelectYesNo(tp,aux.Stringid(45974017,0))
 end
 function c511009588.repval(e,c)
