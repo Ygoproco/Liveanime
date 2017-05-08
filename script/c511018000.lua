@@ -30,10 +30,10 @@ function c511018000.initial_effect(c)
 	c:RegisterEffect(e4)
 end
 function c511018000.splimit(e,se,sp,st)
-	return se:GetHandler():IsCode(100000246)
+	return se and se:GetHandler():IsCode(100000246)
 end
 function c511018000.filter(c)
-	return c:GetReasonEffect():GetOwner():IsCode(100000246)
+	return c:GetReasonEffect() and c:GetReasonEffect():GetOwner():IsCode(100000246)
 end
 function c511018000.vatk(e)
 	local c=e:GetHandler()
