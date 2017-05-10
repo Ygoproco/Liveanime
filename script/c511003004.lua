@@ -68,7 +68,7 @@ function c511003004.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local tc=tg:GetFirst()
 	if chkc then return chkc==tc and c511003004.filter(chkc,e,tp) end
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 
-		and c511003004.filter(tc,e,tp) end
+		and tc and c511003004.filter(tc,e,tp) end
 	Duel.SetTargetCard(tc)
 	Duel.SetOperationInfo(0,CATEGORY_DISABLE,eg,1,0,0)
 	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,nil,1,tp,LOCATION_EXTRA)
