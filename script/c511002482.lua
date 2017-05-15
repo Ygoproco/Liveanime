@@ -32,7 +32,8 @@ function c511002482.rumfilter(c)
 	return c:IsCode(88120966) and not c:IsPreviousLocation(LOCATION_OVERLAY)
 end
 function c511002482.rankupregcon(e,tp,eg,ep,ev,re,r,rp)
-		local rc=re:GetHandler()
+	if e:GetHandler():GetFlagEffect(511015134)~=0 then return true end
+	local rc=re:GetHandler()
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_XYZ) and (rc:IsSetCard(0x95) or rc:IsCode(100000581) or rc:IsCode(111011002) or rc:IsCode(511000580) or rc:IsCode(511002068) or rc:IsCode(511002164) or rc:IsCode(93238626)) and e:GetHandler():GetMaterial():IsExists(c511002482.rumfilter,1,nil)
 end
 function c511002482.rankupregop(e,tp,eg,ep,ev,re,r,rp)
@@ -41,7 +42,6 @@ function c511002482.rankupregop(e,tp,eg,ep,ev,re,r,rp)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(33776843,0))
 	e1:SetCategory(CATEGORY_DESTROY+CATEGORY_DAMAGE)
-	e1:SetProperty(0,EFFECT_FLAG2_XMDETACH)
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetCost(c511002482.cost)

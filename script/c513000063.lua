@@ -24,7 +24,6 @@ function c513000063.initial_effect(c)
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(612115,0))
 	e3:SetCategory(CATEGORY_REMOVE)
-	e3:SetProperty(0,EFFECT_FLAG2_XMDETACH)
 	e3:SetType(EFFECT_TYPE_IGNITION)
 	e3:SetRange(LOCATION_MZONE)
 	e3:SetCountLimit(1)
@@ -60,6 +59,8 @@ function c513000063.rankupregop(e,tp,eg,ep,ev,re,r,rp)
 	else
 		e:SetLabel(0)
 	end
+	
+	if e:GetHandler():GetFlagEffect(511015134)~=0 then e:SetLabel(1) end
 end
 function c513000063.eqtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and chkc:IsFaceup() and chkc~=e:GetHandler() end

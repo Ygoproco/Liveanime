@@ -94,7 +94,8 @@ function c513000059.rumfilter(c)
 	return c:IsCode(48739166) and not c:IsPreviousLocation(LOCATION_OVERLAY)
 end
 function c513000059.rankupregcon(e,tp,eg,ep,ev,re,r,rp)
-		local rc=re:GetHandler()
+	if e:GetHandler():GetFlagEffect(511015134)~=0 then return true end
+	local rc=re:GetHandler()
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_XYZ) and (rc:IsSetCard(0x95) or rc:IsCode(100000581) or rc:IsCode(111011002) or rc:IsCode(511000580) or rc:IsCode(511002068) or rc:IsCode(511002164) or rc:IsCode(93238626)) and e:GetHandler():GetMaterial():IsExists(c513000059.rumfilter,1,nil)
 end
 function c513000059.rankupregop(e,tp,eg,ep,ev,re,r,rp)
@@ -121,7 +122,8 @@ function c513000059.spfilter(c,e,tp)
 end
 function c513000059.sptg2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingMatchingCard(c513000059.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
+		and (Duel.IsExistingMatchingCard(c513000059.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp)
+		or e:GetHandler():GetOverlayGroup():IsExists(c513000059.spfilter,1,nil,e,tp)) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_GRAVE)
 end
 function c513000059.spop2(e,tp,eg,ep,ev,re,r,rp)

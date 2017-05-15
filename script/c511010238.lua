@@ -28,6 +28,7 @@ function c511010238.initial_effect(c)
 end
 c511010238.xyz_number=39
 function c511010238.rankupregcon(e,tp,eg,ep,ev,re,r,rp)
+	if e:GetHandler():GetFlagEffect(511015134)~=0 then return true end
 	return re and re:GetHandler():IsCode(92365601) 
 end
 function c511010238.rankupregop(e,tp,eg,ep,ev,re,r,rp)
@@ -36,7 +37,7 @@ function c511010238.rankupregop(e,tp,eg,ep,ev,re,r,rp)
 		local e1=Effect.CreateEffect(c)
 		e1:SetDescription(aux.Stringid(66970002,0))
 		e1:SetCategory(CATEGORY_DESTROY+CATEGORY_DAMAGE)
-		e1:SetProperty(EFFECT_FLAG_CARD_TARGET,EFFECT_FLAG2_XMDETACH)
+		e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 		e1:SetType(EFFECT_TYPE_IGNITION)
 		e1:SetRange(LOCATION_MZONE)
 		e1:SetCountLimit(1)

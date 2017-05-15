@@ -26,7 +26,7 @@ function c511001659.initial_effect(c)
 	e3:SetDescription(aux.Stringid(32559361,2))
 	e3:SetCategory(CATEGORY_DAMAGE)
 	e3:SetType(EFFECT_TYPE_IGNITION)
-	e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET,EFFECT_FLAG2_XMDETACH)
+	e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e3:SetRange(LOCATION_MZONE)
 	e3:SetCost(c511001659.damcost)
 	e3:SetTarget(c511001659.damtg2)
@@ -54,7 +54,8 @@ function c511001659.rumfilter(c)
 	return c:IsCode(1992816) and not c:IsPreviousLocation(LOCATION_OVERLAY)
 end
 function c511001659.rankupregcon(e,tp,eg,ep,ev,re,r,rp)
-		local rc=re:GetHandler()
+	if e:GetHandler():GetFlagEffect(511015134)~=0 then return true end
+	local rc=re:GetHandler()
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_XYZ) and (rc:IsSetCard(0x95) or rc:IsCode(100000581) or rc:IsCode(111011002) or rc:IsCode(511000580) or rc:IsCode(511002068) or rc:IsCode(511002164) or rc:IsCode(93238626)) and e:GetHandler():GetMaterial():IsExists(c511001659.rumfilter,1,nil)
 end
 function c511001659.rankupregop(e,tp,eg,ep,ev,re,r,rp)
