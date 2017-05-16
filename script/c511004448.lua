@@ -27,7 +27,7 @@ end
 function c511004448.operation(e,tp,eg,ev,ep,re,r,rp)
 	local lp=Duel.GetFieldCard(tp,LOCATION_S,6)
 	local rp=Duel.GetFieldCard(tp,LOCATION_S,7)
-	if lp or rp then return end
+	if lp and rp then return end
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
 	if Duel.MoveToField(tc,tp,tp,LOCATION_SZONE,POS_FACEUP,true) then
