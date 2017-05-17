@@ -213,10 +213,10 @@ function c511015112.sumop(e,tp,eg,ep,ev,re,r,rp)
 			e1:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)
 			e1:SetValue(1)
 			e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
-			tc:RegisterEffect(e1)
+			c:RegisterEffect(e1)
 			local e2=e1:Clone()
 			e2:SetCode(EFFECT_INDESTRUCTABLE_EFFECT)
-			tc:RegisterEffect(e2)
+			c:RegisterEffect(e2)
 		end
 	elseif Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 
 		and c:IsCanBeSpecialSummoned(e,0,tp,false,false) then
