@@ -309,7 +309,7 @@ function c511004322.trapoperation(e,tp,eg,ep,ev,re,r,rp)
 			Duel.ClearTargetCard()
 			Duel.DisableShuffleCheck()
 			Duel.MoveToField(tc,tp,tp,LOCATION_SZONE,POS_FACEUP,true)
-			if bit.band(tpe,TYPE_TRAP+TYPE_FIELD)~=0 then
+			if bit.band(tpe,TYPE_FIELD)~=0 then
 				Duel.MoveSequence(tc,5)
 			end
 			Duel.Hint(HINT_CARD,0,tc:GetCode())
