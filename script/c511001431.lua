@@ -50,6 +50,7 @@ function c511001431.rumfilter(c)
 	return c:IsCode(63746411) and not c:IsPreviousLocation(LOCATION_OVERLAY)
 end
 function c511001431.rankupregcon(e,tp,eg,ep,ev,re,r,rp)
+	if e:GetHandler():GetFlagEffect(511015134)~=0 then return true end
 	local rc=re:GetHandler()
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_XYZ) and re 
 		and (rc:IsSetCard(0x95) or rc:IsCode(100000581) or rc:IsCode(111011002) or rc:IsCode(511000580) or rc:IsCode(511002068) or rc:IsCode(511002164) or rc:IsCode(93238626)) 

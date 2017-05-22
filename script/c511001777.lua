@@ -32,7 +32,8 @@ function c511001777.rumfilter(c)
 	return c:IsCode(56051086) and not c:IsPreviousLocation(LOCATION_OVERLAY)
 end
 function c511001777.rankupregcon(e,tp,eg,ep,ev,re,r,rp)
-		local rc=re:GetHandler()
+	if e:GetHandler():GetFlagEffect(511015134)~=0 then return true end
+	local rc=re:GetHandler()
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_XYZ) and (rc:IsSetCard(0x95) or rc:IsCode(100000581) or rc:IsCode(111011002) or rc:IsCode(511000580) or rc:IsCode(511002068) or rc:IsCode(511002164) or rc:IsCode(93238626)) and e:GetHandler():GetMaterial():IsExists(c511001777.rumfilter,1,nil)
 end
 function c511001777.rankupregop(e,tp,eg,ep,ev,re,r,rp)
