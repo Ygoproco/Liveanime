@@ -16,7 +16,7 @@ function c511009513.operation(e,tp,eg,ep,ev,re,r,rp)
 local c=e:GetHandler()
 local rc=c:GetReasonCard()
 if rc:GetFlagEffect(511009513)==0 then
-	--cannot special summon
+	--No Effect Damage
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(511009513,0))
 	e1:SetType(EFFECT_TYPE_FIELD)
