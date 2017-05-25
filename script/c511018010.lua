@@ -5,7 +5,6 @@ function c511018010.initial_effect(c)
 	e1:SetCode(EVENT_BE_MATERIAL)
 	e1:SetCondition(c511018010.con)
 	e1:SetOperation(c511018010.op)
-	e1:SetLabelObject(e0)
 	c:RegisterEffect(e1)
 end
 function c511018010.con(e,tp,eg,ep,ev,re,r,rp)
