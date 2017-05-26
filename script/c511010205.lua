@@ -217,7 +217,8 @@ function c511010205.rumfilter(c)
 end
 
 function c511010205.rankupregcon(e,tp,eg,ep,ev,re,r,rp)
-		local rc=re:GetHandler()
+	if e:GetHandler():GetFlagEffect(511015134)~=0 then return true end
+	local rc=re:GetHandler()
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_XYZ) and rc:IsSetCard(0x95) and e:GetHandler():GetMaterial():IsExists(c511010205.rumfilter,1,nil)
 end
 function c511010205.rankupregop(e,tp,eg,ep,ev,re,r,rp)

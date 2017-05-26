@@ -60,6 +60,8 @@ function c513000063.rankupregop(e,tp,eg,ep,ev,re,r,rp)
 	else
 		e:SetLabel(0)
 	end
+	
+	if e:GetHandler():GetFlagEffect(511015134)~=0 then e:SetLabel(1) end
 end
 function c513000063.eqtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and chkc:IsFaceup() and chkc~=e:GetHandler() end
