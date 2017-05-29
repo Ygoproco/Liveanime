@@ -74,7 +74,9 @@ function c511000012.sdop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Damage(1-ep,ev,REASON_BATTLE)
 end
 function c511000012.spccon(e,c,tp)
-	return Duel.GetActivityCount(tp,ACTIVITY_NORMALSUMMON)==0 and Duel.GetCurrentPhase()==PHASE_MAIN1
+	local tp=e:GetHandler():GetControler()
+	return Duel.GetLocationCount(1-tp,LOCATION_MZONE)>0
+		and Duel.GetActivityCount(tp,ACTIVITY_NORMALSUMMON)==0 and Duel.GetCurrentPhase()==PHASE_MAIN1
 end
 function c511000012.spcop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
@@ -97,7 +99,9 @@ function c511000012.spcop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e3,tp)
 end
 function c511000012.spcost(e,c,tp)
-	return Duel.GetActivityCount(tp,ACTIVITY_NORMALSUMMON)==0 and Duel.GetCurrentPhase()==PHASE_MAIN1
+	local tp=e:GetHandler():GetControler()
+	return Duel.GetLocationCount(1-tp,LOCATION_MZONE)>0
+		and Duel.GetActivityCount(tp,ACTIVITY_NORMALSUMMON)==0 and Duel.GetCurrentPhase()==PHASE_MAIN1
 end
 function c511000012.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

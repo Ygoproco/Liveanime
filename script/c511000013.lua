@@ -60,7 +60,9 @@ function c511000013.damop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Damage(e:GetHandler():GetControler(),3000,REASON_EFFECT)
 end
 function c511000013.spcon(e,c,tp)
-	return Duel.GetActivityCount(tp,ACTIVITY_NORMALSUMMON)==0
+	local tp=e:GetHandler():GetControler()
+	return Duel.GetLocationCount(1-tp,LOCATION_MZONE)>0
+		and Duel.GetActivityCount(tp,ACTIVITY_NORMALSUMMON)==0
 end
 function c511000013.spcop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
@@ -76,7 +78,9 @@ function c511000013.spcop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e2,tp)
 end
 function c511000013.spcost(e,c,tp)
-	return Duel.GetActivityCount(tp,ACTIVITY_NORMALSUMMON)==0
+	local tp=e:GetHandler():GetControler()
+	return Duel.GetLocationCount(1-tp,LOCATION_MZONE)>0
+		and Duel.GetActivityCount(tp,ACTIVITY_NORMALSUMMON)==0
 end
 function c511000013.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
