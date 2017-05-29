@@ -69,6 +69,8 @@ function c511001430.rankupregop(e,tp,eg,ep,ev,re,r,rp)
 	else
 		e:SetLabel(0)
 	end
+	
+	if e:GetHandler():GetFlagEffect(511015134)~=0 then e:SetLabel(1) end
 end
 function c511001430.damcon(e,tp,eg,ep,ev,re,r,rp)
 	local ec=eg:GetFirst()

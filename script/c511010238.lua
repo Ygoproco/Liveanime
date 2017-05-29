@@ -28,6 +28,7 @@ function c511010238.initial_effect(c)
 end
 c511010238.xyz_number=39
 function c511010238.rankupregcon(e,tp,eg,ep,ev,re,r,rp)
+	if e:GetHandler():GetFlagEffect(511015134)~=0 then return true end
 	return re and re:GetHandler():IsCode(92365601) 
 end
 function c511010238.rankupregop(e,tp,eg,ep,ev,re,r,rp)
