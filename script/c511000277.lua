@@ -90,7 +90,7 @@ function c511000277.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c511000277.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) and Duel.SpecialSummon(c,1,tp,tp,false,false,POS_FACEUP)>0 then
+	if c:IsRelateToEffect(e) then
 		local e4=Effect.CreateEffect(c)
 		e4:SetDescription(aux.Stringid(511000277,3))
 		e4:SetCategory(CATEGORY_DAMAGE)
@@ -102,7 +102,9 @@ function c511000277.spop(e,tp,eg,ep,ev,re,r,rp)
 		e4:SetTarget(c511000277.damtg)
 		e4:SetOperation(c511000277.damop)
 		e4:SetLabel(e:GetLabel())
+		e4:SetReset(RESET_EVENT+0xfe0000)
 		c:RegisterEffect(e4)
+		Duel.SpecialSummon(c,1,tp,tp,false,false,POS_FACEUP)
 	end
 end
 function c511000277.damcost(e,tp,eg,ep,ev,re,r,rp,chk)
