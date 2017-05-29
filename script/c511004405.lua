@@ -1,4 +1,5 @@
 --Performance Exchange
+--fixed by MLD
 function c511004405.initial_effect(c)
 	--active
 	local e1=Effect.CreateEffect(c)
@@ -10,25 +11,32 @@ function c511004405.initial_effect(c)
 	e1:SetOperation(c511004405.operation)
 	c:RegisterEffect(e1)
 end
-function c511004405.filter(c)
-	return c:IsFaceup() and c:IsType(TYPE_MONSTER) and c:IsSetCard(0x9f) and Duel.IsExistingMatchingCard(c511004405.burnfilter,tp,LOCATION_ONFIELD,0,1,nil,c:GetLevel())
+function c511004405.filter(c,tp)
+	return c:IsFaceup() and c:IsSetCard(0x9f) and Duel.IsExistingMatchingCard(c511004405.ctfilter,tp,LOCATION_MZONE,0,1,c,c:GetLevel())
 end
-function c511004405.target(e,tp,eg,ev,ep,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingTarget(c511004405.filter,tp,LOCATION_ONFIELD,0,1,nil) and Duel.GetLocationCount(1-tp,LOCATION_MZONE)>0 end
-	local tg=Duel.SelectTarget(tp,c511004405.filter,tp,LOCATION_ONFIELD,0,1,1,nil)
-	Duel.SetOperationInfo(0,CATEGORY_CONTROL,tg,1,tp,0)
+function c511004405.ctfilter(c,lv)
+	return c:IsFaceup() and c:GetLevel()>0 and c:GetLevel()<lv and c:IsControlerCanBeChanged()
 end
-function c511004405.burnfilter(c,lv)
-	return c:IsFaceup() and c:IsType(TYPE_MONSTER) and c:GetLevel()<lv and c:IsControlerCanBeChanged() and not (c:IsType(TYPE_XYZ) and not (c:IsHasEffect(EFFECT_RANK_LEVEL) or c:IsHasEffect(EFFECT_RANK_LEVEL_S)))
+function c511004405.target(e,tp,eg,ev,ep,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and c511004405.filter(chkc,tp) end
+	if chk==0 then return Duel.IsExistingTarget(c511004405.filter,tp,LOCATION_MZONE,0,1,nil,tp) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
+	local tc=Duel.SelectTarget(tp,c511004405.filter,tp,LOCATION_MZONE,0,1,1,nil,tp):GetFirst()
+	local g=Duel.GetMatchingGroup(c511004405.ctfilter,tp,LOCATION_MZONE,0,tc,tc:GetLevel())
+	Duel.SetOperationInfo(0,CATEGORY_CONTROL,g,g:GetCount(),0,0)
 end
 function c511004405.operation(e,tp,eg,ev,ep,re,r,rp)
-	local tg=Duel.GetFirstTarget()
-	local lv=tg:GetLevel()
-	local ctg=Duel.GetMatchingGroup(c511004405.burnfilter,tp,LOCATION_MZONE,0,nil,lv)
-	local space=Duel.GetLocationCount(1-tp,LOCATION_MZONE)
-	local count=math.min(ctg:GetCount(),space)
-	if count>0 then
-		ctg=ctg:FilterSelect(tp,Card.GetControler,count,count,nil)
-		Duel.GetControl(ctg,1-tp,RESET_PHASE+PHASE_END,1)
+	local tc=Duel.GetFirstTarget()
+	if tc and tc:IsRelateToEffect(e) and tc:IsFaceup() then
+		local lv=tc:GetLevel()
+		local ctg=Duel.GetMatchingGroup(c511004405.ctfilter,tp,LOCATION_MZONE,0,nil,lv)
+		local ft=Duel.GetLocationCount(1-tp,LOCATION_MZONE)
+		local ct=math.min(ctg:GetCount(),ft)
+		if ct>0 then
+			if ctg:GetCount()>ct then
+				ctg=ctg:Select(tp,ct,ct,nil)
+			end
+			Duel.GetControl(ctg,1-tp,RESET_PHASE+PHASE_END,1)
+		end
 	end
 end

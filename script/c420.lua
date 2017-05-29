@@ -888,3 +888,14 @@ function c420.IsYubel(c,fbool)
 		return c:IsSetCard(0x433) or c420.OCGYubel[c:GetCode()]
 	end
 end
+
+c420.Mask={13676474,28933734,49064413,48948935,94377247,82432018,
+		20765952,22610082,29549364,57882509,56948373,511001317,511002943
+}		
+function c420.IsMask(c,fbool)
+	if fbool then
+		return c:IsFusionCode(table.unpack(c420.Mask))
+	else
+		return c:IsCode(table.unpack(c420.Mask))
+	end
+end

@@ -55,5 +55,5 @@ function c511009469.activate(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c511009469.actcon(e)
-	return Duel.IsExistingMatchingCard(c511009469.filter,tp,LOCATION_MZONE,0,1,nil)
+	return Duel.IsExistingMatchingCard(c511009469.filter,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil)
 end
