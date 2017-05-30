@@ -49,7 +49,7 @@ function c511600000.pencost(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local g=Group.FromCards(lsc,rsc)
 	local sct=Duel.GetMatchingGroupCount(c511600000.desfilter,tp,LOCATION_SZONE,LOCATION_SZONE,nil)
 	if chk==0 then return g:GetCount()==g:FilterCount(Card.IsAbleToRemoveAsCost,nil) and sct>0 
-		and Duel.GetFieldGroupCount(c511600000.emfilter,tp,LOCATION_DECK,0,nil)>=sct end
+		and Duel.GetMatchingGroupCount(c511600000.emfilter,tp,LOCATION_DECK,0,nil)>=sct end
 	Duel.Remove(g,POS_FACEUP,REASON_COST)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 	local gc=Duel.SelectMatchingCard(tp,c511600000.emfilter,tp,LOCATION_DECK,0,sct,sct,nil)
