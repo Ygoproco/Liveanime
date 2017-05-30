@@ -64,7 +64,6 @@ function c511600000.pentg(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,g:GetCount(),0,0)
 end
 function c511600000.penop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) then return end
 	local tc=Duel.GetFirstTarget()
 	local g=Duel.GetMatchingGroup(c511600000.desfilter,tp,LOCATION_SZONE,LOCATION_SZONE,nil)
 	if (Duel.Destroy(g,REASON_EFFECT)>0 or g:GetCount()==0) and tc and tc:IsFaceup() and tc:IsRelateToEffect(e) then
