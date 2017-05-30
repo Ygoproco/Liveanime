@@ -21,16 +21,6 @@ function c511002872.initial_effect(c)
 	e2:SetTarget(c511002872.damtg)
 	e2:SetOperation(c511002872.damop)
 	c:RegisterEffect(e2)
-	if not c511002872.global_check then
-		c511002872.global_check=true
-		local ge2=Effect.CreateEffect(c)
-		ge2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-		ge2:SetCode(EVENT_ADJUST)
-		ge2:SetCountLimit(1)
-		ge2:SetProperty(EFFECT_FLAG_NO_TURN_RESET)
-		ge2:SetOperation(c511002872.numchk)
-		Duel.RegisterEffect(ge2,0)
-	end
 	--battle indestructable
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE)

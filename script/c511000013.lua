@@ -9,7 +9,6 @@ function c511000013.initial_effect(c)
 	e1:SetRange(LOCATION_HAND)
 	e1:SetTargetRange(POS_FACEUP_DEFENSE,1)
     e1:SetCondition(c511000013.spcon)
-	e1:SetOperation(c511000013.spcop)
 	c:RegisterEffect(e1)
     --damage
 	local e2=Effect.CreateEffect(c)
@@ -59,28 +58,11 @@ end
 function c511000013.damop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Damage(e:GetHandler():GetControler(),3000,REASON_EFFECT)
 end
-function c511000013.spcon(e,c,tp)
-	local tp=e:GetHandler():GetControler()
-	return Duel.GetLocationCount(1-tp,LOCATION_MZONE)>0
-		and Duel.GetActivityCount(tp,ACTIVITY_NORMALSUMMON)==0
-end
-function c511000013.spcop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetCode(EFFECT_CANNOT_SUMMON)
-	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e1:SetReset(RESET_PHASE+PHASE_END)
-	e1:SetTargetRange(1,0)
-	Duel.RegisterEffect(e1,tp)
-	local e2=e1:Clone()
-	e2:SetCode(EFFECT_CANNOT_MSET)
-	Duel.RegisterEffect(e2,tp)
+function c511000013.spcon(e,c)
+	return Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0
 end
 function c511000013.spcost(e,c,tp)
-	local tp=e:GetHandler():GetControler()
-	return Duel.GetLocationCount(1-tp,LOCATION_MZONE)>0
-		and Duel.GetActivityCount(tp,ACTIVITY_NORMALSUMMON)==0
+	return Duel.GetActivityCount(tp,ACTIVITY_NORMALSUMMON)==0
 end
 function c511000013.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

@@ -15,7 +15,6 @@ function c511000012.initial_effect(c)
 	e1:SetRange(LOCATION_HAND)
 	e1:SetTargetRange(POS_FACEUP_DEFENSE,1)
     e1:SetCondition(c511000012.spccon)
-	e1:SetOperation(c511000012.spcop)
 	c:RegisterEffect(e1)
 	--Change Battle Pos
 	local e3=Effect.CreateEffect(c)
@@ -73,10 +72,8 @@ end
 function c511000012.sdop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Damage(1-ep,ev,REASON_BATTLE)
 end
-function c511000012.spccon(e,c,tp)
-	local tp=e:GetHandler():GetControler()
-	return Duel.GetLocationCount(1-tp,LOCATION_MZONE)>0
-		and Duel.GetActivityCount(tp,ACTIVITY_NORMALSUMMON)==0 and Duel.GetCurrentPhase()==PHASE_MAIN1
+function c511000012.spccon(e,c)
+	return Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0
 end
 function c511000012.spcop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
@@ -99,9 +96,7 @@ function c511000012.spcop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e3,tp)
 end
 function c511000012.spcost(e,c,tp)
-	local tp=e:GetHandler():GetControler()
-	return Duel.GetLocationCount(1-tp,LOCATION_MZONE)>0
-		and Duel.GetActivityCount(tp,ACTIVITY_NORMALSUMMON)==0 and Duel.GetCurrentPhase()==PHASE_MAIN1
+	return Duel.GetActivityCount(tp,ACTIVITY_NORMALSUMMON)==0 and Duel.GetActivityCount(tp,ACTIVITY_BATTLE_PHASE)==0
 end
 function c511000012.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
