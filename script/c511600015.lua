@@ -25,11 +25,15 @@ function c511600015.initial_effect(c)
 end
 function c511600015.atkcon(e)
 	local ec=e:GetHandler():GetEquipTarget()
+	if not ec:IsRelateToBattle() then return end
 	local tc=ec:GetBattleTarget()
-	return ec and tc and ec:IsFaceup() and tc:IsFaceup() and tc:IsControler(1-ec:GetControler()) and Duel.GetCurrentPhase()==PHASE_DAMAGE_CAL 
+	return tc and tc:IsFaceup() and tc:IsControler(1-ec:GetControler()) and Duel.GetCurrentPhase()==PHASE_DAMAGE_CAL 
 end
 function c511600015.atkval(e,c)
-	return e:GetHandler():GetEquipTarget():GetBattleTarget():GetAttack()
+	local tc=e:GetHandler():GetEquipTarget():GetBattleTarget()
+	if tc and tc:IsFaceup() then
+		return tc:GetAttack()
+	end
 end
 function c511600015.damcon(e,tp,eg,ep,ev,re,r,rp)
 	local ec=eg:GetFirst()
