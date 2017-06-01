@@ -20,7 +20,7 @@ function c511010503.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_LEAVE_FIELD)
 	e2:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_DAMAGE_STEP)
-	e2:SetTarget(c511001791.cttg)
+	e2:SetTarget(c511010503.cttg)
 	e2:SetOperation(c511010503.ctop)
 	c:RegisterEffect(e2)
 end
