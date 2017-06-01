@@ -32,7 +32,7 @@ function c511600007.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and 
 		Duel.IsPlayerCanSpecialSummo(tp,ec:GetOriginalCode(),0,ec:GetOriginalType(),ec:GetTextAttack(),ec:GetTextDefense(),
 			ec:GetOriginalLevel()+ec:GetOriginalRank(),ec:GetOriginalRace(),ec:GetOriginalAttribute()) end
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,,nil)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,nil)
 end
 function c511600007.activate(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
