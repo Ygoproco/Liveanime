@@ -73,6 +73,7 @@ function c511000012.sdop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Damage(1-ep,ev,REASON_BATTLE)
 end
 function c511000012.spccon(e,c)
+	if c==nil then return true end
 	return Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0
 end
 function c511000012.spcop(e,tp,eg,ep,ev,re,r,rp)
