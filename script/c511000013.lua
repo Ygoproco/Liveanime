@@ -59,6 +59,7 @@ function c511000013.damop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Damage(e:GetHandler():GetControler(),3000,REASON_EFFECT)
 end
 function c511000013.spcon(e,c)
+	if c==nil then return true end
 	return Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0
 end
 function c511000013.spcost(e,c,tp)
