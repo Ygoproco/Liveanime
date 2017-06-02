@@ -34,7 +34,7 @@ function c511002961.subcon(e)
 	return e:GetHandler():IsFaceup() and e:GetHandler():IsOnField()
 end
 function c511002961.filter1(c,e)
-	return c:IsCanBeFusionMaterial() and not c:IsImmuneToEffect(e)
+	return not c:IsImmuneToEffect(e)
 end
 function c511002961.filter2(c,e,tp,m,f,gc)
 	return c:IsType(TYPE_FUSION) and (not f or f(c)) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_FUSION,tp,false,false) 
@@ -43,7 +43,7 @@ end
 function c511002961.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then
-		local mg1=Duel.GetMatchingGroup(Card.IsCanBeFusionMaterial,tp,LOCATION_MZONE+LOCATION_HAND,0,c)
+		local mg1=Duel.GetFusionMaterial(tp)
 		local res=Duel.IsExistingMatchingCard(c511002961.filter2,tp,LOCATION_EXTRA,0,1,nil,e,tp,mg1,nil,c)
 		if not res then
 			local ce=Duel.GetChainMaterial(tp)
@@ -62,7 +62,7 @@ end
 function c511002961.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsFacedown() or not c:IsRelateToEffect(e) or c:IsImmuneToEffect(e) then return end
-	local mg1=Duel.GetMatchingGroup(c511002961.filter1,tp,LOCATION_MZONE+LOCATION_HAND,0,c,e)
+	local mg1=Duel.GetFusionMaterial(tp):Filter(c511002961.filter1,nil,e)
 	local sg1=Duel.GetMatchingGroup(c511002961.filter2,tp,LOCATION_EXTRA,0,nil,e,tp,mg1,nil,c)
 	local mg2=nil
 	local sg2=nil

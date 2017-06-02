@@ -1,4 +1,5 @@
 --Performapal Fugolem
+--fixed by MLD
 function c511009364.initial_effect(c)
 	--pendulum summon
 	aux.EnablePendulumAttribute(c)
@@ -27,7 +28,6 @@ function c511009364.initial_effect(c)
 	e3:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_FUSION_SUMMON)
 	e3:SetType(EFFECT_TYPE_IGNITION)
 	e3:SetRange(LOCATION_MZONE)
-	e3:SetCountLimit(1)
 	e3:SetCondition(c511009364.spcon)
 	e3:SetTarget(c511009364.sptg)
 	e3:SetOperation(c511009364.spop)
@@ -56,11 +56,6 @@ function c511009364.checkop(e,tp,eg,ep,ev,re,r,rp)
 			c511009364[p]=c511009364[p]+1
 		end
 		tc=eg:GetNext()
-	end
-end
-function c511009364.clearop()
-	for p=0,1 do
-		c511009364[p]=0
 	end
 end
 function c511009364.thcon(e,tp,eg,ep,ev,re,r,rp)
@@ -92,7 +87,7 @@ function c511009364.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():GetFlagEffect(511009364)~=0
 end
 function c511009364.spfilter1(c,e)
-	return c:IsCanBeFusionMaterial() and not c:IsImmuneToEffect(e)
+	return c:IsOnField() and not c:IsImmuneToEffect(e)
 end
 function c511009364.spfilter2(c,e,tp,m,f,gc)
 	return c:IsType(TYPE_FUSION) and (not f or f(c))
@@ -101,7 +96,7 @@ end
 function c511009364.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then
-		local mg1=Duel.GetMatchingGroup(Card.IsCanBeFusionMaterial,tp,LOCATION_MZONE,0,c)
+		local mg1=Duel.GetFusionMaterial(tp):Filter(Card.IsOnField,nil)
 		local res=Duel.IsExistingMatchingCard(c511009364.spfilter2,tp,LOCATION_EXTRA,0,1,nil,e,tp,mg1,nil,c)
 		if not res then
 			local ce=Duel.GetChainMaterial(tp)
@@ -119,7 +114,7 @@ end
 function c511009364.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsFacedown() or not c:IsRelateToEffect(e) or c:IsImmuneToEffect(e) then return end
-	local mg1=Duel.GetMatchingGroup(c511009364.spfilter1,tp,LOCATION_MZONE,0,c,e)
+	local mg1=Duel.GetFusionMaterial(tp):Filter(c511009364.spfilter1,nil,e)
 	local sg1=Duel.GetMatchingGroup(c511009364.spfilter2,tp,LOCATION_EXTRA,0,nil,e,tp,mg1,nil,c)
 	local mg2=nil
 	local sg2=nil
