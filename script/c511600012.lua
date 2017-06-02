@@ -13,7 +13,7 @@ function c511600012.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function c511600012.filter(c,code)
-	return c:IsAbleToGraveAsCost() and c:IsCanBeFusionMaterial() and c:GetOriginalCode()~=code
+	return c:IsAbleToGraveAsCost() and c:IsCanBeFusionMaterial() and c:GetOriginalCode()~=code and c:IsType(TYPE_MONSTER)
 end
 function c511600012.coscost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c511600012.filter,tp,LOCATION_DECK,0,1,nil,e:GetHandler():GetCode()) end
