@@ -1,4 +1,5 @@
 --Odd-Eyes Fusion Gate
+--fixed by MLD
 function c511015104.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
@@ -34,39 +35,37 @@ function c511015104.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e1:SetTarget(c511015104.splimit)
 	Duel.RegisterEffect(e1,tp)
 end
-
 function c511015104.filter1(c,e,tp)
-	return c:IsCode(16178681) and c:IsFaceup() and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsCode(16178681) and c:IsFaceup() and c:IsCanBeSpecialSummoned(e,0,tp,false,false) 
+		and Duel.IsExistingTarget(c511015104.filter2,tp,LOCATION_GRAVE,0,1,nil,e,tp,c)
 end
-function c511015104.filter2(c,e,tp,mc1)
+function c511015104.filter2(c,e,tp,mc)
 	return c:IsType(TYPE_FUSION) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
-		and Duel.IsExistingMatchingCard(c511015104.filter3,tp,LOCATION_EXTRA,0,1,nil,e,tp,Group.FromCards(c,mc1),nil)
+		and Duel.IsExistingMatchingCard(c511015104.filter3,tp,LOCATION_EXTRA,0,1,nil,e,tp,Group.FromCards(c,mc))
 end
-function c511015104.filter3(c,e,tp,m,f)
-	return c:IsType(TYPE_FUSION) and c:IsType(TYPE_PENDULUM) and (not f or f(c)) 
-		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_FUSION,tp,false,false) and c:CheckFusionMaterial(m)
+function c511015104.filter3(c,e,tp,m)
+	return c:IsType(TYPE_FUSION) and c:IsType(TYPE_PENDULUM) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_FUSION,tp,false,false) 
+		and c:CheckFusionMaterial(m)
 end
-function c511015104.target(e,tp,eg,ep,ev,re,r,rp,chk)
+function c511015104.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	local ect=c29724053 and Duel.IsPlayerAffectedByEffect(tp,29724053) and c29724053[tp]
+	if chkc then return false end
 	if chk==0 then
-		local mc1=Duel.GetFirstMatchingCard(c511015104.filter1,tp,LOCATION_EXTRA,0,nil,e,tp)
-		return not Duel.IsPlayerAffectedByEffect(tp,59822133)
-			and Duel.GetLocationCount(tp,LOCATION_MZONE)>1 and mc1
-			and Duel.IsExistingMatchingCard(c511015104.filter2,tp,LOCATION_GRAVE,0,1,nil,e,tp,mc1)
+		return not Duel.IsPlayerAffectedByEffect(tp,59822133) and Duel.IsPlayerCanSpecialSummonCount(tp,2) 
+			and (not ect or ect>=2) and Duel.GetLocationCount(tp,LOCATION_MZONE)>1
+			and Duel.IsExistingTarget(c511015105.filter1,tp,LOCATION_EXTRA,0,1,nil,e,tp)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local c1=Duel.SelectTarget(tp,c511015104.filter1,tp,LOCATION_EXTRA,0,1,1,nil,e,tp):GetFirst()
-	local c2=Duel.SelectTarget(tp,c511015104.filter2,tp,LOCATION_GRAVE,0,1,1,nil,e,tp,c1):GetFirst()
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,Group:FromCards(c1,c2),2,0,0)
+	local g1=Duel.SelectTarget(tp,c511015104.filter1,tp,LOCATION_EXTRA,0,1,1,nil,e,tp)
+	local g2=Duel.SelectTarget(tp,c511015104.filter2,tp,LOCATION_GRAVE,0,1,1,nil,e,tp,g1:GetFirst())
+	g1:Merge(g2)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g1,2,0,0)
 end
 function c511015104.activate(e,tp,eg,ep,ev,re,r,rp)
-	local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
+	local ect=c29724053 and Duel.IsPlayerAffectedByEffect(tp,29724053) and c29724053[tp]
+	if Duel.IsPlayerAffectedByEffect(tp,59822133) or Duel.GetLocationCount(tp,LOCATION_MZONE)<=1 then return false end
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
 	local sg=g:Filter(Card.IsRelateToEffect,nil,e)
-	
-	if sg:GetCount()>ft then
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		sg=sg:Select(tp,ft,ft,nil)
-	end
 	local tc=sg:GetFirst()
 	while tc do
 		Duel.SpecialSummonStep(tc,0,tp,tp,false,false,POS_FACEUP)
@@ -80,17 +79,18 @@ function c511015104.activate(e,tp,eg,ep,ev,re,r,rp)
 		tc:RegisterEffect(e2)
 		tc=sg:GetNext()
 	end
-	local n = Duel.SpecialSummonComplete()
+	Duel.SpecialSummonComplete()
 	Duel.BreakEffect()
-	if n==2 then
-		tc = Duel.SelectMatchingCard(tp,c511015104.filter3,tp,LOCATION_EXTRA,0,1,1,nil,e,tp,sg,nil):GetFirst()
-		tc:SetMaterial(sg)
+	local sc=Duel.SelectMatchingCard(tp,c511015104.filter3,tp,LOCATION_EXTRA,0,1,1,nil,e,tp,sg,nil):GetFirst()
+	if sc then
+		sc:SetMaterial(sg)
 		Duel.SendtoGrave(sg,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)
-		Duel.SpecialSummon(tc,SUMMON_TYPE_FUSION,tp,tp,false,false,POS_FACEUP)
-		tc:CompleteProcedure()
-		
-		--destroy
-		local e1=Effect.CreateEffect(e:GetHandler())
+		Duel.BreakEffect()
+		Duel.SpecialSummon(sc,SUMMON_TYPE_FUSION,tp,tp,false,false,POS_FACEUP)
+		sc:CompleteProcedure()
+		local c=e:GetHandler()
+		if not c:IsRelateToEffect(e) then return end
+		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_TRIGGER_F+EFFECT_TYPE_FIELD)
 		e1:SetProperty(EFFECT_FLAG_DELAY)
 		e1:SetRange(LOCATION_SZONE)
@@ -99,11 +99,9 @@ function c511015104.activate(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetCost(c511015104.descost)
 		e1:SetOperation(c511015104.desop)
 		e1:SetReset(RESET_EVENT+0x1fe0000)
-		e:GetHandler():RegisterEffect(e1)
-		e1:SetLabelObject(tc)
+		e1:SetLabelObject(sc)
+		c:RegisterEffect(e1)
 	end
-	
-	
 end
 function c511015104.descon(e,tp,eg,ep,ev,re,r,rp)
 	local tc=e:GetLabelObject()
