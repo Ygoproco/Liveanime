@@ -15,7 +15,7 @@ function c511001334.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.PayLPCost(tp,500)
 end
 function c511001334.filter1(c,e)
-	return c:IsCanBeFusionMaterial() and not c:IsImmuneToEffect(e)
+	return not c:IsImmuneToEffect(e)
 end
 function c511001334.filter2(c,e,tp,m,f,chkf)
 	return c:IsType(TYPE_FUSION) and (not f or f(c))
@@ -24,7 +24,7 @@ end
 function c511001334.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		local chkf=Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and PLAYER_NONE or tp
-		local mg1=Duel.GetMatchingGroup(Card.IsCanBeFusionMaterial,tp,LOCATION_HAND+LOCATION_MZONE,0,nil)
+		local mg1=Duel.GetFusionMaterial(tp)
 		local res=Duel.IsExistingMatchingCard(c511001334.filter2,tp,LOCATION_EXTRA,0,1,nil,e,tp,mg1,nil,chkf)
 		if not res then
 			local ce=Duel.GetChainMaterial(tp)
@@ -42,7 +42,7 @@ end
 function c511001334.activate(e,tp,eg,ep,ev,re,r,rp)
 	local ect=c29724053 and Duel.IsPlayerAffectedByEffect(tp,29724053) and c29724053[tp]
 	local chkf=Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and PLAYER_NONE or tp
-	local mg1=Duel.GetMatchingGroup(c511001334.filter1,tp,LOCATION_HAND+LOCATION_MZONE,0,nil,e)
+	local mg1=Duel.GetFusionMaterial(tp):Filter(c511001334.filter1,nil,e)
 	local sg1=Duel.GetMatchingGroup(c511001334.filter2,tp,LOCATION_EXTRA,0,nil,e,tp,mg1,nil,chkf)
 	local mg2=nil
 	local sg2=nil
@@ -74,7 +74,7 @@ function c511001334.activate(e,tp,eg,ep,ev,re,r,rp)
 		tc:CompleteProcedure()
 	end
 	local tchkf=Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and PLAYER_NONE or tp
-	local tmg1=Duel.GetMatchingGroup(Card.IsCanBeFusionMaterial,tp,LOCATION_HAND+LOCATION_MZONE,0,nil)
+	local tmg1=Duel.GetFusionMaterial(tp):Filter(c511001334.filter1,nil,e)
 	local res=Duel.IsExistingMatchingCard(c511001334.filter2,tp,LOCATION_EXTRA,0,1,nil,e,tp,tmg1,nil,tchkf)
 	if not res then
 		local ce=Duel.GetChainMaterial(tp)
@@ -87,7 +87,7 @@ function c511001334.activate(e,tp,eg,ep,ev,re,r,rp)
 	end
 	if res and not Duel.IsPlayerAffectedByEffect(tp,59822133) and (not ect or ect>=2) and Duel.SelectYesNo(tp,aux.Stringid(33550694,0)) then
 		local chkf=Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and PLAYER_NONE or tp
-		local mg1=Duel.GetMatchingGroup(c511001334.filter1,tp,LOCATION_HAND+LOCATION_MZONE,0,nil,e)
+		local mg1=Duel.GetFusionMaterial(tp):Filter(c511001334.filter1,nil,e)
 		local sg1=Duel.GetMatchingGroup(c511001334.filter2,tp,LOCATION_EXTRA,0,nil,e,tp,mg1,nil,chkf)
 		local mg2=nil
 		local sg2=nil
