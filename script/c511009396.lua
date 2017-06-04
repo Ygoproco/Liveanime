@@ -23,7 +23,7 @@ function c511009396.filter(c)
 	return c:IsFaceup() and not c:IsAttribute(ATTRIBUTE_DARK)
 end
 function c511009396.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chk==0 then return Duel.IsExistingMatchingCard(c511009396.filter,tp,LOCATION_MZONE,0,1,nil) end
+	if chk==0 then return Duel.IsExistingMatchingCard(c511009396.filter,tp,0,LOCATION_MZONE,1,nil) end
 	if Duel.CheckEvent(EVENT_ATTACK_ANNOUNCE) and c511009396.atkcon(e,tp,eg,ep,ev,re,r,rp) and Duel.SelectYesNo(tp,aux.Stringid(61965407,1)) then
 		Duel.SetTargetParam(1)
 	else
