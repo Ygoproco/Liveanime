@@ -56,7 +56,7 @@ end
 function c511001074.spop(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
 	local chkf=Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and PLAYER_NONE or tp
-	local mg1=Duel.GetFusionMaterial(tp):Filter(c511002485.filter1,nil,e)
+	local mg1=Duel.GetFusionMaterial(tp):Filter(c511001074.filter1,nil,e)
 	local sg1=Duel.GetMatchingGroup(c511001074.filter2,tp,LOCATION_EXTRA,0,nil,e,tp,mg1,nil,chkf)
 	local mg2=nil
 	local sg2=nil
