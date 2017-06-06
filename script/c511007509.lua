@@ -1,5 +1,5 @@
 --Battle Fusion (Anime)
-function c511007510.initial_effect(c)
+function c511007509.initial_effect(c)
 	--ATK Up
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
@@ -8,12 +8,12 @@ function c511007510.initial_effect(c)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetHintTiming(TIMING_DAMAGE_STEP)
 	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP)
-	e1:SetCondition(c511007510.condition)
-	e1:SetOperation(c511007510.operation)
+	e1:SetCondition(c511007509.condition)
+	e1:SetOperation(c511007509.operation)
 	c:RegisterEffect(e1)
 end
 
-function c511007510.condition(e,tp,eg,ep,ev,re,r,rp)
+function c511007509.condition(e,tp,eg,ep,ev,re,r,rp)
 	local phase=Duel.GetCurrentPhase()
 	if phase~=PHASE_DAMAGE or Duel.IsDamageCalculated() then return false end
 	local a=Duel.GetAttacker()
@@ -22,7 +22,7 @@ function c511007510.condition(e,tp,eg,ep,ev,re,r,rp)
 		or (d~=nil and d:GetControler()==tp and d:IsFaceup() and d:IsType(TYPE_MONSTER) and d:IsRelateToBattle())
 end
 
-function c511007510.operation(e,tp,eg,ep,ev,re,r,rp,chk)
+function c511007509.operation(e,tp,eg,ep,ev,re,r,rp,chk)
 	local a=Duel.GetAttacker()
 	local d=Duel.GetAttackTarget()
 	if not a:IsRelateToBattle() or not d:IsRelateToBattle() then return end
