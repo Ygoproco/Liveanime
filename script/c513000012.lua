@@ -91,11 +91,18 @@ function c513000012.mtop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c513000012.discon(e,tp,eg,ep,ev,re,r,rp)
-	if e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) or not Duel.IsChainNegatable(ev) or e:GetHandler():IsStatus(STATUS_CHAINING)  then return false end
+	if e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) or not Duel.IsChainNegatable(ev) or re:GetHandler()==e:GetHandler() or not re:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return false end
 	if re:IsHasCategory(CATEGORY_NEGATE)
 		and Duel.GetChainInfo(ev-1,CHAININFO_TRIGGERING_EFFECT):IsHasType(EFFECT_TYPE_ACTIVATE) then return false end
 	local ex,tg,tc=Duel.GetOperationInfo(ev,CATEGORY_DESTROY)
-	return ex and tg~=nil and tc+tg:FilterCount(Card.IsOnField,nil)-tg:GetCount()>0
+	local g=Duel.GetChainInfo(ev,CHAININFO_TARGET_CARDS)
+	if not g or g:GetCount()<=0 or not ex or not tg or g==nil or tc+tg:FilterCount(Card.IsControler,nil,tp)-tg:GetCount()<=0 then return false end
+	local c=g:GetFirst()
+	while c do
+		if tg:IsContains(c) and not c==e:GetHandler() and c:IsControler(tp) then return true end
+		c=g:GetNext()
+	end
+	return false
 end
 function c513000012.distg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
@@ -111,7 +118,7 @@ function c513000012.disop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c513000012.bancon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetTurnPlayer()~=tp
+	return Duel.GetTurnPlayer()~=tp and (Duel.IsAbleToEnterBP() or (Duel.GetCurrentPhase()>=PHASE_BATTLE_START and Duel.GetCurrentPhase()<=PHASE_BATTLE))
 end
 function c513000012.bancost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToRemoveAsCost() end
