@@ -28,7 +28,7 @@ function c513000141.initial_effect(c)
 	c:RegisterEffect(e3)
 	--destroy
 	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(511010069,0))
+	e4:SetDescription(aux.Stringid(513000141,0))
 	e4:SetCategory(CATEGORY_DESTROY)
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e4:SetRange(LOCATION_MZONE)
@@ -101,5 +101,5 @@ function c513000141.numchk(e,tp,eg,ep,ev,re,r,rp)
 	Duel.CreateToken(1-tp,2407234)
 end
 function c513000141.indes(e,c)
-	return not c:IsSetCard(0x48)
+return not c:IsSetCard(0x48)
 end
