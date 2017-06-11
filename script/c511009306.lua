@@ -19,6 +19,7 @@ function c511009306.initial_effect(c)
 	e4:SetCode(EVENT_FREE_CHAIN)
 	e4:SetRange(LOCATION_SZONE)
 	e4:SetCountLimit(1)
+	e4:SetCondition(c511009306.negcon)
 	e4:SetTarget(c511009306.negtg)
 	e4:SetOperation(c511009306.negop)
 	c:RegisterEffect(e4)
@@ -50,6 +51,9 @@ function c511009306.initial_effect(c)
 end
 function c511009306.filter(c)
 	return c:IsFaceup() and c:IsSetCard(0x19)
+end
+function c511009306.negcon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetTurnPlayer()==tp
 end
 function c511009306.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(aux.disfilter1,tp,0,LOCATION_MZONE,1,nil) end

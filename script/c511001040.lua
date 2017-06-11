@@ -35,8 +35,8 @@ end
 function c511001040.con(e,tp,eg,ep,ev,re,r,rp)
 	return not Duel.IsExistingMatchingCard(c511001040.cfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,e:GetHandler())
 end
-function c511001040.filter(c,tid)
-	if not c:IsRace(RACE_DRAGON) or c:IsFacedown() then return false end
+function c511001040.filter(c,e,tid)
+	if not c:IsRace(RACE_DRAGON) or c:IsFacedown() or c:IsImmuneToEffect(e) then return false end
 	return c:GetFlagEffect(511001040)==0
 end
 function c511001040.op(e,tp,eg,ep,ev,re,r,rp)
@@ -45,7 +45,7 @@ function c511001040.op(e,tp,eg,ep,ev,re,r,rp)
 		c:RegisterFlagEffect(511001040,RESET_EVENT+0x1ff0000,0,0)
 	end
 	if not c:IsDisabled() and c:IsFaceup() then
-		local g=Duel.GetMatchingGroup(c511001040.filter,tp,LOCATION_MZONE,LOCATION_MZONE,e:GetHandler(),e:GetHandler():GetFieldID())
+		local g=Duel.GetMatchingGroup(c511001040.filter,tp,LOCATION_MZONE,LOCATION_MZONE,e:GetHandler(),e,e:GetHandler():GetFieldID())
 		if g:GetCount()>0 then
 			Duel.Overlay(c,g)
 		end
