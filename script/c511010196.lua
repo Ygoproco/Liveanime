@@ -49,7 +49,7 @@ function c511010196.damop(e,tp,eg,ep,ev,re,r,rp)
 		c:RegisterEffect(te)
 	end
 	te:Reset()
-	if not c:IsHasEffect(81674782) and bc and bc:IsSetCard(0x48) and not c:IsHasEffect(EFFECT_INDESTRUCTABLE_BATTLE) then
+	if  bc and bc:IsSetCard(0x48) and not c:IsHasEffect(EFFECT_INDESTRUCTABLE_BATTLE) and not c:IsHasEffect(EFFECT_LEAVE_FIELD_REDIRECT) and not c:IsHasEffect(EFFECT_TO_GRAVE_REDIRECT) then
 		local a=Duel.GetAttacker()
 		local d=Duel.GetAttackTarget()
 		local chk=false
