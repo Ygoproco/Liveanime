@@ -15,7 +15,7 @@ function c511018013.initial_effect(c)
 	e2:SetCode(EVENT_ATTACK_ANNOUNCE)
 	e2:SetRange(LOCATION_SZONE)
 	e2:SetCondition(c511018013.hdcondition)
-	e2:SetCode(c511018013.hdcost)
+	e2:SetCost(c511018013.hdcost)
 	e2:SetOperation(c511018013.hdoperation)
 	c:RegisterEffect(e2)
 end
@@ -71,6 +71,6 @@ function c511018013.hdoperation(e,tp)
 	Duel.RegisterEffect(e1,tp)
 end
 function c511018013.rdop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.ChangeBattleDamage(tp,ev/2)
-	Duel.ChangeBattleDamage(1-tp,ev/2)
+	Duel.ChangeBattleDamage(tp,Duel.GetBattleDamage(tp)/2)
+	Duel.ChangeBattleDamage(1-tp,Duel.GetBattleDamage(1-tp)/2)
 end
