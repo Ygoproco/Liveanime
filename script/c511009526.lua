@@ -36,17 +36,18 @@ function c511009526.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 function c511009526.activate(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc and tc:IsRelateToEffect(e) and Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)>0 then
-		local e1=Effect.CreateEffect(e:GetHandler())
+	if tc and tc:IsRelateToEffect(e) and Duel.SpecialSummonStep(tc,0,tp,tp,false,false,POS_FACEUP) then
+		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_DISABLE)
 		e1:SetReset(RESET_EVENT+0x1fe0000)
 		tc:RegisterEffect(e1)
-		local e2=Effect.CreateEffect(e:GetHandler())
+		local e2=Effect.CreateEffect(c)
 		e2:SetType(EFFECT_TYPE_SINGLE)
 		e2:SetCode(EFFECT_DISABLE_EFFECT)
 		e2:SetReset(RESET_EVENT+0x1fe0000)
 		tc:RegisterEffect(e2)
+		Duel.SpecialSummonComplete()
 	end
 end
 function c511009526.negcon(e,tp,eg,ep,ev,re,r,rp)
