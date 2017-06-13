@@ -8,7 +8,6 @@ function c511015117.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e1:SetCode(EFFECT_SPSUMMON_CONDITION)
-	e1:SetValue(c511015117.splimit)
 	c:RegisterEffect(e1)
 	--special summon rule
 	local e2=Effect.CreateEffect(c)
@@ -30,73 +29,67 @@ function c511015117.initial_effect(c)
 	e3:SetOperation(c511015117.damop)
 	c:RegisterEffect(e3)
 end
-function c511015117.splimit(e,se,sp,st)
-	return not e:GetHandler():IsLocation(LOCATION_EXTRA+LOCATION_GRAVE)
-end
 function c511015117.spcon(e,c)
-	local tp = e:GetHandler():GetControler()
-	return Duel.GetLocationCount(tp,LOCATION_SZONE)>2
-		and Duel.IsExistingMatchingCard(Card.IsFusionSetCard,tp,LOCATION_MZONE,0,3,nil,0x16)
+	if c==nil then return true end
+	return Duel.GetLocationCount(c:GetControler(),LOCATION_SZONE)>2 
+		and Duel.IsExistingMatchingCard(Card.IsFusionSetCard,c:GetControler(),LOCATION_MZONE,0,3,nil,0x16)
 end
 function c511015117.spop(e,tp,eg,ep,ev,re,r,rp,c)
 	local g=Duel.SelectMatchingCard(tp,Card.IsFusionSetCard,tp,LOCATION_MZONE,0,3,3,nil,0x16)
-	local tc = g:GetFirst()
+	local tc=g:GetFirst()
 	while tc do
 		Duel.MoveToField(tc,tp,tp,LOCATION_SZONE,POS_FACEUP,true)
 		tc=g:GetNext()
 	end
-	e:GetHandler():SetMaterial(g)
-	
-	--equip
-	local e2=Effect.CreateEffect(e:GetHandler())
-	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e2:SetProperty(EFFECT_FLAG_DAMAGE_STEP)
-	e2:SetOperation(c511015117.operation)
-	e:GetHandler():RegisterEffect(e2)
+	g:AddCard(c)
+	g:KeepAlive()
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e2:SetCode(EVENT_SPSUMMON)
+	e2:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_IMMEDIATELY_APPLY)
+	e2:SetOperation(c511015117.eqop)
+	e2:SetLabelObject(g)
+	Duel.RegisterEffect(e2,tp)
 end
-
 function c511015117.eqlimit(e,c)
 	return e:GetOwner()==c
 end
-function c511015117.operation(e,tp,eg,ep,ev,re,r,rp)
-	local g=e:GetHandler():GetMaterial()
-	local tc = g:GetFirst()
+function c511015117.eqop(e,tp,eg,ep,ev,re,r,rp)
+	local g=e:GetLabelObject()
+	local c=e:GetOwner()
+	if not eg:IsContains(c) or not g:IsContains(c) then e:Reset() return end
+	g:RemoveCard(c)
+	local tc=g:GetFirst()
 	while tc do
-		Duel.Equip(tp,tc,e:GetHandler(),false)
-		
-		--Add Equip limit
-		local e1=Effect.CreateEffect(e:GetHandler())
+		Duel.Equip(tp,tc,c)
+		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetProperty(EFFECT_FLAG_OWNER_RELATE)
+		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_OWNER_RELATE)
 		e1:SetCode(EFFECT_EQUIP_LIMIT)
 		e1:SetReset(RESET_EVENT+0x1fe0000)
 		e1:SetValue(c511015117.eqlimit)
 		tc:RegisterEffect(e1)
-	
-		--lower atk
-		local e2=Effect.CreateEffect(e:GetHandler())
+		local e2=Effect.CreateEffect(c)
 		e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+		e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 		e2:SetCategory(CATEGORY_ATKCHANGE)
-		e2:SetCode(EVENT_DESTROYED)
+		e2:SetCode(EVENT_LEAVE_FIELD)
 		e2:SetOperation(c511015117.atkop)
-		e2:SetLabelObject(e:GetHandler())
+		e2:SetLabelObject(c)
 		tc:RegisterEffect(e2)
-	
 		tc=g:GetNext()
 	end
-	
 	--destroy
-	local e3=Effect.CreateEffect(e:GetHandler())
+	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE)
 	e3:SetCode(EFFECT_SELF_DESTROY)
 	e3:SetCondition(c511015117.descon)
 	e3:SetReset(RESET_EVENT+0x1fe0000)
-	e:GetHandler():RegisterEffect(e3)
-	
+	c:RegisterEffect(e3)
 	e:Reset()
 end
 function c511015117.atkop(e,tp,eg,ep,ev,re,r,rp)
+	if not e:GetHandler():IsReason(REASON_DESTROY) then e:Reset() return end
 	local tc=e:GetLabelObject()
 	if tc and tc:IsLocation(LOCATION_MZONE) then
 		local e1=Effect.CreateEffect(tc)
@@ -106,12 +99,11 @@ function c511015117.atkop(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetValue(-600)
 		tc:RegisterEffect(e1)
 	end
+	e:Reset()
 end
 function c511015117.descon(e,c)
 	return e:GetHandler():GetEquipGroup():FilterCount(Card.IsSetCard,nil,0x16)==0
 end
-
-
 function c511015117.damcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local bc=c:GetBattleTarget()
