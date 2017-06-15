@@ -9,18 +9,31 @@ function c513000118.initial_effect(c)
 	e1:SetTarget(c513000118.target)
 	e1:SetOperation(c513000118.activate)
 	c:RegisterEffect(e1)
-	--Special Summon monster from grave
+	--Special Summon monster from your grave
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(513000118,0))
 	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e2:SetProperty(EFFECT_FLAG_BOTH_SIDE)
-	e2:SetType(EFFECT_TYPE_IGNITION)
+	e2:SetType(EFFECT_TYPE_QUICK_O)
+	e2:SetCode(EVENT_FREE_CHAIN)
 	e2:SetRange(LOCATION_SZONE)
 	e2:SetCountLimit(1)
 	e2:SetTarget(c513000118.sptg)
 	e2:SetOperation(c513000118.spop)
 	c:RegisterEffect(e2)
-	--513000118 chk
+	--opponent can special summon form their grave
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(513000118,0))
+	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e3:SetProperty(EFFECT_FLAG_BOTH_SIDE)
+	e3:SetType(EFFECT_TYPE_QUICK_O)
+	e3:SetCode(EVENT_FREE_CHAIN)
+	e3:SetRange(LOCATION_SZONE)
+	e3:SetCountLimit(1)
+	e3:SetTarget(c513000118.sptg2)
+	e3:SetCondition(c513000118.con2)
+	e3:SetOperation(c513000118.spop2)
+	c:RegisterEffect(e3)
+	--513000118 chk--Banish effect
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
@@ -92,15 +105,39 @@ function c513000118.spop(e,tp,eg,ep,ev,re,r,rp)
 		local g1=Duel.SelectMatchingCard(tp,c513000118.spfilter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp)
 		Duel.SpecialSummonStep(g1:GetFirst(),0,tp,tp,true,false,POS_FACEUP)
 	end
-	if Duel.GetLocationCount(1-tp,LOCATION_MZONE)>0
-		and Duel.IsExistingMatchingCard(c513000118.spfilter,1-tp,LOCATION_GRAVE,0,1,nil,e,1-tp)
-		and Duel.SelectYesNo(1-tp,aux.Stringid(62742651,2)) then
-		Duel.Hint(HINT_SELECTMSG,1-tp,HINTMSG_SPSUMMON)
-		local g2=Duel.SelectMatchingCard(1-tp,c513000118.spfilter,1-tp,LOCATION_GRAVE,0,1,1,nil,e,1-tp)
-		Duel.SpecialSummonStep(g2:GetFirst(),0,1-tp,1-tp,true,false,POS_FACEUP)
+	Duel.SpecialSummonComplete()
+end
+
+function c513000118.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
+		and Duel.IsExistingMatchingCard(c513000118.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,0,LOCATION_GRAVE)
+end
+
+--opponents
+function c513000118.con2(e,tp,eg,ep,ev,re,r,rp)
+	return e:GetHandlerPlayer()==1-tp
+end
+
+function c513000118.sptg2(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
+		and Duel.IsExistingMatchingCard(c513000118.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,1-tp) end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,0,LOCATION_GRAVE)
+end
+
+function c513000118.spop2(e,tp,eg,ep,ev,re,r,rp)
+	if not e:GetHandler():IsRelateToEffect(e) then return end
+	if Duel.GetLocationCount(tp,LOCATION_MZONE)>0
+		and Duel.IsExistingMatchingCard(c513000118.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp) then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+		local g2=Duel.SelectMatchingCard(tp,c513000118.spfilter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp)
+		Duel.SpecialSummonStep(g2:GetFirst(),0,tp,tp,true,false,POS_FACEUP)
 	end
 	Duel.SpecialSummonComplete()
 end
+
+
+
 function c513000118.checkop(e,tp,eg,ep,ev,re,r,rp)
 	local g=eg:Filter(Card.IsFaceup,nil)
 	local tc=g:GetFirst()
