@@ -50,7 +50,7 @@ function c511004408.op(e,tp,eg,ev,ep,re,r,rp)
 			e1:SetType(EFFECT_TYPE_SINGLE)
 			e1:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)
 			e1:SetValue(1)
-			e1:SetReset(RESET_EVENT+0x1fe0000RESET_PHASE+PHASE_DAMAGE)
+			e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_DAMAGE)
 			d:RegisterEffect(e1)
 		end
 		if a:IsRelateToBattle() then
