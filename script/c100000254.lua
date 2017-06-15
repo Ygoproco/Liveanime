@@ -11,7 +11,7 @@ function c100000254.initial_effect(c)
 	e1:SetOperation(c100000254.activate)
 	c:RegisterEffect(e1)
 end
-function c511000985.cost(e,tp,eg,ep,ev,re,r,rp,chk)
+function c100000254.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e:SetLabel(1)
 	if chk==0 then return true end
 end
