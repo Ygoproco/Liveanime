@@ -1,4 +1,5 @@
 --Galaxy-Eyes Cipher Dragon (Anime)
+--fixed by MLD
 function c511010504.initial_effect(c)
 	--xyz summon
 	aux.AddXyzProcedure(c,nil,8,2)
@@ -31,60 +32,36 @@ function c511010504.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.SetOperationInfo(0,CATEGORY_CONTROL,g,1,0,0)
 end
 function c511010504.operation(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
 	if tc and tc:IsRelateToEffect(e) and Duel.GetControl(tc,tp,PHASE_END,1) then
+		Duel.NegateRelatedChain(tc,RESET_TURN_SET)
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
-		e1:SetCode(EFFECT_SET_ATTACK)
-		e1:SetValue(e:GetHandler():GetAttack())
-		e1:SetCondition(c511010504.cond)
+		e1:SetCode(EFFECT_CANNOT_DIRECT_ATTACK)
 		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 		tc:RegisterEffect(e1)
-		
-		local e2=Effect.CreateEffect(e:GetHandler())
+		local e2=Effect.CreateEffect(c)
 		e2:SetType(EFFECT_TYPE_SINGLE)
-		e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
-		e2:SetCode(EFFECT_CHANGE_CODE)
-		e2:SetValue(e:GetHandler():GetCode())
-		e2:SetCondition(c511010504.cond)
+		e2:SetCode(EFFECT_DISABLE)
 		e2:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 		tc:RegisterEffect(e2)
-		
-		local e3=Effect.CreateEffect(e:GetHandler())
+		local e3=Effect.CreateEffect(c)
 		e3:SetType(EFFECT_TYPE_SINGLE)
-		e3:SetProperty(EFFECT_FLAG_SINGLE_RANGE+EFFECT_FLAG_CANNOT_DISABLE)
-		e3:SetRange(LOCATION_MZONE)
-		e3:SetCode(EFFECT_DISABLE)
+		e3:SetCode(EFFECT_DISABLE_EFFECT)
 		e3:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
-		e3:SetCondition(c511010504.cond)
-		tc:RegisterEffect(e3,true)
-		
-		
-		
-		local e5=Effect.CreateEffect(e:GetHandler())
+		tc:RegisterEffect(e3)
+		local e4=Effect.CreateEffect(c)
+		e4:SetType(EFFECT_TYPE_SINGLE)
+		e4:SetCode(EFFECT_SET_ATTACK_FINAL)
+		e4:SetValue(c:GetAttack())
+		e4:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
+		tc:RegisterEffect(e4)
+		local e5=Effect.CreateEffect(c)
 		e5:SetType(EFFECT_TYPE_SINGLE)
-		e5:SetCode(EFFECT_CANNOT_DIRECT_ATTACK)
-		e5:SetCondition(c511010504.cond)
+		e5:SetCode(EFFECT_CHANGE_CODE)
+		e5:SetValue(18963306)
 		e5:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 		tc:RegisterEffect(e5)
-		
-		--disable
-		local e6=Effect.CreateEffect(e:GetHandler())
-		e6:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-		e6:SetCode(EVENT_CONTROL_CHANGED)
-		e6:SetOperation(c511010504.resetop)
-		tc:RegisterEffect(e6)
-		tc:RegisterFlagEffect(511018515,RESET_PHASE+PHASE_END,0,1)
-	else
-		if not tc:IsImmuneToEffect(e) and tc:IsAbleToChangeControler() then
-			Duel.Destroy(tc,REASON_EFFECT)
-		end
 	end
-end
-function c511010504.cond(e)
-	return e:GetHandler():GetFlagEffect(511018515)~=0 
-end
-function c511010504.resetop(e,tp,eg,ep,ev,re,r,rp)
-	e:GetHandler():ResetFlagEffect(511018515)
 end

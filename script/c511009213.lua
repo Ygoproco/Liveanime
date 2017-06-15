@@ -1,5 +1,6 @@
 --Grand Naval Battle
 --Scripted by eclair11
+--fixed by MLD
 function c511009213.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
@@ -16,7 +17,10 @@ function c511009213.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function c511009213.condition(e,tp,eg,ep,ev,re,r,rp)
-	return (Duel.GetAttacker():IsControler(tp) and Duel.GetAttacker():IsAttribute(ATTRIBUTE_WATER)) or (Duel.GetAttackTarget() and Duel.GetAttackTarget():IsControler(tp) and Duel.GetAttackTarget():IsAttribute(ATTRIBUTE_WATER))
+	local a=Duel.GetAttacker()
+	local d=Duel.GetAttackTarget()
+	return (a:IsControler(tp) and a:IsAttribute(ATTRIBUTE_WATER)) 
+		or (d and d:IsControler(tp) and d:IsAttribute(ATTRIBUTE_WATER))
 end
 function c511009213.operation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.ChangeBattleDamage(1-tp,ev*2)

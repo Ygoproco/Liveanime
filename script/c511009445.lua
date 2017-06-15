@@ -1,8 +1,9 @@
 --Frightfur Mad Parade
+--fixed by MLD
 function c511009445.initial_effect(c)
 	--Negate
 	local e1=Effect.CreateEffect(c)
-	e1:SetCategory(CATEGORY_DISABLE)
+	e1:SetCategory(CATEGORY_DESTROY+CATEGORY_DAMAGE)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_CHAINING)
 	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
@@ -14,8 +15,11 @@ end
 function c511009445.cfilter(c,tp)
 	return c:IsOnField() and c:IsControler(tp)
 end
+function c511009445.confilter(c)
+	return c:IsFaceup() and c:IsSetCard(0xad)
+end
 function c511009445.condition(e,tp,eg,ep,ev,re,r,rp)
-	if not Duel.IsChainNegatable(ev) then return false end
+	if not Duel.IsExistingMatchingCard(c511009445.confilter,tp,LOCATION_MZONE,0,1,nil) then return false end
 	local ex,tg,tc=Duel.GetOperationInfo(ev,CATEGORY_DESTROY)
 	return ex and tg~=nil and tc+tg:FilterCount(c511009445.cfilter,nil,tp)-tg:GetCount()>0
 end

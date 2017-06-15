@@ -1,6 +1,7 @@
 --Cards of Consonance (Anime)
 --調和の宝札
 --scripted by Larry126
+--fixed by MLD
 function c511600013.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
@@ -14,11 +15,11 @@ function c511600013.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function c511600013.filter(c)
-	return c:IsType(TYPE_TUNER) and c:IsDiscardable()
+	return c:IsType(TYPE_TUNER) and c:IsAbleToGraveAsCost()
 end
 function c511600013.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c511600013.filter,tp,LOCATION_HAND,0,1,nil) end
-	Duel.DiscardHand(tp,c511600013.filter,1,1,REASON_COST+REASON_DISCARD)
+	Duel.DiscardHand(tp,c511600013.filter,1,1,REASON_COST)
 end
 function c511600013.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,2) end

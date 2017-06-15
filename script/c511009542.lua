@@ -1,4 +1,5 @@
 --Abyss Script - Abyss Entertainment
+--fixed by MLD
 function c511009542.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
@@ -8,8 +9,7 @@ function c511009542.initial_effect(c)
 	--damage
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(511000105,0))
-	e2:SetCategory(CATEGORY_DAMAGE)
-	e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetRange(LOCATION_SZONE)
 	e2:SetCost(c511009542.setcost)
@@ -34,7 +34,7 @@ function c511009542.settg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 function c511009542.setop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) and tc:IsSSetable() then
+	if tc and tc:IsRelateToEffect(e) and tc:IsSSetable() then
 		Duel.SSet(tp,tc)
 		Duel.ConfirmCards(1-tp,tc)
 	end

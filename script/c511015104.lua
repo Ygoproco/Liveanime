@@ -4,18 +4,13 @@ function c511015104.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_FUSION_SUMMON)
+	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetCost(c511015104.cost)
 	e1:SetTarget(c511015104.target)
 	e1:SetOperation(c511015104.activate)
 	c:RegisterEffect(e1)	
-	--remain field
-	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_SINGLE)
-	e2:SetCode(EFFECT_REMAIN_FIELD)
-	c:RegisterEffect(e2)
-	
 	Duel.AddCustomActivityCounter(511015104,ACTIVITY_SPSUMMON,c511015104.counterfilter)
 end
 function c511015104.counterfilter(c)
@@ -52,11 +47,12 @@ function c511015104.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return false end
 	if chk==0 then
 		return not Duel.IsPlayerAffectedByEffect(tp,59822133) and Duel.IsPlayerCanSpecialSummonCount(tp,2) 
-			and (not ect or ect>=2) and Duel.GetLocationCount(tp,LOCATION_MZONE)>1
-			and Duel.IsExistingTarget(c511015105.filter1,tp,LOCATION_EXTRA,0,1,nil,e,tp)
+			and (not ect or ect>=3) and Duel.GetLocationCount(tp,LOCATION_MZONE)>1
+			and Duel.IsExistingTarget(c511015104.filter1,tp,LOCATION_EXTRA,0,1,nil,e,tp)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local g1=Duel.SelectTarget(tp,c511015104.filter1,tp,LOCATION_EXTRA,0,1,1,nil,e,tp)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local g2=Duel.SelectTarget(tp,c511015104.filter2,tp,LOCATION_GRAVE,0,1,1,nil,e,tp,g1:GetFirst())
 	g1:Merge(g2)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g1,2,0,0)
@@ -89,14 +85,16 @@ function c511015104.activate(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SpecialSummon(sc,SUMMON_TYPE_FUSION,tp,tp,false,false,POS_FACEUP)
 		sc:CompleteProcedure()
 		local c=e:GetHandler()
-		if not c:IsRelateToEffect(e) then return end
+		if not c:IsRelateToEffect(e) or not e:IsHasType(EFFECT_TYPE_ACTIVATE) then return end
+		c:CancelToGrave()
 		local e1=Effect.CreateEffect(c)
-		e1:SetType(EFFECT_TYPE_TRIGGER_F+EFFECT_TYPE_FIELD)
-		e1:SetProperty(EFFECT_FLAG_DELAY)
+		e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
+		e1:SetType(EFFECT_TYPE_TRIGGER_O+EFFECT_TYPE_FIELD)
+		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
 		e1:SetRange(LOCATION_SZONE)
 		e1:SetCode(EVENT_LEAVE_FIELD)
 		e1:SetCondition(c511015104.descon)
-		e1:SetCost(c511015104.descost)
+		e1:SetTarget(c511015104.destg)
 		e1:SetOperation(c511015104.desop)
 		e1:SetReset(RESET_EVENT+0x1fe0000)
 		e1:SetLabelObject(sc)
@@ -105,28 +103,25 @@ function c511015104.activate(e,tp,eg,ep,ev,re,r,rp)
 end
 function c511015104.descon(e,tp,eg,ep,ev,re,r,rp)
 	local tc=e:GetLabelObject()
-	return tc and eg:IsContains(tc) 
+	return tc and eg:IsContains(tc) and tc:IsReason(REASON_DESTROY)
 end
 function c511015104.thfilter(c)
 	return c:IsAbleToHand() and c:IsCode(511015105)
 end
-function c511015104.descost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	if e:GetLabelObject():IsReason(REASON_DESTROY) and Duel.IsExistingMatchingCard(c511015104.thfilter,tp,LOCATION_DECK,0,1,nil)
-		and e:GetHandler():IsAbleToGrave() and Duel.SelectYesNo(tp,aux.Stringid(511015104,0)) then
-		Duel.SendtoGrave(e:GetHandler(),REASON_COST)
-		e:GetHandler():RegisterFlagEffect(511015104,RESET_EVENT+EVENT_CHAIN_END+RESET_PHASE+PHASE_END,0,1)
-	end
+function c511015104.destg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return e:GetHandler():IsAbleToGrave() 
+		and Duel.IsExistingMatchingCard(c511015104.thfilter,tp,LOCATION_DECK,0,1,nil) end
+	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,e:GetHandler(),1,0,0)
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
 function c511015104.desop(e,tp,eg,ep,ev,re,r,rp)
-	if e:GetHandler():GetFlagEffect(511015104)~=0 then
+	local c=e:GetHandler()
+	if c:IsRelateToEffect(e) and Duel.SendtoGrave(c,REASON_EFFECT)~=0 and c:IsLocation(LOCATION_GRAVE) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 		local g=Duel.SelectMatchingCard(tp,c511015104.thfilter,tp,LOCATION_DECK,0,1,1,nil)
 		if g:GetCount()>0 then
 			Duel.SendtoHand(g,nil,REASON_EFFECT)
 			Duel.ConfirmCards(1-tp,g)
 		end
-	else
-		Duel.SendtoGrave(e:GetHandler(),REASON_EFFECT)
 	end
 end
