@@ -37,12 +37,12 @@ function c511004404.prefilter(c,tp)
 end
 function c511004404.condition(e,tp,eg,ev,ep,re,r,rp)
 	local cg=eg:Filter(c511004404.prefilter,nil,tp)
-	local lv=cg:GetMaxGroup(Card.GetLevel)
+	local rg,lv=cg:GetMaxGroup(Card.GetLevel)
 	e:SetLabel(lv)
 	return cg:GetCount()>0
 end
 function c511004404.filter(c,e,tp,lv)
-	return c:GetFlagEffect(511004404)~=0 and c:GetLevel()<lv and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:GetFlagEffect(511004404)~=0 and c:GetLevel()<lv and c:IsCanBeSpecialSummoned(e,0,tp,false,false) and not (c:IsType(TYPE_XYZ) and not (c:IsHasEffect(EFFECT_RANK_LEVEL) or c:IsHasEffect(EFFECT_RANK_LEVEL_S)))
 end
 function c511004404.target(e,tp,eg,ev,ep,re,r,rp,chk,chkc)
 	local lv=e:GetLabel()
