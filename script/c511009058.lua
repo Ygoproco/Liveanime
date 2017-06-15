@@ -1,4 +1,5 @@
 --White Circle Reef
+--cleaned up by MLD
 function c511009058.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
@@ -28,9 +29,8 @@ function c511009058.archchk(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c511009058.filter(c,tp)
-	return c:IsFaceup() and c:IsDestructable()
+	return c:IsFaceup() and c420.IsWhite(c) 
 		and Duel.IsExistingMatchingCard(c511009058.nfilter1,tp,LOCATION_DECK,0,1,nil,c)
-		and c420.IsWhite(c)
 end
 function c511009058.nfilter1(c,tc)
 	return c:IsCode(tc:GetCode()) and c:IsAbleToHand()
@@ -48,13 +48,12 @@ function c511009058.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 function c511009058.activate(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc:IsFaceup() and tc:IsRelateToEffect(e) and Duel.Destroy(tc,REASON_EFFECT)>0 then
+	if tc and tc:IsFaceup() and tc:IsRelateToEffect(e) and Duel.Destroy(tc,REASON_EFFECT)>0 then
 		Duel.BreakEffect()
 		local g=Duel.SelectMatchingCard(tp,c511009058.nfilter2,tp,LOCATION_DECK,0,1,1,nil,tc)
-		local hc=g:GetFirst()
-		if hc then
-			Duel.SendtoHand(hc,nil,REASON_EFFECT)
-			Duel.ConfirmCards(1-tp,hc)
+		if g:GetCount()>0 then
+			Duel.SendtoHand(g,nil,REASON_EFFECT)
+			Duel.ConfirmCards(1-tp,g)
 		end
 	end
 end

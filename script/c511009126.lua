@@ -1,4 +1,5 @@
 --White Aura Dolphin
+--fixed by MLD
 function c511009126.initial_effect(c)
 	--synchro summon
 	aux.AddSynchroProcedure(c,nil,aux.NonTuner(nil),1)
@@ -11,8 +12,8 @@ function c511009126.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetCountLimit(1)
-	e1:SetTarget(c511009126.atktarget)
-	e1:SetOperation(c511009126.atkoperation)
+	e1:SetTarget(c511009126.atktg)
+	e1:SetOperation(c511009126.atkop)
 	c:RegisterEffect(e1)
 	--special summon
 	local e3=Effect.CreateEffect(c)
@@ -43,23 +44,16 @@ function c511009583.archchk(e,tp,eg,ep,ev,re,r,rp)
 		Duel.RegisterFlagEffect(0,420,0,0,0)
 	end
 end
-
-
-function c511009126.filter(c)
-	return c:IsFaceup()
-end
-function c511009126.atktarget(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsControler(1-tp) and chkc:IsLocation(LOCATION_MZONE) and c511009126.filter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(c511009126.filter,tp,0,LOCATION_MZONE,1,nil) end
+function c511009126.atktg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsControler(1-tp) and chkc:IsLocation(LOCATION_MZONE) and chkc:IsFaceup() end
+	if chk==0 then return Duel.IsExistingTarget(Card.IsFaceup,tp,0,LOCATION_MZONE,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-	local g=Duel.SelectTarget(tp,c511009126.filter,tp,0,LOCATION_MZONE,1,1,nil)
-	Duel.SetOperationInfo(0,CATEGORY_DISABLE,g,1,0,0)
+	Duel.SelectTarget(tp,Card.IsFaceup,tp,0,LOCATION_MZONE,1,1,nil)
 end
-function c511009126.atkoperation(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
+function c511009126.atkop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc:IsFaceup() and tc:IsRelateToEffect(e) then
-		local e1=Effect.CreateEffect(c)
+	if tc and tc:IsFaceup() and tc:IsRelateToEffect(e) then
+		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_SET_ATTACK_FINAL)
 		e1:SetValue(tc:GetAttack()/2)
@@ -67,9 +61,6 @@ function c511009126.atkoperation(e,tp,eg,ep,ev,re,r,rp)
 		tc:RegisterEffect(e1)
 	end
 end
-
-
---revive
 function c511009126.condition(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsReason(REASON_DESTROY)
 end
@@ -84,7 +75,7 @@ function c511009126.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c511009126.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and e:GetHandler():IsCanBeSpecialSummoned(e,0,tp,true,false) end
+		and e:GetHandler():IsCanBeSpecialSummoned(e,0,tp,false,false) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,e:GetHandler(),1,0,0)
 end
 function c511009126.operation(e,tp,eg,ep,ev,re,r,rp)

@@ -1,6 +1,7 @@
 --Cipher Biplane
+--fixed by MLD
 function c511009378.initial_effect(c)
---spsummon
+	--spsummon
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(13647631,0))
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
@@ -50,7 +51,6 @@ function c511009378.spop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SendtoGrave(c,REASON_RULE)
 	end
 end
-
 function c511009378.lvfilter(c)
 	return c:IsFaceup() and c:GetLevel()~=8 and c:IsSetCard(0xe5)
 end
@@ -62,13 +62,13 @@ function c511009378.lvtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 function c511009378.lvop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) and tc:IsFaceup() then
+	if tc and tc:IsRelateToEffect(e) and tc:IsFaceup() then
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
 		e1:SetCode(EFFECT_CHANGE_LEVEL)
 		e1:SetValue(8)
-		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
+		e1:SetReset(RESET_EVENT+0x1fe0000)
 		tc:RegisterEffect(e1)
 	end
 end
@@ -80,16 +80,12 @@ function c511009378.regop(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 		e1:SetType(EFFECT_TYPE_IGNITION)
 		e1:SetRange(LOCATION_GRAVE)
-		e1:SetCost(c511009378.thcost)
+		e1:SetCost(aux.bfgcost)
 		e1:SetTarget(c511009378.thtg)
 		e1:SetOperation(c511009378.tgop)
 		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 		c:RegisterEffect(e1)
 	end
-end
-function c511009378.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsAbleToRemoveAsCost() end
-	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_COST)
 end
 function c511009378.thfilter(c)
 	return c:IsCode(81974607) and c:IsAbleToHand()

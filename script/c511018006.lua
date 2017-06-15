@@ -1,4 +1,5 @@
 --Red Armor
+--fixed by MLD
 function c511018006.initial_effect(c)
 	--
 	local e1=Effect.CreateEffect(c)
@@ -35,9 +36,6 @@ function c511018006.archchk(e,tp,eg,ep,ev,re,r,rp)
 		Duel.RegisterFlagEffect(0,420,0,0,0)
 	end
 end
-function c511018006.filter(c,tp)
-	return c:IsType(TYPE_MONSTER) and c420.IsRed(c) and c:IsFaceup() and c:IsControler(tp)
-end
 function c511018006.condition(e,tp,eg,ev,ep,re,r,rp)
 	return eg:IsExists(c511018006.filter,1,nil,tp)
 end
@@ -51,13 +49,18 @@ function c511018006.operation(e,tp,eg,ev,ep,re,r,rp)
 	e1:SetReset(RESET_PHASE+PHASE_END)
 	Duel.RegisterEffect(e1,tp)
 end
-function c511018006.target(e,tp,eg,ev,ep,re,r,rp,chk)
+function c511018006.filter(c,tp)
+	return c420.IsRed(c) and c:IsFaceup() and c:IsControler(tp)
+end
+function c511018006.target(e,tp,eg,ev,ep,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and c511018006.filter(chkc,tp) end
 	if chk==0 then return Duel.IsExistingTarget(c511018006.filter,tp,LOCATION_MZONE,0,1,nil,tp) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
 	Duel.SelectTarget(tp,c511018006.filter,tp,LOCATION_MZONE,0,1,1,nil,tp)
 end
 function c511018006.operationb(e,tp,eg,ev,ep,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) then
+	if tc and tc:IsRelateToEffect(e) then
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)

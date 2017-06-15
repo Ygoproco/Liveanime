@@ -1,4 +1,5 @@
 --Rainbow Kuriboh (Anime)
+--fixed by MLD
 function c511020010.initial_effect(c)
 	--Equip
 	local e1=Effect.CreateEffect(c)
@@ -33,17 +34,19 @@ function c511020010.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c511020010.op(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) then
-		Duel.Equip(tp,c,Duel.GetAttacker(),true)
+	local a=Duel.GetAttacker()
+	if c:IsRelateToEffect(e) and a and a:IsRelateToBattle() then
+		Duel.Equip(tp,c,a,true)
 		--Add Equip limit
-		local e1=Effect.CreateEffect(Duel.GetAttacker())
+		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_EQUIP_LIMIT)
+		e1:SetLabelObject(a)
 		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
 		e1:SetReset(RESET_EVENT+0x1fe0000)
 		e1:SetValue(c511020010.eqlimit)
 		c:RegisterEffect(e1)
-		local e2=Effect.CreateEffect(Duel.GetAttacker())
+		local e2=Effect.CreateEffect(c)
 		e2:SetType(EFFECT_TYPE_EQUIP)
 		e2:SetCode(EFFECT_CANNOT_ATTACK)
 		e2:SetReset(RESET_EVENT+0x1fe0000)
@@ -51,7 +54,7 @@ function c511020010.op(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c511020010.eqlimit(e,c)
-	return c:IsFaceup()
+	return e:GetLabelObject()==c
 end
 function c511020010.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetAttacker():IsControler(1-tp) and Duel.GetAttackTarget()==nil

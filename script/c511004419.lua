@@ -1,4 +1,5 @@
 --performapal nightmare knight
+--fixed by MLD
 function c511004419.initial_effect(c)
 	local e1=Effect.CreateEffect(c)
 	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
@@ -6,7 +7,7 @@ function c511004419.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_QUICK_O)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetRange(LOCATION_GRAVE)
-	e1:SetCost(c511004419.cost)
+	e1:SetCost(aux.bfgcost)
 	e1:SetCondition(c511004419.condition)
 	e1:SetTarget(c511004419.target)
 	e1:SetOperation(c511004419.operation)
@@ -22,20 +23,16 @@ function c511004419.initial_effect(c)
 	end
 end
 function c511004419.gop(e,tp,eg,ev,ep,re,r,rp)
-	Duel.RegisterFlagEffect(1-rp,511004419,RESET_PHASE+PHASE_BATTLE,0,1)
-end
-function c511004419.cost(e,tp,eg,ev,ep,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsAbleToRemoveAsCost() end
-	Duel.Remove(e:GetHandler(),0,REASON_COST)
+	Duel.RegisterFlagEffect(ep,511004419,RESET_PHASE+PHASE_BATTLE,0,1)
 end
 function c511004419.condition(e,tp,eg,ev,ep,re,r,rp)
-	return Duel.GetCurrentPhase()>=PHASE_BATTLE_START and Duel.GetCurrentPhase()<PHASE_MAIN2 and Duel.GetTurnPlayer()==tp
+	return Duel.GetCurrentPhase()>=PHASE_BATTLE_START and Duel.GetCurrentPhase()<=PHASE_BATTLE and Duel.GetTurnPlayer()==tp
 end
 function c511004419.target(e,tp,eg,ev,ep,re,r,rp,chk)
 	if chk==0 then return Duel.GetFlagEffect(tp,511004419)~=0 or Duel.GetFlagEffect(1-tp,511004419)~=0 end
 	local dep=nil
 	if Duel.GetFlagEffect(tp,511004419)~=0 and Duel.GetFlagEffect(1-tp,511004419)~=0 then
-		dep=2
+		dep=PLAYER_ALL
 	elseif Duel.GetFlagEffect(tp,511004419)~=0 then
 		dep=tp
 	else
@@ -47,10 +44,11 @@ function c511004419.target(e,tp,eg,ev,ep,re,r,rp,chk)
 end
 function c511004419.operation(e,tp,eg,ev,ep,re,r,rp)
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
-	if p~=2 then
+	if p~=PLAYER_ALL then
 		Duel.Damage(p,d,REASON_EFFECT)
 	else
-		Duel.Damage(1-tp,d,REASON_EFFECT)
-		Duel.Damage(tp,d,REASON_EFFECT)
+		Duel.Damage(1-tp,d,REASON_EFFECT,true)
+		Duel.Damage(tp,d,REASON_EFFECT,true)
+		Duel.RDComplete()
 	end
 end

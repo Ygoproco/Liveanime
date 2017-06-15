@@ -1,11 +1,11 @@
 --White Prosperity
+--fixed by MLD
 function c511009060.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetTarget(c511009060.target)
 	e1:SetOperation(c511009060.operation)
 	c:RegisterEffect(e1)
@@ -28,18 +28,32 @@ function c511009060.archchk(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c511009060.filter(c,e,tp)
-	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c420.IsWhite(c) 
-		and Duel.IsExistingMatchingCard(Card.IsCode,tp,LOCATION_HAND,0,1,c,c:GetCode()) and c:IsLevelBelow(4) 
+	return c420.IsWhite(c) and c:IsLevelBelow(4) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+end
+function c511009060.filter2(c,g)
+	return g:IsExists(Card.IsCode,1,c,c:GetCode())
 end
 function c511009060.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(tp) and c511009060.filter(chkc,e,tp) end
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>1
-		and Duel.IsExistingTarget(c511009060.filter,tp,LOCATION_HAND,0,2,nil,e,tp) end	
+	if chk==0 then
+		local g=Duel.GetMatchingGroup(c511009060.filter,tp,LOCATION_DECK,0,nil,e,tp)
+		return not Duel.IsPlayerAffectedByEffect(tp,59822133)
+			and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and g:IsExists(c511009060.filter2,1,nil,g)
+	end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,2,tp,LOCATION_DECK)
 end
 function c511009060.operation(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local tc=Duel.SelectMatchingCard(tp,c511009060.filter,tp,LOCATION_HAND,0,2,2,nil,e,tp)
-	if tc:GetCount()~=2 then return end
-	Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
+	if Duel.IsPlayerAffectedByEffect(tp,59822133) then return end
+	if Duel.GetLocationCount(tp,LOCATION_MZONE)<2 then return end
+	local g=Duel.GetMatchingGroup(c511009060.filter,tp,LOCATION_DECK,0,nil,e,tp)
+	local dg=g:Filter(c511009060.filter2,nil,g)
+	if dg:GetCount()>=1 then
+		local fid=e:GetHandler():GetFieldID()
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+		local sg=dg:Select(tp,1,1,nil)
+		local tc1=sg:GetFirst()
+		dg:RemoveCard(tc1)
+		local tc2=dg:Filter(Card.IsCode,nil,tc1:GetCode()):GetFirst()
+		sg:AddCard(tc2)
+		Duel.SpecialSummon(sg,0,tp,tp,false,false,POS_FACEUP)
+	end
 end

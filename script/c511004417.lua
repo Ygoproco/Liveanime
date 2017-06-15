@@ -11,16 +11,13 @@ function c511004417.initial_effect(c)
 	e1:SetOperation(c511004417.operation)
 	c:RegisterEffect(e1)
 end
-function c511004417.costfilter(c)
-	return c:IsType(TYPE_MONSTER) and c:IsSetCard(0x9f) and c:IsReleasable()
-end
 function c511004417.cost(e,tp,eg,ev,ep,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(c511004417.costfilter,tp,LOCATION_MZONE,0,1,nil) end
-	local tg=Duel.SelectMatchingCard(tp,c511004417.costfilter,tp,LOCATION_MZONE,0,1,1,nil)
-	Duel.Release(tg,REASON_COST)
+	if chk==0 then return Duel.CheckReleaseGroup(tp,Card.IsSetCard,1,nil,0x9f) end
+	local g=Duel.SelectReleaseGroup(tp,Card.IsSetCard,1,1,nil,0x9f)
+	Duel.Release(g,REASON_COST)
 end
 function c511004417.condition(e,tp,eg,ev,ep,re,r,rp)
-	return tp~=rp
+	return ep==tp
 end
 function c511004417.target(e,tp,eg,ev,ep,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,2) and Duel.IsPlayerCanDraw(1-tp,2) end
@@ -30,42 +27,44 @@ function c511004417.operation(e,tp,eg,ev,ep,re,r,rp)
 	if not Duel.IsPlayerCanDraw(tp,2) or not Duel.IsPlayerCanDraw(1-tp,2) then return end
 	local g1=Group.CreateGroup()
 	local g2=Group.CreateGroup()
-	local loss=false
-	while (not g1:IsExists(Card.IsType,1,nil,TYPE_MONSTER) or not g2:IsExists(Card.IsType,1,nil,TYPE_MONSTER)) and not loss do
+	local lose1=false
+	local lose2=false
+	while (not g1:IsExists(Card.IsType,1,nil,TYPE_MONSTER) and not lose1) 
+		or (not g2:IsExists(Card.IsType,1,nil,TYPE_MONSTER) and not lose2) do
 		local s1=Duel.GetDecktopGroup(tp,2)
 		local s2=Duel.GetDecktopGroup(1-tp,2)
-		if not g1:IsExists(Card.IsType,1,nil,TYPE_MONSTER) then
+		if not g1:IsExists(Card.IsType,1,nil,TYPE_MONSTER) and not lose1 then
 			g1:Merge(s1)
-			if s1:GetCount()<2 then loss=true end
+			if s1:GetCount()<=1 then lose1=true end
 			Duel.Draw(tp,2,REASON_EFFECT)
 		end
-		if not g2:IsExists(Card.IsType,1,nil,TYPE_MONSTER) then
+		if not g2:IsExists(Card.IsType,1,nil,TYPE_MONSTER) and lose2 then
 			g2:Merge(s2)
-			if s2:GetCount()<2 then loss=true end
+			if s2:GetCount()<=1 then lose2=true end
 			Duel.Draw(1-tp,2,REASON_EFFECT)
 		end
 	end
 	Duel.ConfirmCards(1-tp,g1)
 	Duel.ConfirmCards(tp,g2)
-	if loss then return end
+	if lose1 or lose2 then return end
 	Duel.SendtoGrave(g1,REASON_EFFECT)
 	Duel.SendtoGrave(g2,REASON_EFFECT)
 	local lv1=0
 	local lv2=0
-	local dam=Duel.GetMatchingGroupCount(Card.GetControler,tp,LOCATION_ONFIELD+LOCATION_GRAVE,LOCATION_ONFIELD+LOCATION_GRAVE,nil)*200
-	local chkc1=g1:GetFirst()
-	while chkc1 do
-		if chkc1:IsType(TYPE_MONSTER) then
+	local dam=Duel.GetMatchingGroupCount(Card.IsType,tp,LOCATION_MZONE+LOCATION_GRAVE,LOCATION_MZONE+LOCATION_GRAVE,nil,TYPE_MONSTER)*200
+	local tc1=g1:GetFirst()
+	while tc1 do
+		if tc1:IsType(TYPE_MONSTER) then
 			lv1=lv1+chkc1:GetLevel()
 		end
-		chkc1=g1:GetNext()
+		tc1=g1:GetNext()
 	end
-	local chkc2=g2:GetFirst()
-	while chkc2 do
-		if chkc2:IsType(TYPE_MONSTER) then
-			lv2=lv2+chkc2:GetLevel()
+	local tc2=g2:GetFirst()
+	while tc2 do
+		if tc2:IsType(TYPE_MONSTER) then
+			lv2=lv2+tc2:GetLevel()
 		end
-		chkc2=g2:GetNext()
+		tc2=g2:GetNext()
 	end
 	if lv1>=lv2 then
 		Duel.Damage(tp,dam,REASON_EFFECT)
