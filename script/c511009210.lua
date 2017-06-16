@@ -18,10 +18,7 @@ function c511009210.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function c511009210.condition(e,tp,eg,ep,ev,re,r,rp)
-    local x=Duel.GetAttacker():IsControler(1-tp)
-    local t=Duel.GetAttackTarget():IsControler(1-tp)
-    if x==nil or t==nil then return end
-    return x or t
+	return Duel.GetAttacker():IsControler(1-tp) or Duel.GetAttackTarget():IsControler(1-tp)
 end
 function c511009210.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckLPCost(tp,600) end
