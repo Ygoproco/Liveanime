@@ -1,4 +1,5 @@
 --D - Soul Burst
+--fixed by MLD
 function c511009446.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
@@ -18,7 +19,7 @@ function c511009446.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return Duel.IsExistingTarget(c511009446.filter,tp,LOCATION_MZONE,0,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
 	local tc=Duel.SelectTarget(tp,c511009446.filter,tp,LOCATION_MZONE,0,1,1,nil):GetFirst()
-	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,tc:GetAttack()/2)
+	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,PLAYER_ALL,tc:GetAttack()/2)
 end
 function c511009446.activate(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
@@ -30,7 +31,9 @@ function c511009446.activate(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetValue(atk)
 		e1:SetReset(RESET_EVENT+0x1fe0000)
 		if tc:RegisterEffect(e1) then
-			Duel.Damage(1-tp,atk,REASON_EFFECT)
+			Duel.Damage(1-tp,atk,REASON_EFFECT,true)
+			Duel.Damage(tp,atk,REASON_EFFECT,true)
+			Duel.RDComplete()
 		end
 	end
 end
