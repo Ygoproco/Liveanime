@@ -18,7 +18,7 @@ function c511009210.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function c511009210.condition(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetAttacker():IsControler(1-tp) or Duel.GetAttackTarget():IsControler(1-tp)
+	return Duel.GetAttacker():IsControler(1-tp) or (Duel.GetAttackTarget() and Duel.GetAttackTarget():IsControler(1-tp))
 end
 function c511009210.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckLPCost(tp,600) end
@@ -34,6 +34,6 @@ function c511009210.operation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Hint(HINT_SELECTMSG,1-tp,HINTMSG_TOGRAVE)
 		local sg=g:Select(1-tp,1,1,nil)
 		Duel.HintSelection(sg)
-		Duel.SendtoGrave(sg,REASON_RULE)
+		Duel.SendtoGrave(sg,REASON_EFFECT)
 	end
 end
