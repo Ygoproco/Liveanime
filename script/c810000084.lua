@@ -39,13 +39,12 @@ function c810000084.con(e,tp,eg,ep,ev,re,r,rp)
 	return tg and eg:IsContains(tg)
 end
 function c810000084.op(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	local tc=c:GetFirstCardTarget()
-	if tc then
-		local e1=Effect.CreateEffect(c)
+	local tc=e:GetHandler():GetFirstCardTarget()
+	if tc and tc:IsLocation(LOCATION_MZONE) then
+		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_UPDATE_ATTACK)
-		e1:SetValue(c:GetDefense())
+		e1:SetValue(tc:GetDefense())
 		e1:SetReset(RESET_EVENT+0x1fe0000)
 		tc:RegisterEffect(e1)
 	end

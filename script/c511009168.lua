@@ -1,4 +1,5 @@
 --Delay Armor
+--fixed by MLD
 function c511009168.initial_effect(c)
 	aux.AddEquipProcedure(c,nil,aux.FilterBoolFunction(Card.IsSetCard,0xc008))
 	--
@@ -81,9 +82,10 @@ function c511009168.desop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.SelectMatchingCard(tp,c511009168.desfilter,tp,0,LOCATION_MZONE,1,1,nil,lv)
 	if g:GetCount()>0 then
 		Duel.HintSelection(g)
-		Duel.Destroy(g,REASON_EFFECT)
+		if Duel.Destroy(g,REASON_EFFECT)>0 then
+			Duel.BreakEffect()
+			Duel.Damage(1-tp,500,REASON_EFFECT)
+		end
 	end
-	Duel.BreakEffect()
-	Duel.Damage(1-tp,500,REASON_EFFECT)
 end
 

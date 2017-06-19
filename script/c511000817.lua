@@ -252,19 +252,8 @@ function c511000817.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c511000817.filter(c,e,tp)
 	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:GetCode()~=1686814 
-		and (c:IsRace(RACE_DRAGON) or c511000817.collection[c:GetCode()] or c:IsSetCard(0x1045) or c:IsSetCard(0x1093)) 
+		and (c:IsRace(RACE_DRAGON) or c:IsSetCard(0xc2)) 
 end
-c511000817.collection={
-	[86240887]=true;[86805855]=true;[70681994]=true;[511000705]=true;[1546123]=true;
-	[64599569]=true;[84243274]=true;[91998119]=true;[74157028]=true;[87751584]=true;
-	[40418351]=true;[79229522]=true;[2111707]=true;[25119460]=true;[9293977]=true;
-	[84058253]=true;[72959823]=true;[100000570]=true;[100000029]=true;[100000621]=true;
-	[54752875]=true;[86164529]=true;[21435914]=true;[6021033]=true;[2403771]=true;
-	[68084557]=true;[52145422]=true;[62560742]=true;[50321796]=true;[76891401]=true;
-	[511001275]=true;[1639384]=true;[77799846]=true;[95992081]=true;[511001273]=true;
-	[21970285]=true;[92870717]=true;[51531505]=true;[15146890]=true;[14920218]=true;
-	[88935103]=true;[83980492]=true;[19474136]=true;[15146890]=true;[14920218]=true;
-}
 function c511000817.spop(e,tp,eg,ep,ev,re,r,rp)
 	local ct=eg:FilterCount(c511000817.cfilter,nil,tp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
