@@ -678,6 +678,7 @@ c420.OCGRed={
 	[34475451]=true;[40975574]=true;[37132349]=true;[61019812]=true;[19025379]=true;
 	[76547525]=true;[55888045]=true;[97489701]=true;[67030233]=true;[65338781]=true;
 	[45313993]=true;[8706701]=true;[21142671]=true;[72318602]=true;[66141736]=true;
+	[511018006]=true;
 }
 function c420.IsRed(c,fbool)
 	if fbool then
