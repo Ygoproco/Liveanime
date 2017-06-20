@@ -1,4 +1,5 @@
 --Performage Trapeze High Magician
+--fixed by MLD
 function c511009560.initial_effect(c)
 	--xyz summon
 	aux.AddXyzProcedure(c,aux.FilterBoolFunction(Card.IsRace,RACE_SPELLCASTER),5,2)
@@ -9,11 +10,10 @@ function c511009560.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_QUICK_O)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetRange(LOCATION_MZONE)
-	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetCountLimit(1)
-	e1:SetCondition(c511009560.condition)
-	e1:SetCost(c511009560.cost)
-	e1:SetOperation(c511009560.operation)
+	e1:SetCondition(c511009560.indcon)
+	e1:SetCost(c511009560.indcost)
+	e1:SetOperation(c511009560.indop)
 	c:RegisterEffect(e1)
 	--effect
 	local e2=Effect.CreateEffect(c)
@@ -29,21 +29,15 @@ function c511009560.initial_effect(c)
 	e3:SetLabelObject(e2)
 	c:RegisterEffect(e3)
 end
-function c511009560.condition(e,tp,eg,ep,ev,re,r,rp)
+function c511009560.indcon(e,tp,eg,ep,ev,re,r,rp)
 	local ph=Duel.GetCurrentPhase()
 	return ph==PHASE_MAIN1 or ph==PHASE_MAIN2
 end
-function c511009560.cost(e,tp,eg,ep,ev,re,r,rp,chk)
+function c511009560.indcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():CheckRemoveOverlayCard(tp,1,REASON_COST) end
 	e:GetHandler():RemoveOverlayCard(tp,1,1,REASON_COST)
 end
-function c511009560.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_MZONE) and c511009560.filter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(c511009560.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-	Duel.SelectTarget(tp,c511009560.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
-end
-function c511009560.operation(e,tp,eg,ep,ev,re,r,rp)
+function c511009560.indop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) and c:IsFaceup() then
 		local e1=Effect.CreateEffect(c)
@@ -59,7 +53,6 @@ end
 function c511009560.indct(e,re,r,rp)
 	return bit.band(r,REASON_BATTLE+REASON_EFFECT)~=0
 end
-
 function c511009560.matfilter(c)
 	return c:IsRace(RACE_SPELLCASTER) and c:GetRank()<=4 and c:IsType(TYPE_XYZ)
 end
@@ -80,35 +73,38 @@ function c511009560.regop(e,tp,eg,ep,ev,re,r,rp)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(47819246,0))
 	e1:SetType(EFFECT_TYPE_IGNITION)
-	e1:SetProperty(EFFECT_FLAG2_XMDETACH)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetCountLimit(1)
 	e1:SetCost(c511009560.atkcost)
-	e1:SetOperation(c511009560.atkregop)
+	e1:SetOperation(c511009560.atkop)
+	e1:SetReset(RESET_EVENT+0x1ff0000+RESET_PHASE+PHASE_END)
 	c:RegisterEffect(e1)
 end
 function c511009560.atkcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():CheckRemoveOverlayCard(tp,1,REASON_COST) end
 	e:GetHandler():RemoveOverlayCard(tp,1,1,REASON_COST)
 end
-function c511009560.atkregop(e,tp,eg,ep,ev,re,r,rp)
+function c511009560.atkop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local e1=Effect.CreateEffect(c)
+	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(EFFECT_EXTRA_ATTACK)
 	e1:SetValue(2)
-	e1:SetReset(RESET_EVENT+0x1ff0000+RESET_PHASE+PHASE_END)
+	e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 	c:RegisterEffect(e1)
 	local e2=Effect.CreateEffect(c)
+	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 	e2:SetCode(EVENT_DAMAGE_STEP_END)
-	e2:SetReset(RESET_EVENT+0x1ff0000+RESET_PHASE+PHASE_END)
+	e2:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 	e2:SetOperation(c511009560.dirregop)
 	c:RegisterEffect(e2)
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE)
+	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
 	e3:SetCode(EFFECT_CANNOT_DIRECT_ATTACK)
-	e3:SetReset(RESET_EVENT+0x1ff0000+RESET_PHASE+PHASE_END)
+	e3:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 	e3:SetCondition(c511009560.dircon)
 	c:RegisterEffect(e3)
 end

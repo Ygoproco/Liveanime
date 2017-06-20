@@ -1,4 +1,5 @@
 --Dark Contract with Underworld Insurance
+--cleaned up by MLD
 function c511018011.initial_effect(c)
 	--
 	local e1=Effect.CreateEffect(c)
@@ -23,7 +24,8 @@ function c511018011.initial_effect(c)
 		Duel.RegisterEffect(ge1,0)
 		local ge2=Effect.CreateEffect(c)
 		ge2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-		ge2:SetCode(EVENT_PHASE_START+PHASE_DRAW)
+		ge2:SetCode(EVENT_ADJUST)
+		ge2:SetCountLimit(1)
 		ge2:SetOperation(c511018011.clearop)
 		Duel.RegisterEffect(ge2,0)
 	end
@@ -32,29 +34,15 @@ function c511018011.chkop(e,tp)
 	local a=Duel.GetAttacker()
 	local d=Duel.GetAttackTarget()
 	if not d then return end
-	if a:IsControler(tp) and d:IsRelateToBattle() and d:IsLocation(LOCATION_ONFIELD) then
+	if a:IsControler(tp) and d:IsRelateToBattle() and d:IsLocation(LOCATION_MZONE) then
 		c511018011[tp]:AddCard(d)
-	elseif a:IsControler(1-tp) and d:IsRelateToBattle() and d:IsLocation(LOCATION_ONFIELD) then
+	elseif a:IsControler(1-tp) and d:IsRelateToBattle() and d:IsLocation(LOCATION_MZONE) then
 		c511018011[1-tp]:AddCard(d)
 	end
 end
 function c511018011.clearop()
-	local g=c511018011[0]
-	if g:GetCount()>0 then
-		local c=g:GetFirst()
-		while c do
-			g:RemoveCard(c)
-			c=g:GetNext()
-		end
-	end
-	g=c511018011[1]
-	if g:GetCount()>0 then
-		local c=g:GetFirst()
-		while c do
-			g:RemoveCard(c)
-			c=g:GetNext()
-		end
-	end
+	c511018011[0]:Clear()
+	c511018011[1]:Clear()
 end
 function c511018011.condition(e,tp,eg,ev,ep,re,r,rp)
 	return Duel.GetCurrentPhase()==PHASE_MAIN2 and Duel.GetTurnPlayer()==tp

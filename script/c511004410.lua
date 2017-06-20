@@ -1,14 +1,15 @@
 --Flower of Destruction
+--fixed by MLD
 function c511004410.initial_effect(c)
 	--activate
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetCost(c511004410.cos)
+	e1:SetCost(c511004410.cost)
 	c:RegisterEffect(e1)
 	--special summoned = damage + atkchange
 	local e2=Effect.CreateEffect(c)
-	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	e2:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
 	e2:SetCategory(CATEGORY_DAMAGE+CATEGORY_ATKCHANGE)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
@@ -19,68 +20,81 @@ function c511004410.initial_effect(c)
 	c:RegisterEffect(e2)
 	--sb
 	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e3:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	e3:SetCategory(CATEGORY_TOGRAVE+CATEGORY_DAMAGE)
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
+	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e3:SetCode(EVENT_PHASE+PHASE_STANDBY)
 	e3:SetRange(LOCATION_SZONE)
 	e3:SetCountLimit(1)
 	e3:SetCondition(c511004410.mtcon)
+	e3:SetTarget(c511004410.mttg)
 	e3:SetOperation(c511004410.mtop)
 	c:RegisterEffect(e3)
 end
-function c511004410.cosfilter(c)
+function c511004410.costfilter(c)
 	return c:IsType(TYPE_SPELL) and c:IsType(TYPE_CONTINUOUS) and c:IsFaceup()
 end
-function c511004410.cos(e,tp,eg,ev,ep,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(c511004410.cosfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,e:GetHandler()) end
-	local tg=Duel.SelectMatchingCard(tp,c511004410.cosfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,e:GetHandler())
+function c511004410.cost(e,tp,eg,ev,ep,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(c511004410.costfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,e:GetHandler()) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+	local tg=Duel.SelectMatchingCard(tp,c511004410.costfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,e:GetHandler())
 	Duel.SendtoGrave(tg,REASON_COST)
 end
-function c511004410.filterloli(c,tp)
-	return c:IsLocation(LOCATION_MZONE) and c:IsControler(tp)
-end
 function c511004410.dacon(e,tp,eg,ev,ep,re,r,rp)
-	return eg and eg:IsExists(c511004410.filterloli,1,nil,tp)
+	return eg and eg:IsExists(Card.IsControler,1,nil,tp)
 end
-function c511004410.dafilter1(c)
-	return c:IsType(TYPE_MONSTER) and c:GetAttack()<c:GetTextAttack()
+function c511004410.filter(c)
+	return c:GetAttack()<c:GetBaseAttack()
 end
-function c511004410.dafilter2(c)
-	return c:IsType(TYPE_MONSTER)
-end
-function c511004410.datg(e,tp,eg,ev,ep,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingTarget(c511004410.dafilter1,tp,LOCATION_MZONE,0,1,nil) and Duel.IsExistingTarget(c511004410.dafilter2,1-tp,LOCATION_MZONE,0,1,nil) end
-	local tg1=Duel.SelectTarget(tp,c511004410.dafilter1,tp,LOCATION_MZONE,0,1,1,nil)
-	local tg2=Duel.SelectTarget(tp,c511004410.dafilter2,1-tp,LOCATION_MZONE,0,1,1,nil)
-	Group.Merge(tg1,tg2)
-	Duel.SetTargetCard(tg1)
-	Duel.SetOperationInfo(0,CATEGORY_ATKCHANGE,tg2,1,0,0)
+function c511004410.datg(e,tp,eg,ev,ep,re,r,rp,chk,chkc)
+	if chkc then return false end
+	if chk==0 then return Duel.IsExistingTarget(c511004410.filter,tp,LOCATION_MZONE,0,1,nil) 
+		and Duel.IsExistingTarget(Card.IsFaceup,tp,0,LOCATION_MZONE,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+	local tc=Duel.SelectTarget(tp,c511004410.filter,tp,LOCATION_MZONE,0,1,1,nil):GetFirst()
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+	Duel.SelectTarget(tp,Card.IsFaceup,tp,0,LOCATION_MZONE,1,1,nil)
+	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,tc:GetBaseAttack()-tc:GetAttack())
 end
 function c511004410.daop(e,tp,eg,ev,ep,re,r,rp)
-	local c=e:GetHandler()
 	local tg=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-	local tg1=tg:Filter(Card.IsControler,nil,tp):GetFirst()
-	local tg2=tg:Filter(Card.IsControler,nil,1-tp):GetFirst()
-	if tg1 then
-		local dam=tg1:GetTextAttack()-tg1:GetAttack()
+	local g=tg:Filter(Card.IsRelateToEffect,nil,e)
+	local tc1=tg:Filter(Card.IsControler,nil,tp):GetFirst()
+	local tc2=tg:Filter(Card.IsControler,nil,1-tp):GetFirst()
+	if tc1 then
+		local dam=tc1:GetBaseAttack()-tc1:GetAttack()
 		if dam<0 then dam=-dam end
-		if Duel.Damage(1-tp,dam,REASON_EFFECT)~=0 then
-			local e1=Effect.CreateEffect(c)
+		local dam2=Duel.Damage(1-tp,dam,REASON_EFFECT)
+		if dam2>0 and tc2 then
+			local e1=Effect.CreateEffect(e:GetHandler())
 			e1:SetType(EFFECT_TYPE_SINGLE)
 			e1:SetCode(EFFECT_UPDATE_ATTACK)
-			e1:SetValue(-dam)
+			e1:SetValue(-dam2)
 			e1:SetReset(RESET_EVENT+0x1fe0000)
-			tg2:RegisterEffect(e1)
+			tc2:RegisterEffect(e1)
 		end
 	end
 end
 function c511004410.mtcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnPlayer()==tp
 end
+function c511004410.tgfilter(c)
+	return c:IsType(TYPE_SPELL) and c:IsType(TYPE_CONTINUOUS) and c:IsFaceup() and c:IsAbleToGrave()
+end
+function c511004410.mttg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsControler(tp) and chkc:IsOnField() and c511004410.tgfilter(chkc) and chkc~=e:GetHandler() end
+	if chk==0 then return true end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+	local g=Duel.SelectTarget(tp,c511004410.tgfilter,tp,LOCATION_ONFIELD,0,1,1,e:GetHandler())
+	if g:GetCount()==0 then
+		Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,tp,1000)
+	end
+end
 function c511004410.mtop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.IsExistingMatchingCard(c511004410.cosfilter,tp,LOCATION_ONFIELD,0,1,e:GetHandler()) and Duel.SelectYesNo(tp,aux.Stringid(123456789,3)) then
-		Duel.SendtoGrave(Duel.SelectMatchingCard(tp,c511004410.cosfilter,tp,LOCATION_ONFIELD,0,1,1,e:GetHandler()),REASON_COST)
-	else
-		Duel.Damage(tp,1000,REASON_COST)
+	local c=e:GetHandler()
+	if c:IsFacedown() or not c:IsRelateToEffect(e) then return end
+	local tc=Duel.GetFirstTarget()
+	if not tc or not tc:IsRelateToEffect(e) or Duel.SendtoGrave(tc,REASON_EFFECT)==0 then
+		Duel.Damage(tp,1000,REASON_EFFECT)
 	end
 end

@@ -1,6 +1,7 @@
 --Twilight Ninja Kagen
+--fixed by MLD
 function c511009544.initial_effect(c)
-		--pendulum summon
+	--pendulum summon
 	aux.EnablePendulumAttribute(c)
 	--copy
 	local e1=Effect.CreateEffect(c)
@@ -34,20 +35,18 @@ function c511009544.initial_effect(c)
 	e1:SetOperation(c511009544.op)
 	c:RegisterEffect(e1)
 end
-
-function c511009544.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return false end
+function c511009544.target(e,tp,eg,ep,ev,re,r,rp,ch)
 	local seq=e:GetHandler():GetSequence()
 	local tc=Duel.GetFieldCard(tp,LOCATION_SZONE,13-seq)
-	if chk==0 then return tc end
+	if chk==0 then return tc and e:GetHandler():GetFlagEffect(511009544)==0 end
 	Duel.SetTargetCard(tc)
 end
 function c511009544.operation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	local code=tc:GetCode()
-	if c:IsRelateToEffect(e) and c:IsFaceup() then
-		local cid=c:CopyEffect(code,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,1)
+	if c:IsRelateToEffect(e) and c:IsFaceup() and tc:IsRelateToEffect(e) and tc:IsFaceup() then
+		local code=tc:GetOriginalCode()
+		local cid=c:ReplaceEffect(code,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 		local e2=Effect.CreateEffect(c)
 		e2:SetDescription(aux.Stringid(95453143,2))
 		e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -59,6 +58,7 @@ function c511009544.operation(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetLabel(cid)
 		e2:SetOperation(c511009544.rstop)
 		c:RegisterEffect(e2)
+		c:RegisterFlagEffect(511009544,RESET_EVENT+0x1fe0000,0,0)
 	end
 end
 function c511009544.rstop(e,tp,eg,ep,ev,re,r,rp)
@@ -84,7 +84,6 @@ function c511009544.atkop(e,tp,eg,ep,ev,re,r,rp)
 		at:RegisterEffect(e1)
 	end
 end
-
 function c511009544.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsReleasable() end
 	Duel.Release(e:GetHandler(),REASON_COST)
@@ -94,13 +93,13 @@ function c511009544.filter(c)
 end
 function c511009544.tg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_MZONE) and c511009544.filter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(c511009544.filter,tp,LOCATION_MZONE,0,1,nil) end
+	if chk==0 then return Duel.IsExistingTarget(c511009544.filter,tp,LOCATION_MZONE,0,1,e:GetHandler()) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 	Duel.SelectTarget(tp,c511009544.filter,tp,LOCATION_MZONE,0,1,1,nil)
 end
 function c511009544.op(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc:IsFaceup() and tc:IsRelateToEffect(e) then
+	if tc and tc:IsFaceup() and tc:IsRelateToEffect(e) then
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_UPDATE_ATTACK)

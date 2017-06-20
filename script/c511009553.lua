@@ -1,4 +1,5 @@
 --Superheavy Samurai Steam Fiend Tetsudo'o
+--fixed by MLD
 function c511009553.initial_effect(c)
 	--synchro summon
 	aux.AddSynchroProcedure(c,nil,aux.NonTuner(Card.IsSetCard,0x9a),1)
@@ -15,7 +16,6 @@ function c511009553.initial_effect(c)
 	e2:SetCategory(CATEGORY_DESTROY)
 	e2:SetType(EFFECT_TYPE_QUICK_O)
 	e2:SetRange(LOCATION_MZONE)
-	e2:SetCountLimit(1)
 	e2:SetCode(EVENT_FREE_CHAIN)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e2:SetCost(c511009553.cost)
@@ -36,13 +36,12 @@ function c511009553.initial_effect(c)
 	e3:SetOperation(c511009553.damop)
 	c:RegisterEffect(e3)
 end
-
 function c511009553.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsAbleToGraveAsCost,tp,LOCATION_HAND,0,2,nil) end
-	Duel.DiscardHand(tp,Card.IsAbleToGraveAsCost,2,2,REASON_COST+REASON_DISCARD)
+	Duel.DiscardHand(tp,Card.IsAbleToGraveAsCost,2,2,REASON_COST)
 end
 function c511009553.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsControler(1-tp) and chkc:IsOnField() end
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsOnField() end
 	if chk==0 then return Duel.IsExistingTarget(aux.TRUE,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
 	local g=Duel.SelectTarget(tp,aux.TRUE,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
@@ -54,12 +53,8 @@ function c511009553.operation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Destroy(tc,REASON_EFFECT)
 	end
 end
-
-------------------------------------
-
-
 function c511009553.cfilter(c)
-	return (c:IsType(TYPE_SPELL) or c:IsType(TYPE_TRAP)) and c:IsAbleToRemove()
+	return c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsAbleToRemove()
 end
 function c511009553.damcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local g=Duel.GetMatchingGroup(c511009553.cfilter,tp,LOCATION_GRAVE,0,e:GetHandler())
@@ -69,10 +64,12 @@ function c511009553.damcost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c511009553.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
+	local dam=e:GetLabel()*200
 	Duel.SetTargetPlayer(1-tp)
-	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,e:GetLabel()*200)
+	Duel.SetTargetParam(dam)
+	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,dam)
 end
 function c511009553.damop(e,tp,eg,ep,ev,re,r,rp)
-	local p=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER)
-	Duel.Damage(p,e:GetLabel()*200,REASON_EFFECT)
+	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
+	Duel.Damage(p,d,REASON_EFFECT)
 end
