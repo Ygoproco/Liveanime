@@ -1,5 +1,5 @@
 --Gladiator Beast Tamer Editor
---cleaned up by MLD
+--fixed by MLD
 function c511009304.initial_effect(c)
 	--fusion material
 	c:EnableReviveLimit()
@@ -103,7 +103,7 @@ function c511009304.sprop(e,tp,eg,ep,ev,re,r,rp,c)
 	Duel.SendtoDeck(g,nil,2,REASON_COST)
 end
 function c511009304.sumfilter(c,e,tp)
-	return c:IsSetCard(0x19) and c:IsType(TYPE_FUSION) and c:IsCanBeSpecialSummoned(e,0,tp,true,false)
+	return c:IsSetCard(0x19) and c:IsType(TYPE_FUSION) and c:IsCanBeSpecialSummoned(e,122,tp,true,false)
 end
 function c511009304.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
@@ -117,7 +117,7 @@ function c511009304.spop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local g=Duel.SelectMatchingCard(tp,c511009304.sumfilter,tp,LOCATION_EXTRA,LOCATION_EXTRA,1,1,nil,e,tp)
 	if g:GetCount()>0 then
-		Duel.SpecialSummon(g,0,tp,g:GetFirst():GetControler(),true,false,POS_FACEUP_ATTACK)
+		Duel.SpecialSummon(g,122,tp,g:GetFirst():GetControler(),true,false,POS_FACEUP_ATTACK)
 	end
 end
 function c511009304.desconfilter(c)
@@ -186,7 +186,7 @@ function c511009304.spcost2(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoDeck(g,nil,2,REASON_COST)
 end
 function c511009304.spfilter2(c,e,tp)
-	return c:IsSetCard(0x19) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsSetCard(0x19) and c:IsCanBeSpecialSummoned(e,122,tp,false,false)
 end
 function c511009304.sptg2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>-1
@@ -200,7 +200,7 @@ function c511009304.spop2(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()>0 then
 		local tc=g:GetFirst()
 		if tc then
-			Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
+			Duel.SpecialSummon(tc,122,tp,tp,false,false,POS_FACEUP)
 			tc:RegisterFlagEffect(tc:GetOriginalCode(),RESET_EVENT+0x1ff0000,0,0)
 		end
 	end

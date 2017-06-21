@@ -1,5 +1,5 @@
 --Gladiator Beast Andabatae
---cleaned up by MLD
+--fixed by MLD
 function c511009300.initial_effect(c)
 	--fusion material
 	c:EnableReviveLimit()
@@ -85,7 +85,7 @@ function c511009300.sprop(e,tp,eg,ep,ev,re,r,rp,c)
 	Duel.SendtoDeck(g1,nil,2,REASON_COST)
 end
 function c511009300.hspfilter(c,e,tp)
-	return c:IsSetCard(0x19) and not c:IsCode(511009300) and c:IsCanBeSpecialSummoned(e,0,tp,true,false)
+	return c:IsSetCard(0x19) and not c:IsCode(511009300) and c:IsCanBeSpecialSummoned(e,122,tp,true,false)
 end
 function c511009300.hsptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
@@ -98,7 +98,7 @@ function c511009300.hspop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.SelectMatchingCard(tp,c511009300.hspfilter,tp,LOCATION_EXTRA,0,1,1,nil,e,tp)
 	local tc=g:GetFirst()
 	if tc then
-		Duel.SpecialSummon(tc,0,tp,tp,true,false,POS_FACEUP)
+		Duel.SpecialSummon(tc,122,tp,tp,true,false,POS_FACEUP)
 		tc:RegisterFlagEffect(511009300,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,1)
 		tc:RegisterFlagEffect(tc:GetOriginalCode(),RESET_EVENT+0x1ff0000,0,0)
 		local e1=Effect.CreateEffect(e:GetHandler())
@@ -129,7 +129,7 @@ function c511009300.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoDeck(c,nil,0,REASON_COST)
 end
 function c511009300.filter(c,e,tp)
-	return c:IsSetCard(0x19) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsSetCard(0x19) and c:IsCanBeSpecialSummoned(e,122,tp,false,false)
 end
 function c511009300.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return not Duel.IsPlayerAffectedByEffect(tp,59822133)
@@ -146,7 +146,7 @@ function c511009300.spop(e,tp,eg,ep,ev,re,r,rp)
 		local sg=g:Select(tp,2,2,nil)
 		local tc=sg:GetFirst()
 		while tc do
-			Duel.SpecialSummonStep(tc,0,tp,tp,false,false,POS_FACEUP)
+			Duel.SpecialSummonStep(tc,122,tp,tp,false,false,POS_FACEUP)
 			tc:RegisterFlagEffect(tc:GetOriginalCode(),RESET_EVENT+0x1ff0000,0,0)
 			tc=sg:GetNext()
 		end
