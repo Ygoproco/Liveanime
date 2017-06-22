@@ -1,4 +1,5 @@
 --Meteor Flare (Anime)
+--fixed by MLD
 function c511013009.initial_effect(c)
 	--damage
 	local e1=Effect.CreateEffect(c)
@@ -23,7 +24,7 @@ function c511013009.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function c511013009.damcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsAbleToGrave,tp,LOCATION_HAND,0,2,nil) end
+	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,2,nil) end
 	Duel.DiscardHand(tp,Card.IsDiscardable,2,2,REASON_COST+REASON_DISCARD)
 end
 function c511013009.damtg(e,tp,eg,ep,ev,re,r,rp,chk)

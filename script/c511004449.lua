@@ -1,4 +1,5 @@
 --Cubic Defense
+--fixed by MLD
 function c511004449.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
@@ -54,37 +55,33 @@ function c511004449.condition(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 end
+function c511004449.filter(c,e,tp,code)
+	return c:IsCode(code) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+end
 function c511004449.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	local tc=e:GetLabelObject()
-	if chk==0 then return tc end
+	if chk==0 then return tc and not Duel.IsPlayerAffectedByEffect(tp,59822133) 
+		and Duel.IsExistingMatchingCard(c511004449.filter,tp,LOCATION_HAND,0,2,nil,e,tp,tc:GetCode()) end
 	Duel.SetTargetCard(tc)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,2,tp,LOCATION_HAND)
 end
 function c511004449.activate(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
 	if tc and tc:IsRelateToEffect(e) and tc:IsFaceup() then
-		local e1=Effect.CreateEffect(c)
-		e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-		e1:SetCode(EFFECT_DESTROY_REPLACE)
-		e1:SetRange(LOCATION_MZONE)
-		e1:SetLabel(tc:GetCode())
-		e1:SetTarget(c511004449.reptg)
-		e1:SetValue(c511004449.repval)
-		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_DAMAGE)
-		tc:RegisterEffect(e1)
+		local e1=Effect.CreateEffect(e:GetHandler())
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)
+		e1:SetValue(1)
+		e1:SetReset(RESET_PHASE+PHASE_DAMAGE)
+		if tc:RegisterEffect(e1)>0 then
+			if Duel.GetLocationCount(tp,LOCATION_MZONE)<=1 or Duel.IsPlayerAffectedByEffect(tp,59822133) then return end
+			local g=Duel.GetMatchingGroup(c511004449.filter,tp,LOCATION_HAND,0,nil,e,tp,tc:GetCode())
+			if g:GetCount()>1 then
+				Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+				local sg=g:Select(tp,2,2,nil)
+				Duel.SpecialSummon(sg,0,tp,tp,false,false,POS_FACEUP)
+			end
+		end
 	end
-end
-function c511004449.filter(c,e,tp,code)
-	return c:IsType(TYPE_MONSTER) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_SPECIAL,tp,true,false) and c:IsCode(code)
-end
-function c511004449.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return eg:IsContains(e:GetHandler()) end
-	if Duel.GetLocationCount(tp,LOCATION_MZONE)>1 and Duel.IsExistingMatchingCard(c511004449.filter,tp,LOCATION_HAND,0,2,nil,e,tp,e:GetLabel()) and not Duel.IsPlayerAffectedByEffect(tp,59822133) then
-		local sg=Duel.SelectMatchingCard(tp,c511004449.filter,tp,LOCATION_HAND,0,2,2,nil,e,tp,e:GetLabel())
-		Duel.SpecialSummon(sg,SUMMON_TYPE_SPECIAL,tp,tp,true,false,POS_FACEUP)
-	end
-	return true
-end
-function c511004449.repval(e,c)
-	return c==e:GetHandler()
 end
