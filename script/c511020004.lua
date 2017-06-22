@@ -59,7 +59,7 @@ function c511020004.atkop(e,tp,eg,ep,ev,re,r,rp)
 	e2:SetCondition(c511020004.atkcon2)
 	e2:SetValue(500)
 	e2:SetReset(RESET_PHASE+PHASE_DAMAGE)
-	Duel.GetAttacker():RegisterEffect(e1)
+	Duel.GetAttacker():RegisterEffect(e2)
 end
 function c511020004.atkcon2(e)
 	return Duel.GetCurrentPhase()==PHASE_DAMAGE_CAL and Duel.GetAttackTarget() 
