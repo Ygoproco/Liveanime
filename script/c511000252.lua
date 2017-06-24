@@ -32,10 +32,9 @@ function c511000252.initial_effect(c)
 	--Cannot be Battle Target
 	local e5=Effect.CreateEffect(c)
 	e5:SetType(EFFECT_TYPE_SINGLE)
-	e5:SetCode(EFFECT_CANNOT_BE_BATTLE_TARGET)
+	e5:SetCode(EFFECT_IGNORE_BATTLE_TARGET)
 	e5:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 	e5:SetRange(LOCATION_MZONE)
-	e5:SetValue(1)
 	e5:SetCondition(c511000252.havefieldcon)
 	c:RegisterEffect(e5)
 	--Polestar Obey 
@@ -59,24 +58,9 @@ function c511000252.initial_effect(c)
 	e7:SetCondition(c511000252.nofieldcon)
 	e7:SetOperation(c511000252.nofieldop)
 	c:RegisterEffect(e7)
-	--direct attack
-	local e10=Effect.CreateEffect(c)
-	e10:SetType(EFFECT_TYPE_FIELD)
-	e10:SetCode(EFFECT_DIRECT_ATTACK)
-	e10:SetRange(LOCATION_MZONE)
-	e10:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e10:SetCondition(c511000252.havefieldcon)
-	e10:SetTarget(c511000252.dirtg)
-	c:RegisterEffect(e10)
 end
 function c511000252.sumlimit(e,c,sump,sumtype,sumpos,targetp,se)
 	return c:IsSetCard(0x21)
-end
-function c511000252.dirfilter(c,card)
-	return card~=c
-end
-function c511000252.dirtg(e,c)
-	return not Duel.IsExistingMatchingCard(c511000252.dirfilter,c:GetControler(),0,LOCATION_MZONE,1,nil,e:GetHandler())
 end
 function c511000252.havefieldfilter(c)
 	return c:IsFaceup() and c:IsType(TYPE_FIELD)
