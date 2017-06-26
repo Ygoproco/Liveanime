@@ -34,9 +34,9 @@ function c511009587.initial_effect(c)
 	--effect
 	local e4=Effect.CreateEffect(c)
 	e4:SetDescription(aux.Stringid(10032958,0))
+	e4:SetCategory(CATEGORY_DISABLE)
 	e4:SetType(EFFECT_TYPE_IGNITION)
 	e4:SetRange(LOCATION_MZONE)
-	e4:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e4:SetCountLimit(1)
 	e4:SetTarget(c511009587.distg)
 	e4:SetOperation(c511009587.disop)
@@ -93,28 +93,57 @@ function c511009587.atkop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c511009587.distg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	local c=e:GetHandler()
+	if c:IsHasEffect(511009518) then
+		e:SetProperty(0)
+	else
+		e:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	end
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and aux.disfilter1(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(aux.disfilter1,tp,0,LOCATION_MZONE,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
-	Duel.SelectTarget(tp,aux.disfilter1,tp,0,LOCATION_MZONE,1,1,nil)
+	if chk==0 then
+		if c:IsHasEffect(511009518) then
+			local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
+			return g:FilterCount(aux.disfilter1,nil)==g:GetCount()
+		else
+			return Duel.IsExistingTarget(aux.disfilter1,tp,0,LOCATION_MZONE,1,nil)
+		end
+	end
+	local g
+	if c:IsHasEffect(511009518) then
+		g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)	
+	else
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
+		g=Duel.SelectTarget(tp,aux.disfilter1,tp,0,LOCATION_MZONE,1,1,nil)
+	end
+	Duel.SetOperationInfo(0,CATEGORY_DISABLE,g,g:GetCount(),0,0)
 end
 function c511009587.disop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local tc=Duel.GetFirstTarget()
-	if c:IsRelateToEffect(e) and c:IsFaceup() and tc and tc:IsRelateToEffect(e) and tc:IsFaceup() and not tc:IsDisabled() then
-		local code=tc:GetOriginalCode()
-		local e2=Effect.CreateEffect(c)
-		e2:SetType(EFFECT_TYPE_SINGLE)
-		e2:SetCode(EFFECT_DISABLE)
-		e2:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
-		tc:RegisterEffect(e2)
-		local e3=Effect.CreateEffect(c)
-		e3:SetType(EFFECT_TYPE_SINGLE)
-		e3:SetCode(EFFECT_DISABLE_EFFECT)
-		e3:SetValue(RESET_TURN_SET)
-		e3:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
-		tc:RegisterEffect(e3)
-		c:CopyEffect(code,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,1)
+	local tg=Duel.GetFirstTarget()
+	local g=Group.CreateGroup()
+	if c:IsRelateToEffect(e) and c:IsFaceup() then
+		if c:IsHasEffect(511009518) then
+			g=Duel.GetMatchingGroup(aux.disfilter1,tp,0,LOCATION_MZONE,nil)
+		elseif tg and tg:IsRelateToEffect(e) and tg:IsFaceup() and not tg:IsDisabled() then
+			g:AddCard(tg)
+		end
+		local tc=g:GetFirst()
+		while tc do
+			local code=tc:GetOriginalCode()
+			local e2=Effect.CreateEffect(c)
+			e2:SetType(EFFECT_TYPE_SINGLE)
+			e2:SetCode(EFFECT_DISABLE)
+			e2:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
+			tc:RegisterEffect(e2)
+			local e3=Effect.CreateEffect(c)
+			e3:SetType(EFFECT_TYPE_SINGLE)
+			e3:SetCode(EFFECT_DISABLE_EFFECT)
+			e3:SetValue(RESET_TURN_SET)
+			e3:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
+			tc:RegisterEffect(e3)
+			c:CopyEffect(code,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,1)
+			tc=g:GetNext()
+		end
 	end
 end
 function c511009587.filter(c,e,tp)
