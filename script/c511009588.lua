@@ -38,7 +38,6 @@ function c511009588.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_QUICK_O)
 	e3:SetCode(EVENT_FREE_CHAIN)
 	e3:SetRange(LOCATION_MZONE)
-	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e3:SetCountLimit(1)
 	e3:SetCondition(c511009588.descon)
 	e3:SetTarget(c511009588.distg2)
@@ -97,41 +96,98 @@ function c511009588.descon(e,tp,eg,ep,ev,re,r,rp)
 	return ph==PHASE_MAIN1 or (ph>=PHASE_BATTLE_START and ph<=PHASE_BATTLE) or ph==PHASE_MAIN2
 end
 function c511009588.destg(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
+	if c:IsHasEffect(511009518) then
+		e:SetProperty(0)
+	else
+		e:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	end
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) end
-	if chk==0 then return Duel.IsExistingTarget(aux.TRUE,tp,0,LOCATION_MZONE,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local g=Duel.SelectTarget(tp,aux.TRUE,tp,0,LOCATION_MZONE,1,1,nil)
-	local g2=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,e:GetHandler())
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g2,g2:GetCount(),0,0)
+	if chk==0 then
+		if c:IsHasEffect(511009518) then
+			return Duel.IsExistingMatchingCard(aux.TRUE,tp,0,LOCATION_MZONE,1,nil)
+		else
+			return Duel.IsExistingTarget(aux.TRUE,tp,0,LOCATION_MZONE,1,nil)
+		end
+	end
+	if not c:IsHasEffect(511009518) then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
+		Duel.SelectTarget(tp,aux.TRUE,tp,0,LOCATION_MZONE,1,1,nil)
+	end
+	local g=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,e:GetHandler())
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,g:GetCount(),0,0)
 end
 function c511009588.desop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local tc=Duel.GetFirstTarget()
 	local atk=0
-	if tc and tc:IsFaceup() and tc:IsRelateToEffect(e) then atk=tc:GetAttack() end
+	if c:IsHasEffect(511009518) then
+		local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
+		local tc=g:GetFirst()
+		while tc do
+			atk=atk+tc:GetAttack()
+			tc=g:GetNext()
+		end
+	else
+		local tc=Duel.GetFirstTarget()
+		if tc and tc:IsFaceup() and tc:IsRelateToEffect(e) then atk=tc:GetAttack() end
+	end
 	local g=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
-	if Duel.Destroy(g,REASON_EFFECT)~=0 then
-		local dg=Duel.GetOperatedGroup()
+	if Duel.Destroy(g,REASON_EFFECT)~=0 and c:IsRelateToEffect(e) then
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
 		e1:SetCode(EFFECT_UPDATE_ATTACK)
-		e1:SetReset(RESET_EVENT+0x1ff0000+RESET_PHASE+PHASE_END)
+		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 		e1:SetValue(atk)
 		c:RegisterEffect(e1)
 	end
 end
+function c511009588.disfilter(c,g)
+	return not g:IsContains(c) and aux.disfilter1(c)
+end
 function c511009588.distg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	local c=e:GetHandler()
+	if c:IsHasEffect(511009518) then
+		e:SetProperty(0)
+	else
+		e:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	end
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and aux.disfilter1(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(aux.disfilter1,tp,0,LOCATION_MZONE,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-	local g=Duel.SelectTarget(tp,aux.disfilter1,tp,0,LOCATION_MZONE,1,1,nil)
+	if chk==0 then 
+		local g=c:GetCardTarget()
+		if c:IsHasEffect(511009518) then
+			local sg=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
+			return sg:FilterCount(c511009588.disfilter,nil,g)==sg:GetCount()
+		else
+			return Duel.IsExistingTarget(c511009588.disfilter,tp,0,LOCATION_MZONE,1,nil,g)
+		end
+	end
+	local g
+	if c:IsHasEffect(511009518) then
+		g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
+	else
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
+		g=Duel.SelectTarget(tp,aux.disfilter1,tp,0,LOCATION_MZONE,1,1,nil)
+	end
 	Duel.SetOperationInfo(0,CATEGORY_DISABLE,g,1,0,0)
 end
 function c511009588.disop2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local tc=Duel.GetFirstTarget()
-	if c:IsRelateToEffect(e) and tc and tc:IsFaceup() and tc:IsRelateToEffect(e) then
-		c:SetCardTarget(tc)
+	local g=Group.CreateGroup()
+	if c:IsRelateToEffect(e) then
+		if c:IsHasEffect(511009518) then
+			g=Duel.GetMatchingGroup(c511009588.disfilter,tp,0,LOCATION_MZONE,nil)
+		else
+			local tg=Duel.GetFirstTarget()
+			if tg and tg:IsFaceup() and tg:IsRelateToEffect(e) then
+				g:AddCard(tg)
+			end
+		end
+		local tc=g:GetFirst()
+		while tc do
+			c:SetCardTarget(tc)
+			tc=g:GetNext()
+		end
 	end
 end
 function c511009588.repfilter(c,tp)
