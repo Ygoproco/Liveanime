@@ -1,11 +1,14 @@
 --Machina Force (Manga)
+--edited by MLD
 function c511015116.initial_effect(c)
 	c:EnableReviveLimit()
+	--aux.AddFusionProcMixRep(c,true,true,aux.FilterBoolFunction(Card.IsFusionSetCard,0x36),2,99)
 	--cannot special summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(EFFECT_SPSUMMON_CONDITION)
+	e1:SetValue(c511015116.splimit)
 	c:RegisterEffect(e1)
 	--atk
 	local e2=Effect.CreateEffect(c)
@@ -26,6 +29,9 @@ function c511015116.initial_effect(c)
 	e4:SetCost(c511015116.atcost)
 	e4:SetOperation(c511015116.atop)
 	c:RegisterEffect(e4)
+end
+function c511015116.splimit(e,se,sp,st)
+	return se:GetHandler():IsCode(22666164)
 end
 function c511015116.atkfilter(c)
 	return c:IsSetCard(0x36) and c:GetAttack()>=0
