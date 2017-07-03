@@ -11,8 +11,8 @@ function c511777000.initial_effect(c)
 end
 function c511777000.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	if Duel.SelectYesNo(tp,aux.Stringid(10001,0)) then op1=0 else op1=1 end
-	if Duel.SelectYesNo(1-tp,aux.Stringid(10001,1)) then op2=0 else op2=1 end
+	if Duel.SelectYesNo(tp,aux.Stringid(4008,2)) then op1=1 else op1=0 end
+	if Duel.SelectYesNo(1-tp,aux.Stringid(4008,3)) then op2=1 else op2=0 end
 	if (op1==0 and op2==0) or (op1==1 and op2==1) then
 		op3=0
 	else
