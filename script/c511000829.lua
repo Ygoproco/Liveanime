@@ -12,7 +12,7 @@ function c511000829.initial_effect(c)
 end
 function c511000829.filter(c,e,tp)
 	local ct=c.minxyzct
-	return c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,true) and c:IsType(TYPE_XYZ)
+	return c.minxyzct and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,true) and c:IsType(TYPE_XYZ)
 		and Duel.IsExistingTarget(c511000829.matfilter,tp,LOCATION_GRAVE,0,1,nil,tp,ct)
 		and not c:IsHasEffect(EFFECT_NECRO_VALLEY)
 end
