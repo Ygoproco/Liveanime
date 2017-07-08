@@ -1,31 +1,14 @@
 --壺魔人
+--fixed by MLD
 function c511756001.initial_effect(c)
-	--to hand
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-	e1:SetCode(EVENT_CHANGE_POS)
-	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
-	e1:SetCondition(c511756001.regcon)
-	e1:SetOperation(c511756001.regop)
-	c:RegisterEffect(e1)
+	--
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetCountLimit(1)
-	e2:SetCondition(c511756001.con)
 	e2:SetTarget(c511756001.tg)
 	e2:SetOperation(c511756001.op)
 	c:RegisterEffect(e2)
-end
-function c511756001.regcon(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	return bit.band(c:GetPreviousPosition(),POS_DEFENSE)~=0 and c:IsFaceup() and c:IsAttackPos()
-end
-function c511756001.regop(e,tp,eg,ep,ev,re,r,rp)
-	e:GetHandler():RegisterFlagEffect(511756001,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,0)
-end
-function c511756001.con(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():GetFlagEffect(511756001)>0
 end
 function c511756001.filter(c)
 	return c:IsFaceup() and c:IsCode(50045299) and c:GetOverlayGroup():IsExists(Card.IsRace,1,nil,RACE_DRAGON)

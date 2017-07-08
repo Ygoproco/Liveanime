@@ -21,7 +21,7 @@ end
 function c511018009.filter(c)
 	return c:IsFaceup() and c:IsSetCard(0x54) and c:GetLevel()>=4
 end
-function c511018009.sptg(e,tp,eg,ev,ep,re,r,rp,chk,chkc)
+function c511018009.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and c511018009.filter(chkc) end
 	if chk==0 then return Duel.IsExistingTarget(c511018009.filter,tp,LOCATION_MZONE,0,1,nil) 
 		and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and e:GetHandler():IsCanBeSpecialSummoned(e,0,tp,false,false) end
@@ -29,7 +29,7 @@ function c511018009.sptg(e,tp,eg,ev,ep,re,r,rp,chk,chkc)
 	Duel.SelectTarget(tp,c511018009.filter,tp,LOCATION_MZONE,0,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,e:GetHandler(),1,0,0)
 end
-function c511018009.spoperation(e,tp)
+function c511018009.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
 	if not tc or not tc:IsRelateToEffect(e) or not c:IsRelateToEffect(e) then return end
