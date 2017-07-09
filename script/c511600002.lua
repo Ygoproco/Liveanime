@@ -26,20 +26,20 @@ function c511600002.initial_effect(c)
 	local e5=e2:Clone()
 	e5:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
 	c:RegisterEffect(e5)
---dimension summon
+--Dimension Summon
 	local e6=Effect.CreateEffect(c)
-	e6:SetDescription(aux.Stringid(25247218,0))
+	e6:SetDescription(aux.Stringid(4010,0))
 	e6:SetCategory(CATEGORY_SUMMON)
 	e6:SetType(EFFECT_TYPE_FIELD)
 	e6:SetCode(EFFECT_SUMMON_PROC)
 	e6:SetRange(LOCATION_REMOVED)
 	e6:SetTargetRange(0xff,0xff)
 	e6:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
-	--e6:SetTarget(function(e,c)return not c:IsHasEffect(EFFECT_LIMIT_SUMMON_PROC) end)
+	e6:SetTarget(function(e,c)return c:GetFlagEffect(51160002)==0 end)
 	e6:SetCondition(c511600002.ntcon)
 	c:RegisterEffect(e6)
 	local e7=e6:Clone()
-	--e7:SetTarget(function(e,c) return c:IsHasEffect(EFFECT_LIMIT_SUMMON_PROC) end)
+	e7:SetTarget(function(e,c)return c:GetFlagEffect(51160002)>0 end)
 	e7:SetCode(EFFECT_LIMIT_SUMMON_PROC)
 	c:RegisterEffect(e7)
 --no battle damage
@@ -78,6 +78,12 @@ function c511600002.initial_effect(c)
 	e12:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e12)
 end
+--tribute
+function c511600002.ntcon(e,c,minc)
+	if c==nil then return true end
+	return minc==0 and Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0
+end
+------------------------------------------------------------------------
 function c511600002.sptfilter(c)
 	return c:IsType(TYPE_MONSTER+TYPE_TRAPMONSTER+TYPE_TOKEN) and c:IsOnField()
 end
@@ -90,20 +96,72 @@ function c511600002.sptop(e,tp,eg,ep,ev,re,r,rp)
 	local catk=0
 	local cdef=0
 	local tc=g:GetFirst()
+	local min=0
 	while tc do
-		cctl=tc:GetControler()
 		tableatk={}
 		tabledef={}
-		oatk=tc:GetTextAttack()
-		odef=tc:GetTextDefense()
-		if oatk~=-2 then
-			local m=oatk/50
-			for i=0,m do
-				local x = i*50
-				table.insert(tableatk,x)
+		textatk=tc:GetTextAttack()
+		textdef=tc:GetTextDefense()
+		ctl=tc:GetControler()
+		if textatk~=-2 then
+			Duel.Hint(HINT_SELECTMSG,ctl,aux.Stringid(4010,4))
+			local atkop=Duel.SelectOption(ctl,aux.Stringid(4010,1),aux.Stringid(4010,2),aux.Stringid(4010,3))
+			if atkop==0 then
+				catk=textatk
+			elseif atkop==1 then
+				catk=0
+			else
+				local mindc=#tostring(0)
+				local maxdc=#tostring(textatk)
+				local dbdmin={}
+				local dbdmax={}
+				local mi=maxdc-1
+				local aux=0
+				for i=1,maxdc do
+					dbdmin[i]=math.floor(aux/(10^mi))
+					aux=aux%(10^mi)
+					mi=mi-1
+				end
+				aux=textatk
+				mi=maxdc-1
+				for i=1,maxdc do
+					dbdmax[i]=math.floor(aux/(10^mi))
+					aux=aux%(10^mi)
+					mi=mi-1
+				end
+				local chku=true
+				local chkl=true
+				mi=maxdc-1
+				local dbd={}
+				for i=1,maxdc do
+					local maxval=9
+					local minval=0
+					if chku and i>1 and dbd[i-1]<dbdmax[i-1] then
+						chku=false
+					end
+					if chkl and i>1 and dbd[i-1]>dbdmin[i-1] then
+						chkl=false
+					end
+					if chku then
+						maxval=dbdmax[i]
+					end
+					if chkl then
+						minval=dbdmin[i]
+					end
+					local r={}
+					local j=1
+					for k=minval,maxval do
+						r[j]=k
+						j=j+1
+					end
+					dbd[i]=Duel.AnnounceNumber(tp,table.unpack(r))
+				end
+				mi=maxdc-1
+				for i=1,maxdc do
+					catk=catk+dbd[i]*10^mi
+					mi=mi-1
+				end
 			end
-			Duel.Hint(HINT_SELECTMSG,cctl,aux.Stringid(53714009,0))
-			local catk=Duel.AnnounceNumber(cctl,table.unpack(tableatk))
 			local e1=Effect.CreateEffect(c)
 			e1:SetCategory(CATEGORY_ATKCHANGE)
 			e1:SetType(EFFECT_TYPE_SINGLE)
@@ -114,14 +172,65 @@ function c511600002.sptop(e,tp,eg,ep,ev,re,r,rp)
 			e1:SetReset(RESET_EVENT+0xfe0000)
 			tc:RegisterEffect(e1)
 		end
-		if odef~=-2 then
-			local n=odef/50
-			for i=0,n do
-				local y = i*50
-				table.insert(tabledef,y)
+		if textdef~=-2 then
+			Duel.Hint(HINT_SELECTMSG,ctl,aux.Stringid(4010,5))
+			local defop=Duel.SelectOption(ctl,aux.Stringid(4010,1),aux.Stringid(4010,2),aux.Stringid(4010,3))
+			if defop==0 then
+				cdef=textdef
+			elseif defop==1 then
+				cdef=0
+			else
+				local mindc=#tostring(0)
+				local maxdc=#tostring(textdef)
+				local dbdmin={}
+				local dbdmax={}
+				local mi=maxdc-1
+				local aux=0
+				for i=1,maxdc do
+					dbdmin[i]=math.floor(aux/(10^mi))
+					aux=aux%(10^mi)
+					mi=mi-1
+				end
+				aux=textdef
+				mi=maxdc-1
+				for i=1,maxdc do
+					dbdmax[i]=math.floor(aux/(10^mi))
+					aux=aux%(10^mi)
+					mi=mi-1
+				end
+				local chku=true
+				local chkl=true
+				mi=maxdc-1
+				local dbd={}
+				for i=1,maxdc do
+					local maxval=9
+					local minval=0
+					if chku and i>1 and dbd[i-1]<dbdmax[i-1] then
+						chku=false
+					end
+					if chkl and i>1 and dbd[i-1]>dbdmin[i-1] then
+						chkl=false
+					end
+					if chku then
+						maxval=dbdmax[i]
+					end
+					if chkl then
+						minval=dbdmin[i]
+					end
+					local r={}
+					local j=1
+					for k=minval,maxval do
+						r[j]=k
+						j=j+1
+					end
+					dbd[i]=Duel.AnnounceNumber(tp,table.unpack(r))
+				end
+				mi=maxdc-1
+				for i=1,maxdc do
+					cdef=cdef+dbd[i]*10^mi
+					mi=mi-1
+				end
 			end
-			Duel.Hint(HINT_SELECTMSG,cctl,aux.Stringid(57043117,0))
-			local cdef=Duel.AnnounceNumber(cctl,table.unpack(tabledef))
 			local e2=Effect.CreateEffect(c)
 			e2:SetCategory(CATEGORY_DEFCHANGE)
 			e2:SetType(EFFECT_TYPE_SINGLE)
@@ -171,12 +280,6 @@ function c511600002.bcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetAttackTarget()~=nil
 end
 ------------------------------------------------------------------------
---tribute
-function c511600002.ntcon(e,c,minc)
-	if c==nil then return true end
-	return minc==0 and c:GetLevel()>4 and Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0
-end
-------------------------------------------------------------------------
 --speed Duel Filter
 function c511600002.SDfilter(c)
 	return c:GetCode()==511004001
@@ -191,39 +294,48 @@ end
 function c511600002.op(e,tp,eg,ep,ev,re,r,rp,chk)
 	--check if number of card >20 if speed duel or >40 if other duel
 	if Duel.IsExistingMatchingCard(c511600002.SDfilter,tp,LOCATION_DECK+LOCATION_HAND+LOCATION_REMOVED,0,1,nil) and Duel.GetMatchingGroup(nil,tp,LOCATION_HAND+LOCATION_DECK,0,nil):GetCount()<20 then
-	Duel.Win(1-tp,0x55)
+	Duel.Win(1-tp,0x60)
 	end
 	if Duel.GetMatchingGroup(nil,tp,LOCATION_HAND+LOCATION_DECK,0,e:GetHandler()):GetCount()<40 and not Duel.IsExistingMatchingCard(c511600002.SDfilter,tp,LOCATION_DECK+LOCATION_HAND+LOCATION_REMOVED,0,1,nil) then
-	Duel.Win(1-tp,0x55)
+	Duel.Win(1-tp,0x60)
 	end
 	local c=e:GetHandler()
 	if Duel.IsExistingMatchingCard(Card.IsCode,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,nil,511600002) then
 		Duel.DisableShuffleCheck()
 		Duel.SendtoDeck(c,nil,-2,REASON_RULE)
 	else
-		if Duel.Remove(c,POS_FACEUP,REASON_RULE) then
-			local mg=Duel.GetMatchingGroup(Card.IsType,tp,0xff,0xff,nil,TYPE_MONSTER)
-			local tc=mg:GetFirst()
-			while tc do
-			--zero
-				local e1=Effect.CreateEffect(c)
-				e1:SetType(EFFECT_TYPE_SINGLE)
-				e1:SetCode(EFFECT_SUMMON_COST)
-				e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_UNCOPYABLE)
-				e1:SetOperation(c511600002.lvop)
-				tc:RegisterEffect(e1)
-				local e2=e1:Clone()
-				e2:SetCode(EFFECT_SPSUMMON_COST)
-				tc:RegisterEffect(e2)
-				local e3=e1:Clone()
-				e3:SetCode(EFFECT_FLIPSUMMON_COST)
-				tc:RegisterEffect(e3)
-				tc=mg:GetNext()
-			end
-		end
+		Duel.Remove(c,POS_FACEUP,REASON_RULE) 
 	end
 	if e:GetHandler():GetPreviousLocation()==LOCATION_HAND and Duel.IsPlayerCanDraw(e:GetHandlerPlayer(),1)then
 		Duel.Draw(tp,1,REASON_RULE)
+	end
+	local g=Duel.GetMatchingGroup(Card.IsType,tp,0xff,0xff,nil,TYPE_MONSTER)
+	local tc=g:GetFirst()
+	if tc then
+		while tc do
+		--zero
+			local e1=Effect.CreateEffect(c)
+			e1:SetType(EFFECT_TYPE_SINGLE)
+			e1:SetCode(EFFECT_SUMMON_COST)
+			e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_UNCOPYABLE)
+			e1:SetOperation(c511600002.lvop)
+			tc:RegisterEffect(e1)
+			local e2=e1:Clone()
+			e2:SetCode(EFFECT_SPSUMMON_COST)
+			tc:RegisterEffect(e2)
+			local e3=e1:Clone()
+			e3:SetCode(EFFECT_FLIPSUMMON_COST)
+			tc:RegisterEffect(e3)
+			tc=g:GetNext()
+		end
+	end
+	local g2=Duel.GetMatchingGroup(Card.IsHasEffect,tp,0xff,0xff,nil,EFFECT_LIMIT_SUMMON_PROC)
+	local tc2=g2:GetFirst()
+	if tc2 then
+		while tc2 do
+			tc2:RegisterFlagEffect(51160002,0,0,1)
+			tc2=g2:GetNext()
+		end
 	end
 end
 function c511600002.lvop(e,tp,eg,ep,ev,re,r,rp)
