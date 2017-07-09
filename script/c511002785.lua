@@ -13,7 +13,7 @@ function c511002785.operation(e,tp,eg,ep,ev,re,r,rp)
 	local endtime=0
 	local check=true
 	local start=os.time()
-	Duel.Hint(HINT_MESSAGE,1-tp,aux.Stringid(4006,5))
+	Duel.SelectOption(1-tp,aux.Stringid(4006,5))
 	endtime=os.time()-start
 	if endtime<30 or endtime>32 then
 		check=false
