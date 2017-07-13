@@ -45,19 +45,21 @@ function c511000513.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e:GetHandler():RemoveOverlayCard(tp,1,1,REASON_COST)
 end
 function c511000513.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDestructable,tp,0,LOCATION_MZONE,1,nil) end
-	local g=Duel.GetMatchingGroup(Card.IsDestructable,tp,0,LOCATION_MZONE,nil)
+	if chk==0 then return Duel.IsExistingMatchingCard(aux.TRUE,tp,0,LOCATION_MZONE,1,nil) end
+	local g=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,g:GetCount(),0,0)
 end
-function c511000513.filter(c,s)
-	return not c:IsLocation(LOCATION_MZONE) and c~=s
+function c511000513.filter(c)
+	return not c:IsLocation(LOCATION_MZONE)
 end
 function c511000513.operation(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(Card.IsDestructable,tp,0,LOCATION_MZONE,nil)
-	if Duel.Destroy(g,REASON_EFFECT) then
-		g=g:Filter(c511000513.filter,nil,e:GetHandler())
-		if e:GetHandler():IsLocation(LOCATION_MZONE) then
-			Duel.Overlay(e:GetHandler(),g)
+	local c=e:GetHandler()
+	local g=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
+	if Duel.Destroy(g,REASON_EFFECT)>0 then
+		local sg=g:Filter(c511000513.filter,c)
+		if c:IsRelateToEffect(e) then
+			Duel.BreakEffect()
+			Duel.Overlay(c,sg)
 		end
 	end
 end

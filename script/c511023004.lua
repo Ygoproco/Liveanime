@@ -1,4 +1,5 @@
 --Infernity Destroyer
+--fixed by MLD
 function c511023004.initial_effect(c)
 	--damage
 	local e1=Effect.CreateEffect(c)
@@ -25,7 +26,6 @@ function c511023004.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,800)
 end
 function c511023004.damop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetFieldGroupCount(tp,LOCATION_HAND,0)>0 then return end
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
 	Duel.Damage(p,d,REASON_EFFECT)
 end
