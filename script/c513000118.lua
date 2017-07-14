@@ -86,8 +86,20 @@ function c513000118.initial_effect(c)
 	local uc=c
 	local revive=Card.EnableReviveLimit
 	Card.EnableReviveLimit=function(c)
-		if Duel.IsPlayerAffectedByEffect(sump,513000118) then revive(uc) else revive(c) end
+		revive(uc)
+		local e8=Effect.CreateEffect(c)
+		e8:SetType(EFFECT_TYPE_SINGLE)
+		e8:SetCode(EFFECT_REVIVE_LIMIT)
+		e8:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+		c:RegisterEffect(e8)
+		local e9=e8:Clone()
+		e9:SetCode(EFFECT_UNSUMMONABLE_CARD)
+		e9:SetCondition(c513000118.con)
+		c:RegisterEffect(e9)
 	end
+end
+function c513000118.con(e)
+	return not Duel.IsPlayerAffectedByEffect(e:GetHandlerPlayer(),513000118)
 end
 function c513000118.ttcon1(e,c,minc)
 	if c==nil then return true end
@@ -127,15 +139,11 @@ function c513000118.activate(e,tp,eg,ep,ev,re,r,rp)
 	if sg:GetCount()>0 then
 		Duel.Remove(sg,POS_FACEUP,REASON_EFFECT)
 	end
-	local g1=Duel.GetMatchingGroup(Card.IsHasEffect,tp,0xff,0xff,nil,EFFECT_REVIVE_LIMIT)
+	local g1=Duel.GetMatchingGroup(Card.IsHasEffect,tp,0xff,0xff,nil,EFFECT_LIMIT_SET_PROC)
 	local tc1=g1:GetFirst()
 	if tc1 then
 		while tc1 do
-			local e1=Effect.CreateEffect(e:GetHandler())
-			e1:SetType(EFFECT_TYPE_SINGLE)
-			e1:SetCode(EFFECT_REVIVE_LIMIT)
-			e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
-			tc1:RegisterEffect(e1)
+			tc1:RegisterFlagEffect(5110001182,0,0,1)
 			tc1=g1:GetNext()
 		end
 	end
@@ -147,17 +155,10 @@ function c513000118.activate(e,tp,eg,ep,ev,re,r,rp)
 			tc2=g2:GetNext()
 		end
 	end
-	local g3=Duel.GetMatchingGroup(Card.IsHasEffect,tp,0xff,0xff,nil,EFFECT_LIMIT_SET_PROC)
-	local tc3=g3:GetFirst()
-	if tc3 then
-		while tc3 do
-			tc3:RegisterFlagEffect(5130001182,0,0,1)
-			tc3=g3:GetNext()
-		end
-	end
 end
 function c513000118.spcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetFlagEffect(tp,5130001180)==0 and not e:GetHandler():IsStatus(STATUS_CHAINING)
+	return Duel.GetFlagEffect(tp,5130001180)==0
+--and not e:GetHandler():IsStatus(STATUS_CHAINING)
 end
 function c513000118.spfilter(c,e,tp)
 	return c:IsCanBeSpecialSummoned(e,0,tp,false,false)
