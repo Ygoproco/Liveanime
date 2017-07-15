@@ -15,12 +15,13 @@ end
 function c511000635.filter1(c,e)
 	return c:IsOnField() and not c:IsImmuneToEffect(e) and c:IsAbleToRemove()
 end
-function c511000635.filter2(c,e,tp,m,chkf)
-	return c:IsType(TYPE_FUSION) and c:IsRace(RACE_MACHINE)
+function c511000635.filter2(c,e,tp,m,f,chkf)
+	return c:IsType(TYPE_FUSION) and c:IsRace(RACE_MACHINE) and (not f or f(c))
 		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_FUSION,tp,false,false) and c:CheckFusionMaterial(m,nil,chkf)
 end
-function c511000635.filter3(c)
-	return c:IsType(TYPE_MONSTER) and c:IsCanBeFusionMaterial() and c:IsAbleToRemove()
+function c511000635.filter3(c,e)
+	return c:IsType(TYPE_MONSTER) and c:IsCanBeFusionMaterial() and c:IsAbleToRemove() 
+		and (not e or not c:IsImmuneToEffect(e))
 end
 function c511000635.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
@@ -28,13 +29,14 @@ function c511000635.target(e,tp,eg,ep,ev,re,r,rp,chk)
 		local mg1=Duel.GetFusionMaterial(tp):Filter(c511000635.filter0,nil)
 		local mg2=Duel.GetMatchingGroup(c511000635.filter3,tp,LOCATION_GRAVE,0,nil)
 		mg1:Merge(mg2)
-		local res=Duel.IsExistingMatchingCard(c511000635.filter2,tp,LOCATION_EXTRA,0,1,nil,e,tp,mg1,chkf)
+		local res=Duel.IsExistingMatchingCard(c511000635.filter2,tp,LOCATION_EXTRA,0,1,nil,e,tp,mg1,nil,chkf)
 		if not res then
 			local ce=Duel.GetChainMaterial(tp)
 			if ce~=nil then
 				local fgroup=ce:GetTarget()
-				local mg2=fgroup(ce,e,tp)
-				res=Duel.IsExistingMatchingCard(c511000635.filter2,tp,LOCATION_EXTRA,0,1,nil,e,tp,mg2,chkf)
+				local mg3=fgroup(ce,e,tp)
+				local mf=ce:GetValue()
+				res=Duel.IsExistingMatchingCard(c511000635.filter2,tp,LOCATION_EXTRA,0,1,nil,e,tp,mg3,mf,chkf)
 			end
 		end
 		return res
@@ -42,10 +44,9 @@ function c511000635.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
 end
 function c511000635.activate(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) then return end
 	local chkf=Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and PLAYER_NONE or tp
 	local mg1=Duel.GetFusionMaterial(tp):Filter(c511000635.filter1,nil,e)
-	local mg2=Duel.GetMatchingGroup(c511000635.filter3,tp,LOCATION_GRAVE,0,nil)
+	local mg2=Duel.GetMatchingGroup(c511000635.filter3,tp,LOCATION_GRAVE,0,nil,e)
 	mg1:Merge(mg2)
 	local sg1=Duel.GetMatchingGroup(c511000635.filter2,tp,LOCATION_EXTRA,0,nil,e,tp,mg1,nil,chkf)
 	local mg3=nil
