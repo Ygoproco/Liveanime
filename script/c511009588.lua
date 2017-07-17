@@ -143,7 +143,7 @@ function c511009588.desop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c511009588.disfilter(c,g)
-	return not g:IsContains(c) and aux.disfilter1(c)
+	return (not g or not g:IsContains(c)) and aux.disfilter1(c)
 end
 function c511009588.distg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local c=e:GetHandler()
