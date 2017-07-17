@@ -1,5 +1,6 @@
 --Performapal Bubblewowow (Anime)
 --AlphaKretin
+--fixed by MLD
 function c511310012.initial_effect(c)
 	--pendulum summon
 	aux.EnablePendulumAttribute(c)
@@ -25,7 +26,7 @@ end
 function c511310012.filter(c,tp)
 	return c:IsFaceup() and c:IsControler(tp) and c:IsLocation(LOCATION_MZONE)
 		and not c:IsType(TYPE_PENDULUM) and c:GetSummonLocation()==LOCATION_EXTRA
-		and c:IsReason(REASON_BATTLE+REASON_EFFECT) and not c:IsReason(REASON_REPLACE)
+		and c:IsReason(REASON_EFFECT) and not c:IsReason(REASON_REPLACE)
 end
 function c511310012.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return eg:IsExists(c511310012.filter,1,nil,tp) and not e:GetHandler():IsStatus(STATUS_DESTROY_CONFIRMED) end

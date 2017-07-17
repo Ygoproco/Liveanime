@@ -1,5 +1,6 @@
 --Trust Guardian (Anime)
 --AlphaKretin
+--fixed by MLD
 function c511310011.initial_effect(c)
 	--be material
 	local e1=Effect.CreateEffect(c)
@@ -37,7 +38,7 @@ function c511310011.cop(e,tp,eg,ep,ev,re,r,rp)
 end
 function c511310011.desreptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return c:IsReason(REASON_BATTLE) and c:GetBattlePosition()~=POS_FACEUP_DEFENSE end
+	if chk==0 then return c:IsReason(REASON_BATTLE) end
 	if Duel.SelectYesNo(tp,aux.Stringid(4008,4)) then --Lose 400 ATK to avoid destruction?
 		local e1=Effect.CreateEffect(e:GetOwner())
 		e1:SetType(EFFECT_TYPE_SINGLE)
@@ -47,16 +48,6 @@ function c511310011.desreptg(e,tp,eg,ep,ev,re,r,rp,chk)
 		return true
 	else return false end
 end
-function c511310011.desrepop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	local e1=Effect.CreateEffect(e:GetOwner())
-	e1:SetType(EFFECT_TYPE_SINGLE)
-	e1:SetCode(EFFECT_UPDATE_ATTACK)
-	e1:SetValue(-400)
-	e1:SetReset(RESET_EVENT+0x1fe0000)
-	c:RegisterEffect(e1)
-end
 function c511310011.sdcon(e)
-	local c=e:GetHandler()
-	return c:GetAttack()==0
+	return e:GetHandler():GetAttack()<=0
 end
