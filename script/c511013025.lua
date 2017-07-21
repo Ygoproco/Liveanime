@@ -1,4 +1,5 @@
 --Earthbound Wave
+--cleaned up by MLD
 function c511013025.initial_effect(c)
 	--negate
 	local e1=Effect.CreateEffect(c)
@@ -11,7 +12,7 @@ function c511013025.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function c511013025.cfilter(c)
-	return c:IsFaceup() and c:IsType(TYPE_SPELL) and c:IsType(TYPE_FIELD) 
+	return c:IsFaceup() and bit.band(c:GetType(),TYPE_SPELL+TYPE_FIELD)==TYPE_SPELL+TYPE_FIELD
 end
 function c511013025.condition(e,tp,eg,ep,ev,re,r,rp)
 	return rp~=tp and re:IsHasType(EFFECT_TYPE_ACTIVATE) and Duel.IsChainNegatable(ev) 
@@ -20,7 +21,7 @@ end
 function c511013025.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	Duel.SetOperationInfo(0,CATEGORY_NEGATE,eg,1,0,0)
-	if re:GetHandler():IsDestructable() and re:GetHandler():IsRelateToEffect(re) then
+	if re:GetHandler():IsRelateToEffect(re) then
 		Duel.SetOperationInfo(0,CATEGORY_DESTROY,eg,1,0,0)
 	end
 end
