@@ -12,21 +12,21 @@ function c511023002.initial_effect(c)
 	e1:SetOperation(c511023002.operation)
 	c:RegisterEffect(e1)
 end
-	function c52158283.cost(e,tp,eg,ep,ev,re,r,rp,chk)
+function c511023002.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToRemoveAsCost() end
 	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_COST)
 end
-function c52158283.filter(c)
+function c511023002.filter(c)
 	return c:IsAttackPos()
 end
-function c52158283.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) and c52158283.filter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(c52158283.filter,tp,LOCATION_MZONE,0,1,nil) end
+function c511023002.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and c511023002.filter(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(c511023002.filter,tp,LOCATION_MZONE,0,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_POSCHANGE)
-	local g=Duel.SelectTarget(tp,c52158283.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
+	local g=Duel.SelectTarget(tp,c511023002.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_POSITION,g,1,0,0)
 end
-function c52158283.operation(e,tp,eg,ep,ev,re,r,rp)
+function c511023002.operation(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc:IsRelateToEffect(e) then
 		if tc:IsAttackPos() then
