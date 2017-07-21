@@ -13,7 +13,7 @@ function c511023013.initial_effect(c)
 	e1:SetOperation(c511023013.atkop)
 	c:RegisterEffect(e1)
 end
-511023013.material_setcode=0x8
+c511023013.material_setcode=0x8
 function c511023013.atkcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckReleaseGroup(tp,Card.IsSetCard,1,e:GetHandler(),0x3008) end
 	local g=Duel.SelectReleaseGroup(tp,Card.IsSetCard,1,1,e:GetHandler(),0x3008)
