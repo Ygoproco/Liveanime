@@ -1,5 +1,6 @@
 --Dododo Warrior (Anime)
 --AlphaKretin
+--fixed by MLD
 function c511310001.initial_effect(c)
 	--summon with no tribute
 	local e1=Effect.CreateEffect(c)
@@ -12,9 +13,12 @@ function c511310001.initial_effect(c)
 	c:RegisterEffect(e1)
 	--immune
 	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-	e2:SetCode(EVENT_ATTACK_ANNOUNCE)
-	e2:SetOperation(c511310001.atkop)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e2:SetRange(LOCATION_MZONE)
+	e2:SetCode(EFFECT_IMMUNE_EFFECT)
+	e2:SetValue(c511310001.efilter)
+	e2:SetCondition(c511310001.econ)
 	c:RegisterEffect(e2)
 end
 function c511310001.ntcon(e,c,minc)
@@ -22,28 +26,18 @@ function c511310001.ntcon(e,c,minc)
 	return minc==0 and c:GetLevel()>4 and Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0
 end
 function c511310001.ntop(e,tp,eg,ep,ev,re,r,rp,c)
-	--change base attack
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetReset(RESET_EVENT+0xff0000)
-	e1:SetCode(EFFECT_SET_ATTACK)
-	local val=(c:GetBaseAttack()-500)
-	e1:SetValue(val)
-	c:RegisterEffect(e1)
-end
-function c511310001.atkop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE)
-	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-	e1:SetRange(LOCATION_MZONE)
-	e1:SetCode(EFFECT_IMMUNE_EFFECT)
-	e1:SetValue(c511310001.efilter)
-	e1:SetReset(RESET_PHASE+PHASE_DAMAGE)
+	e1:SetCode(EFFECT_UPDATE_ATTACK)
+	e1:SetValue(-500)
 	c:RegisterEffect(e1)
 end
 function c511310001.efilter(e,te)
-	return (te:GetOwner()~=e:GetOwner()) and (te:GetHandler():GetControler()~=e:GetHandler():GetControler())
+	return e:GetOwnerPlayer()~=te:GetOwnerPlayer()
+end
+function c511310001.econ(e)
+	return Duel.GetAttacker()==e:GetHandler()
 end

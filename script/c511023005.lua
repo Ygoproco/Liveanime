@@ -1,6 +1,7 @@
 --Elemental HERO Darkbright
---fusion material
+--fixed by MLD
 function c511023005.initial_effect(c)
+	--fusion material
 	c:EnableReviveLimit()
 	aux.AddFusionProcCode2(c,20721928,89252153,true,true)
 	--spsummon condition
@@ -17,6 +18,7 @@ function c511023005.initial_effect(c)
 	c:RegisterEffect(e2)
 	--to defense
 	local e3=Effect.CreateEffect(c)
+	e3:SetCategory(CATEGORY_POSITION)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e3:SetCode(EVENT_DAMAGE_STEP_END)
 	e3:SetCondition(c511023005.poscon)
@@ -25,9 +27,8 @@ function c511023005.initial_effect(c)
 	--destroy
 	local e4=Effect.CreateEffect(c)
 	e4:SetDescription(aux.Stringid(41517968,0))
-	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
 	e4:SetCategory(CATEGORY_DESTROY)
-	e4:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
 	e4:SetCode(EVENT_DESTROYED)
 	e4:SetTarget(c511023005.destg)
 	e4:SetOperation(c511023005.desop)
@@ -35,24 +36,23 @@ function c511023005.initial_effect(c)
 end
 c511023005.material_setcode=0x8
 function c511023005.poscon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler()==Duel.GetAttacker() and e:GetHandler():IsRelateToBattle()
+	return e:GetHandler():IsRelateToBattle()
 end
 function c511023005.posop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if c:IsAttackPos() then
-		Duel.ChangePosition(c,POS_FACEUP_DEFENSE)
+	if e:GetHandler():IsRelateToEffect(e) then
+		Duel.ChangePosition(e:GetHandler(),POS_FACEUP_DEFENSE,POS_FACEDOWN_DEFENSE,POS_FACEUP_ATTACK,POS_FACEUP_ATTACK)
 	end
 end
-function c511023005.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsControler(1-tp) and chkc:IsLocation(LOCATION_MZONE) end
+function c511023005.destg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local g=Duel.SelectTarget(tp,aux.TRUE,tp,0,LOCATION_ONFIELD,1,1,nil)
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,g:GetCount(),0,0)
+	local g=Duel.GetMatchingGroup(aux.TRUE,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,1,0,0)
 end
 function c511023005.desop(e,tp,eg,ep,ev,re,r,rp)
-	local tc=Duel.GetFirstTarget()
-	if tc and tc:IsRelateToEffect(e) then
-		Duel.Destroy(tc,REASON_EFFECT)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
+	local g=Duel.SelectMatchingCard(tp,aux.TRUE,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil)
+	if g:GetCount()>0 then
+		Duel.HintSelection(g)
+		Duel.Destroy(g,REASON_EFFECT)
 	end
 end

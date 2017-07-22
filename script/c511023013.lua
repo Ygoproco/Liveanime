@@ -12,21 +12,42 @@ function c511023013.initial_effect(c)
 	e1:SetCost(c511023013.atkcost)
 	e1:SetOperation(c511023013.atkop)
 	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_IGNITION)
+	e2:SetRange(LOCATION_MZONE)
+	e2:SetTarget(aux.FALSE)
+	c:RegisterEffect(e2)
+	e1:SetLabelObject(e2)
 end
 c511023013.material_setcode=0x8
+function c511023013.cfilter(c,tp)
+	return c:IsSetCard(0x3008) and Duel.IsExistingMatchingCard(c511023013.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,c)
+end
+function c511023013.filter(c)
+	return c:IsFaceup() and c:IsCode(74711057)
+end
 function c511023013.atkcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckReleaseGroup(tp,Card.IsSetCard,1,e:GetHandler(),0x3008) end
-	local g=Duel.SelectReleaseGroup(tp,Card.IsSetCard,1,1,e:GetHandler(),0x3008)
+	if chk==0 then return Duel.CheckReleaseGroup(tp,c511023013.cfilter,1,nil,tp) end
+	local g=Duel.SelectReleaseGroup(tp,c511023013.cfilter,1,1,nil,tp)
 	e:SetLabel(g:GetFirst():GetAttack())
+	e:GetLabelObject():SetLabel(g:GetFirst():GetDefense())
 	Duel.Release(g,REASON_COST)
 end
 function c511023013.atkop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if c:IsFacedown() or not c:IsRelateToEffect(e) then return end
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE)
-	e1:SetCode(EFFECT_UPDATE_ATTACK)
-	e1:SetValue(e:GetLabel())
-	e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
-	c:RegisterEffect(e1)
+	local g=Duel.GetMatchingGroup(c511023013.filter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
+	local tc=g:GetFirst()
+	while tc do
+		local e1=Effect.CreateEffect(e:GetHandler())
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+		e1:SetCode(EFFECT_UPDATE_ATTACK)
+		e1:SetValue(e:GetLabel())
+		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
+		tc:RegisterEffect(e1)
+		local e2=e1:Clone()
+		e2:SetCode(EFFECT_UPDATE_DEFENSE)
+		e2:SetValue(e:GetLabelObject():GetLabel())
+		tc:RegisterEffect(e2)
+		tc=g:GetNext()
+	end
 end

@@ -17,7 +17,7 @@ function c511777003.target(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c511777003.activate(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFieldCard(tp,LOCATION_GRAVE,Duel.GetFieldGroupCount(tp,LOCATION_GRAVE,0)-1)
-	if tc and tc:IsType(TYPE_SPELL) and tc:IsAbleToHand() and (aux.nvfilter(c) or not Duel.IsChainDisablable(0)) then
+	if tc and tc:IsType(TYPE_SPELL) and tc:IsAbleToHand() and (aux.nvfilter(tc) or not Duel.IsChainDisablable(0)) then
 		Duel.SendtoHand(tc,nil,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,tc)
 	end

@@ -1,4 +1,5 @@
 --Elemental HERO Aqua Neos
+--fixed by MLD
 function c511023010.initial_effect(c)
 	--fusion material
 	c:EnableReviveLimit()
@@ -33,7 +34,6 @@ function c511023010.initial_effect(c)
 	c:RegisterEffect(e3)
 	local e4=e3:Clone()
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-	e4:SetProperty(0)
 	e4:SetCondition(c511023010.retcon2)
 	c:RegisterEffect(e4)
 	--destroy
@@ -123,8 +123,8 @@ function c511023010.descost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_COST+REASON_DISCARD)
 end
 function c511023010.destg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)>0 end
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,nil,2,2-tp,LOCATION_HAND)
+	if chk==0 then return Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)>1 end
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,nil,2,1-tp,LOCATION_HAND)
 end
 function c511023010.desop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetFieldGroup(tp,0,LOCATION_HAND)

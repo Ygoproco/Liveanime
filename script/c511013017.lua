@@ -1,4 +1,5 @@
 --Shining Silver Force
+--cleaned up by MLD
 function c511013017.initial_effect(c)
 	--Negate
 	local e1=Effect.CreateEffect(c)
@@ -11,26 +12,19 @@ function c511013017.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function c511013017.discon(e,tp,eg,ep,ev,re,r,rp)
-	if ep==tp or not re:IsHasType(EFFECT_TYPE_ACTIVATE) or not re:IsActiveType(TYPE_TRAP) or not Duel.IsChainNegatable(ev) then return false end
-	local ex,cg,ct,cp,cv=Duel.GetOperationInfo(ev,CATEGORY_DAMAGE)
-	if ex then return true end
-	ex,cg,ct,cp,cv=Duel.GetOperationInfo(ev,CATEGORY_RECOVER)
-	return ex and ((cp~=PLAYER_ALL and Duel.IsPlayerAffectedByEffect(cp,EFFECT_REVERSE_RECOVER)) or
-		(cp==PLAYER_ALL and (Duel.IsPlayerAffectedByEffect(0,EFFECT_REVERSE_RECOVER) or Duel.IsPlayerAffectedByEffect(1,EFFECT_REVERSE_RECOVER))))
-end
-function c511013017.dfilter(c)
-	return c:IsType(TYPE_SPELL+TYPE_TRAP)
+	return ep~=tp and re:IsHasType(EFFECT_TYPE_ACTIVATE) and re:IsActiveType(TYPE_TRAP) and Duel.IsChainNegatable(ev) 
+		and (aux.damcon1(e,tp,eg,ep,ev,re,r,rp) or aux.damcon1(e,1-tp,eg,ep,ev,re,r,rp))
 end
 function c511013017.distg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	Duel.SetOperationInfo(0,CATEGORY_NEGATE,eg,1,0,0)
-	local g=Duel.GetMatchingGroup(c511013017.dfilter,tp,0,LOCATION_ONFIELD,nil)
+	local g=Duel.GetMatchingGroup(Card.IsType,tp,0,LOCATION_ONFIELD,nil,TYPE_SPELL+TYPE_TRAP)
 	g:Merge(eg)
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,g:GetCount(),0,0)
 end
 function c511013017.disop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.NegateActivation(ev) then
-		local g=Duel.GetMatchingGroup(c511013017.dfilter,tp,0,LOCATION_ONFIELD,nil)
+		local g=Duel.GetMatchingGroup(Card.IsType,tp,0,LOCATION_ONFIELD,nil,TYPE_SPELL+TYPE_TRAP)
 		g:Merge(eg)
 		Duel.Destroy(g,REASON_EFFECT)
 	end
