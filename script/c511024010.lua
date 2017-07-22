@@ -1,5 +1,6 @@
 --Evil Hero Infernal Prodigy (Anime)
 --Scripted by IanxWaifu
+--fixed by MLD
 function c511024010.initial_effect(c)
 	--Special Summon
 	local e1=Effect.CreateEffect(c)
@@ -13,7 +14,7 @@ function c511024010.initial_effect(c)
 	local e2=Effect.CreateEffect(c)
 	e2:SetCategory(CATEGORY_DRAW)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
-	e2:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DELAY)
+	e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_DELAY)
 	e2:SetCode(EVENT_RELEASE)
 	e2:SetCondition(c511024010.drcon)
 	e2:SetTarget(c511024010.drtg)
@@ -35,6 +36,6 @@ function c511024010.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,1)
 end
 function c511024010.drop(e,tp,eg,ep,ev,re,r,rp)
-	local p=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER)
-	Duel.Draw(p,1,REASON_EFFECT)
+	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
+	Duel.Draw(p,d,REASON_EFFECT)
 end
