@@ -1,5 +1,5 @@
 --Infernity Randomizer (Anime)
-
+--cleaned up by MLD
 function c511130001.initial_effect(c)
     --draw, send to grave and effect damage
 	local e1=Effect.CreateEffect(c)
@@ -12,30 +12,20 @@ function c511130001.initial_effect(c)
     e1:SetOperation(c511130001.operation)
 	c:RegisterEffect(e1)
 end
-
---activate only if no cards in hand
 function c511130001.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetFieldGroupCount(tp,LOCATION_HAND,0)==0
 end
-
 function c511130001.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,1) end
 	Duel.SetTargetPlayer(tp)
 	Duel.SetTargetParam(1)
 	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,1)
 end
-
 function c511130001.operation(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetFieldGroupCount(tp,LOCATION_HAND,0)~=0 then return end
-    local g=Duel.GetDecktopGroup(tp,1)
+	local g=Duel.GetDecktopGroup(tp,1)
 	local tc=g:GetFirst()
-    --draw
-	Duel.Draw(tp,1,REASON_EFFECT)
-    --send to grave
-    Duel.SendtoGrave(tc,REASON_EFFECT)
-    --effect damage calculation/determination
-	if tc then
-		Duel.BreakEffect()
+    if Duel.Draw(tp,1,REASON_EFFECT)>0 then
+		Duel.SendtoGrave(tc,REASON_EFFECT)
 		if tc:IsType(TYPE_MONSTER) then
 			Duel.Damage(1-tp,tc:GetLevel()*200,REASON_EFFECT)
 		else

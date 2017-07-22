@@ -1,4 +1,5 @@
 --E・HERO マグマ・ネオス
+--cleaned up by MLD
 function c511023006.initial_effect(c)
 	--fusion material
 	c:EnableReviveLimit()
@@ -118,7 +119,4 @@ function c511023006.retop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 	Duel.SendtoDeck(c,nil,2,REASON_EFFECT)
-	if c:IsLocation(LOCATION_EXTRA) then
-		Duel.RaiseSingleEvent(c,EVENT_CUSTOM+511023006,e,0,0,0,0)
-	end
 end

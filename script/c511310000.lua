@@ -1,5 +1,6 @@
 --Chiron the Mage (Anime)
 --AlphaKretin
+--fixed by MLD
 function c511310000.initial_effect(c)
 	--destroy facedown s/t
 	local e1=Effect.CreateEffect(c)
@@ -13,25 +14,20 @@ function c511310000.initial_effect(c)
 	e1:SetOperation(c511310000.desop)
 	c:RegisterEffect(e1)
 end
-function c511310000.cfilter(c)
-	return c:IsType(TYPE_SPELL) and c:IsDiscardable()
-end
-function c511310000.filter(c)
-	return c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsPosition(POS_FACEDOWN)
-end
 function c511310000.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsOnField() and chkc:IsControler(1-tp) and c511310000.filter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(c511310000.filter,tp,0,LOCATION_ONFIELD,1,nil) end
+	if chkc then return chkc:IsOnField() and chkc:IsControler(1-tp) and chkc:IsFacedown() end
+	if chk==0 then return Duel.IsExistingTarget(Card.IsFacedown,tp,0,LOCATION_ONFIELD,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local g=Duel.SelectTarget(tp,c511310000.filter,tp,0,LOCATION_ONFIELD,1,1,nil)
+	local g=Duel.SelectTarget(tp,Card.IsFacedown,tp,0,LOCATION_ONFIELD,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,1,0,0)
 end
 function c511310000.desop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc and tc:IsRelateToEffect(e) and tc:IsFacedown() then
 		Duel.ConfirmCards(tp,tc)
-	end
-	if tc:IsRelateToEffect(e) and Duel.SelectYesNo(tp,aux.Stringid(1953925,0)) then --"Destroy", from Ancient Gear Engineer
-		Duel.Destroy(tc,REASON_EFFECT)
+		if tc:IsDestructable(e) and Duel.SelectYesNo(tp,aux.Stringid(1953925,0)) then
+			Duel.BreakEffect()
+			Duel.Destroy(tc,REASON_EFFECT)
+		end
 	end
 end

@@ -1,3 +1,5 @@
+--フォーチュンレディ・ライティー
+--fixed by MLD
 function c511021000.initial_effect(c)
 	--atk,def
 	local e1=Effect.CreateEffect(c)
@@ -27,6 +29,7 @@ function c511021000.initial_effect(c)
 	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e4:SetProperty(EFFECT_FLAG_DAMAGE_STEP)
 	e4:SetCode(EVENT_LEAVE_FIELD)
+	e4:SetCondition(c511021000.spcon)
 	e4:SetTarget(c511021000.sptg)
 	e4:SetOperation(c511021000.spop)
 	c:RegisterEffect(e4)
@@ -46,6 +49,10 @@ function c511021000.lvop(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetValue(1)
 	e1:SetReset(RESET_EVENT+0x1ff0000)
 	c:RegisterEffect(e1)
+end
+function c511021000.spcon(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	return c:IsReason(REASON_EFFECT) and not c:IsLocation(LOCATION_DECK)
 end
 function c511021000.spfilter(c,e,tp)
 	return c:IsSetCard(0x31) and c:IsCanBeSpecialSummoned(e,0x8,tp,false,false)

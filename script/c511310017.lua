@@ -1,5 +1,6 @@
 --Mirror Gate (Anime)
 --AlphaKretin
+--fixed by MLD
 function c511310017.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
@@ -12,8 +13,11 @@ function c511310017.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function c511310017.condition(e,tp,eg,ep,ev,re,r,rp)
-	local at=Duel.GetAttackTarget()
-	return Duel.GetTurnPlayer()~=tp and at and at:IsFaceup()
+	local a=Duel.GetAttacker()
+	local bc=a:GetBattleTarget()
+	if not bc then return false end
+	if a:IsControler(tp) then a,bc=bc,a end
+	return a:IsControler(1-tp) and bc:IsControler(tp)
 end
 function c511310017.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	local a=Duel.GetAttacker()

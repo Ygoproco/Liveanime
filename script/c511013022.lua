@@ -1,21 +1,19 @@
 --Krystal Dragon
+--fixed by MLD
 function c511013022.initial_effect(c)
 	--search
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(77363314,0))
 	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
-	e1:SetType(EFFECT_TYPE_QUICK_O)
-	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetRange(LOCATION_MZONE)
-	e1:SetCountLimit(1)
+	e7:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e7:SetCode(EVENT_DAMAGE_STEP_END)
 	e1:SetCondition(c511013022.thcon)
 	e1:SetTarget(c511013022.thtg)
 	e1:SetOperation(c511013022.thop)
 	c:RegisterEffect(e1)
 end
 function c511013022.thcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetTurnPlayer()==tp and Duel.GetCurrentPhase()==PHASE_BATTLE_STEP and Duel.GetCurrentChain()==0
-		and e:GetHandler():GetBattledGroupCount()>0
+	return Duel.GetAttacker()==e:GetHandler()
 end
 function c511013022.thfilter(c)
 	return c:IsRace(RACE_DRAGON) and c:IsAbleToHand()

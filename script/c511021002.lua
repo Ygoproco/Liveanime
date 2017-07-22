@@ -1,4 +1,5 @@
 --アイヴィ・シャックル
+--fixed by MLD
 function c511021002.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
@@ -16,8 +17,10 @@ function c511021002.initial_effect(c)
 	c:RegisterEffect(e2)
 	--draw
 	local e3=Effect.CreateEffect(c)
-	e3:SetDescription(aux.Stringid(511021002,0))
+	e3:SetDescription(aux.Stringid(14730606,0))
+	e3:SetCategory(CATEGORY_DRAW)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+	e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e3:SetCode(EVENT_TO_GRAVE)
 	e3:SetCondition(c511021002.drcon)
 	e3:SetTarget(c511021002.drtg)
@@ -29,8 +32,7 @@ function c511021002.raccon(e)
 end
 function c511021002.drcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsPreviousLocation(LOCATION_ONFIELD) and c:IsPreviousPosition(POS_FACEUP)
-		and c:GetPreviousControler()==tp and c:IsReason(REASON_DESTROY) and rp~=tp
+	return c:IsPreviousLocation(LOCATION_ONFIELD) and c:IsPreviousPosition(POS_FACEUP) and c:IsReason(REASON_DESTROY) and rp~=tp
 end
 function c511021002.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end

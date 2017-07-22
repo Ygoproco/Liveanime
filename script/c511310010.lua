@@ -1,5 +1,6 @@
 --Masked HERO Dian (Anime)
 --AlphaKretin
+--fixed by MLD
 function c511310010.initial_effect(c)
 	c:EnableReviveLimit()
 	--special summon
@@ -9,15 +10,10 @@ function c511310010.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_BATTLE_DESTROYED)
 	e2:SetRange(LOCATION_MZONE)
-	e2:SetCondition(c511310010.spcon)
+	e2:SetCondition(aux.bdocon)
 	e2:SetTarget(c511310010.sptg)
 	e2:SetOperation(c511310010.spop)
 	c:RegisterEffect(e2)
-end
-function c511310010.spcon(e,tp,eg,ep,ev,re,r,rp)
-	local tc=eg:GetFirst()
-	return eg:GetCount()==1 and tc:GetReasonCard()==e:GetHandler()
-		and tc:IsLocation(LOCATION_GRAVE) and tc:IsReason(REASON_BATTLE) 
 end
 function c511310010.filter(c,e,tp)
 	return c:IsLevelBelow(4) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
