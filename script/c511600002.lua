@@ -36,6 +36,7 @@ function c511600002.initial_effect(c)
 	e6:SetTargetRange(0xff,0xff)
 	e6:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e6:SetTarget(function(e,c)return c:GetFlagEffect(51160002)==0 end)
+	e6:SetValue(6)
 	e6:SetCondition(c511600002.ntcon)
 	c:RegisterEffect(e6)
 	local e7=e6:Clone()
@@ -78,6 +79,62 @@ function c511600002.initial_effect(c)
 	e12:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e12)
 end
+function Auxiliary.ComposeNumberDigitByDigit(tp,min,max)
+	if min>max then min,max=max,min end
+	local mindc=#tostring(min)
+	local maxdc=#tostring(max)
+	local dbdmin={}
+	local dbdmax={}
+	local mi=maxdc-1
+	local aux=min
+	for i=1,maxdc do
+		dbdmin[i]=math.floor(aux/(10^mi))
+		aux=aux%(10^mi)
+		mi=mi-1
+	end
+	aux=max
+	mi=maxdc-1
+	for i=1,maxdc do
+		dbdmax[i]=math.floor(aux/(10^mi))
+		aux=aux%(10^mi)
+		mi=mi-1
+	end
+	local chku=true
+	local chkl=true
+	local dbd={}
+	mi=maxdc-1
+	for i=1,maxdc do
+		local maxval=9
+		local minval=0
+		if chku and i>1 and dbd[i-1]<dbdmax[i-1] then
+			chku=false
+		end
+		if chkl and i>1 and dbd[i-1]>dbdmin[i-1] then
+			chkl=false
+		end
+		if chku then
+			maxval=dbdmax[i]
+		end
+		if chkl then
+			minval=dbdmin[i]
+		end
+		local r={}
+		local j=1
+		for k=minval,maxval do
+			r[j]=k
+			j=j+1
+		end
+		dbd[i]=Duel.AnnounceNumber(tp,table.unpack(r))
+		mi=mi-1
+	end
+	local number=0
+	mi=maxdc-1
+	for i=1,maxdc do
+		number=number+dbd[i]*10^mi
+		mi=mi-1
+	end
+	return number
+end
 --tribute
 function c511600002.ntcon(e,c,minc)
 	if c==nil then return true end
@@ -103,7 +160,7 @@ function c511600002.sptop(e,tp,eg,ep,ev,re,r,rp)
 		textatk=tc:GetTextAttack()
 		textdef=tc:GetTextDefense()
 		ctl=tc:GetControler()
-		if textatk~=-2 then
+		if textatk~=-2 and textatk~=0 then
 			Duel.Hint(HINT_SELECTMSG,ctl,aux.Stringid(4010,4))
 			local atkop=Duel.SelectOption(ctl,aux.Stringid(4010,1),aux.Stringid(4010,2),aux.Stringid(4010,3))
 			if atkop==0 then
@@ -111,56 +168,7 @@ function c511600002.sptop(e,tp,eg,ep,ev,re,r,rp)
 			elseif atkop==1 then
 				catk=0
 			else
-				local mindc=#tostring(0)
-				local maxdc=#tostring(textatk)
-				local dbdmin={}
-				local dbdmax={}
-				local mi=maxdc-1
-				local aux=0
-				for i=1,maxdc do
-					dbdmin[i]=math.floor(aux/(10^mi))
-					aux=aux%(10^mi)
-					mi=mi-1
-				end
-				aux=textatk
-				mi=maxdc-1
-				for i=1,maxdc do
-					dbdmax[i]=math.floor(aux/(10^mi))
-					aux=aux%(10^mi)
-					mi=mi-1
-				end
-				local chku=true
-				local chkl=true
-				mi=maxdc-1
-				local dbd={}
-				for i=1,maxdc do
-					local maxval=9
-					local minval=0
-					if chku and i>1 and dbd[i-1]<dbdmax[i-1] then
-						chku=false
-					end
-					if chkl and i>1 and dbd[i-1]>dbdmin[i-1] then
-						chkl=false
-					end
-					if chku then
-						maxval=dbdmax[i]
-					end
-					if chkl then
-						minval=dbdmin[i]
-					end
-					local r={}
-					local j=1
-					for k=minval,maxval do
-						r[j]=k
-						j=j+1
-					end
-					dbd[i]=Duel.AnnounceNumber(tp,table.unpack(r))
-				end
-				mi=maxdc-1
-				for i=1,maxdc do
-					catk=catk+dbd[i]*10^mi
-					mi=mi-1
-				end
+				catk=aux.ComposeNumberDigitByDigit(ctl,0,textatk)
 			end
 			local e1=Effect.CreateEffect(c)
 			e1:SetCategory(CATEGORY_ATKCHANGE)
@@ -172,7 +180,7 @@ function c511600002.sptop(e,tp,eg,ep,ev,re,r,rp)
 			e1:SetReset(RESET_EVENT+0xfe0000)
 			tc:RegisterEffect(e1)
 		end
-		if textdef~=-2 then
+		if textdef~=-2 and textdef~=0 then
 			Duel.Hint(HINT_SELECTMSG,ctl,aux.Stringid(4010,5))
 			local defop=Duel.SelectOption(ctl,aux.Stringid(4010,1),aux.Stringid(4010,2),aux.Stringid(4010,3))
 			if defop==0 then
@@ -180,56 +188,7 @@ function c511600002.sptop(e,tp,eg,ep,ev,re,r,rp)
 			elseif defop==1 then
 				cdef=0
 			else
-				local mindc=#tostring(0)
-				local maxdc=#tostring(textdef)
-				local dbdmin={}
-				local dbdmax={}
-				local mi=maxdc-1
-				local aux=0
-				for i=1,maxdc do
-					dbdmin[i]=math.floor(aux/(10^mi))
-					aux=aux%(10^mi)
-					mi=mi-1
-				end
-				aux=textdef
-				mi=maxdc-1
-				for i=1,maxdc do
-					dbdmax[i]=math.floor(aux/(10^mi))
-					aux=aux%(10^mi)
-					mi=mi-1
-				end
-				local chku=true
-				local chkl=true
-				mi=maxdc-1
-				local dbd={}
-				for i=1,maxdc do
-					local maxval=9
-					local minval=0
-					if chku and i>1 and dbd[i-1]<dbdmax[i-1] then
-						chku=false
-					end
-					if chkl and i>1 and dbd[i-1]>dbdmin[i-1] then
-						chkl=false
-					end
-					if chku then
-						maxval=dbdmax[i]
-					end
-					if chkl then
-						minval=dbdmin[i]
-					end
-					local r={}
-					local j=1
-					for k=minval,maxval do
-						r[j]=k
-						j=j+1
-					end
-					dbd[i]=Duel.AnnounceNumber(tp,table.unpack(r))
-				end
-				mi=maxdc-1
-				for i=1,maxdc do
-					cdef=cdef+dbd[i]*10^mi
-					mi=mi-1
-				end
+				cdef=aux.ComposeNumberDigitByDigit(ctl,0,textdef)
 			end
 			local e2=Effect.CreateEffect(c)
 			e2:SetCategory(CATEGORY_DEFCHANGE)
@@ -309,9 +268,9 @@ function c511600002.op(e,tp,eg,ep,ev,re,r,rp,chk)
 	if e:GetHandler():GetPreviousLocation()==LOCATION_HAND and Duel.IsPlayerCanDraw(e:GetHandlerPlayer(),1)then
 		Duel.Draw(tp,1,REASON_RULE)
 	end
-	local g=Duel.GetMatchingGroup(Card.IsType,tp,0xff,0xff,nil,TYPE_MONSTER)
-	local tc=g:GetFirst()
-	if tc then
+	local g1=Duel.GetMatchingGroup(Card.IsType,tp,0xff,0xff,nil,TYPE_MONSTER)
+	if g1 and g1:GetCount()>0 then
+		local tc=g1:GetFirst()
 		while tc do
 		--zero
 			local e1=Effect.CreateEffect(c)
@@ -326,7 +285,7 @@ function c511600002.op(e,tp,eg,ep,ev,re,r,rp,chk)
 			local e3=e1:Clone()
 			e3:SetCode(EFFECT_FLIPSUMMON_COST)
 			tc:RegisterEffect(e3)
-			tc=g:GetNext()
+			tc=g1:GetNext()
 		end
 	end
 	local g2=Duel.GetMatchingGroup(Card.IsHasEffect,tp,0xff,0xff,nil,EFFECT_LIMIT_SUMMON_PROC)
