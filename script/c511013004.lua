@@ -12,11 +12,8 @@ function c511013004.initial_effect(c)
 	e1:SetOperation(c511013004.spop)
 	c:RegisterEffect(e1)
 end
-function c511013004.cfilter(c,tp)
-	return c:GetSummonPlayer()==tp
-end
 function c511013004.spcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(c511013004.cfilter,1,nil,1-tp)
+    return Duel.GetCurrentPhase()>=PHASE_BATTLE_START and Duel.GetCurrentPhase()<=PHASE_BATTLE
 end
 function c511013004.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
