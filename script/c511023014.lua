@@ -1,4 +1,5 @@
 --Elemental HERO Necroshade
+--fixed by MLD
 function c511023014.initial_effect(c)
 	--summon
 	local e1=Effect.CreateEffect(c)
