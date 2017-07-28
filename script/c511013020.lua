@@ -18,7 +18,7 @@ function c511013020.initial_effect(c)
 	e2:SetValue(c511013020.batfilter)
 	c:RegisterEffect(e2)
 	--cannot attack
-	local e1=Effect.CreateEffect(c)
+	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
