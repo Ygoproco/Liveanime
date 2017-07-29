@@ -64,7 +64,7 @@ function c511021006.atkop(e,tp,eg,ep,ev,re,r,rp,chk)
 			tc:RegisterEffect(e1)
 			bc:RegisterFlagEffect(511021006,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_DAMAGE,0,0)
 		end
-		local e2=Effect.CreateEffect(c)
+		local e2=Effect.CreateEffect(e:GetHandler())
 		e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 		e2:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_CANNOT_DISABLE)
 		e2:SetCode(EVENT_ADJUST)
