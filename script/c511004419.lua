@@ -2,9 +2,8 @@
 --fixed by MLD
 function c511004419.initial_effect(c)
 	local e1=Effect.CreateEffect(c)
-	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 	e1:SetCategory(CATEGORY_DAMAGE)
-	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_QUICK_O)
+	e1:SetType(EFFECT_TYPE_QUICK_O)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetRange(LOCATION_GRAVE)
 	e1:SetCost(aux.bfgcost)
@@ -23,7 +22,7 @@ function c511004419.initial_effect(c)
 	end
 end
 function c511004419.gop(e,tp,eg,ev,ep,re,r,rp)
-	Duel.RegisterFlagEffect(ep,511004419,RESET_PHASE+PHASE_BATTLE,0,1)
+	Duel.RegisterFlagEffect(ep,511004419,RESET_PHASE+PHASE_END,0,1)
 end
 function c511004419.condition(e,tp,eg,ev,ep,re,r,rp)
 	return Duel.GetCurrentPhase()>=PHASE_BATTLE_START and Duel.GetCurrentPhase()<=PHASE_BATTLE and Duel.GetTurnPlayer()==tp
