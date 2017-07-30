@@ -23,7 +23,7 @@ function c511023000.copycost(e,tp,eg,ep,ev,re,r,rp,chk)
 	c:RegisterFlagEffect(511023000,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,1)
 end
 function c511023000.copyfilter(c)
-	return c:IsFaceup() and c:IsType(TYPE_EFFECT) and not c:IsType(TYPE_TRAPMONSTER) and not tc:IsType(TYPE_TOKEN) 
+	return c:IsFaceup() and c:IsType(TYPE_EFFECT) and not c:IsType(TYPE_TRAPMONSTER) and not c:IsType(TYPE_TOKEN) 
 end
 function c511023000.copytg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(1-tp) and chkc:IsLocation(LOCATION_MZONE) and c511023000.copyfilter(chkc) end
