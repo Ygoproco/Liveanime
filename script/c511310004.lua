@@ -29,16 +29,14 @@ end
 function c511310004.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	local label=e:GetLabel()
 	if chk==0 then
-		if label==1 then e:SetLabel(0) 
-		--elseif label==1 then e:SetLabel(0)
-		end
+		if label==1 then e:SetLabel(0) end
 		return true
 	end
 	if Duel.GetCurrentPhase()>=PHASE_BATTLE_START and Duel.GetCurrentPhase()<=PHASE_BATTLE 
-		and (label==0 or c511310004.cost(e,tp,eg,ep,ev,re,r,rp,0)) 
+		and (label~=1 or c511310004.cost(e,tp,eg,ep,ev,re,r,rp,0)) 
 		and c511310004.tg(e,tp,eg,ep,ev,re,r,rp,0) and Duel.SelectYesNo(tp,65) then
 		e:SetOperation(c511310004.op)
-		if label~=0 then
+		if label==1 then
 			c511310004.cost(e,tp,eg,ep,ev,re,r,rp,1)
 		end
 		c511310004.tg(e,tp,eg,ep,ev,re,r,rp,1)
