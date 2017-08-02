@@ -1,7 +1,7 @@
 --Earthbound Disciple Geo Griffon
 function c511002713.initial_effect(c)
 	--synchro summon
-	aux.AddSynchroProcedure(c,c420.IsEarthbound,aux.NonTuner(c420.IsEarthbound),1)
+	aux.AddSynchroProcedure(c,function(c) return c420.IsEarthbound(c) end,aux.NonTuner(function(c) return c420.IsEarthbound(c) end),1)
 	c:EnableReviveLimit()
 	--destroy
 	local e1=Effect.CreateEffect(c)
