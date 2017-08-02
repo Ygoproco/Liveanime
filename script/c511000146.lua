@@ -26,11 +26,11 @@ function c511000146.filter(c,e,tp,eg,ep,ev,re,r,rp)
 		and (not target or target(te,tp,eg,ep,ev,re,r,rp,0))
 end
 function c511000146.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_REMOVED) and chkc:IsControler(tp) and c511000146.filter(chkc,tp,eg,ep,ev,re,r,rp) end
-	if chk==0 then return Duel.IsExistingTarget(c511000146.cfilter,tp,LOCATION_REMOVED,0,1,nil,e,tp,eg,ep,ev,re,r,rp) end
+	if chkc then return chkc:IsLocation(LOCATION_REMOVED) and c511000146.filter(chkc,tp,eg,ep,ev,re,r,rp) end
+	if chk==0 then return Duel.IsExistingTarget(c511000146.cfilter,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,nil,e,tp,eg,ep,ev,re,r,rp) end
 	e:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local tc=Duel.SelectTarget(tp,c511000146.filter,tp,LOCATION_REMOVED,0,1,1,nil,e,tp,eg,ep,ev,re,r,rp):GetFirst()
+	local tc=Duel.SelectTarget(tp,c511000146.filter,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,1,nil,e,tp,eg,ep,ev,re,r,rp):GetFirst()
 	local te=tc:GetActivateEffect()
 	local tg=te:GetTarget()
 	e:SetLabelObject(te)
