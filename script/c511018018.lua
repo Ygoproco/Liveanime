@@ -1,4 +1,5 @@
 --Sonic Cyclone
+--fixed by MLD
 function c511018018.initial_effect(c)
 	--destroy
 	local e1=Effect.CreateEffect(c)
@@ -25,32 +26,22 @@ function c511018018.initial_effect(c)
 		Duel.RegisterEffect(ge2,0)
 	end
 end
-function c511018018.filterm(c)
-	return bit.band(c:GetPreviousTypeOnField(),TYPE_MONSTER)==TYPE_MONSTER
-end
 function c511018018.chkop(e,tp,eg,ev,ep,re,r,rp)
-	c511018018.dt=c511018018.dt+eg:FilterCount(c511018018.filterm,nil)
+	c511018018.dt=c511018018.dt+eg:FilterCount(Card.IsType,nil,TYPE_MONSTER)
 end
 function c511018018.clearop()
 	c511018018.dt=0
 end
-function c511018018.filter(c)
-	return c:IsType(TYPE_SPELL+TYPE_TRAP)
-end
 function c511018018.target(e,tp,eg,ev,ep,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then
-		local ct=c511018018.dt
-		e:SetLabel(ct)
-		return Duel.IsExistingMatchingCard(c511018018.filter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,ct,c)
-	end
-	local ct=e:GetLabel()
-	local sg=Duel.GetMatchingGroup(c511018018.filter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,c)
+	local ct=c511018018.dt
+	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsType,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,ct,c,TYPE_SPELL+TYPE_TRAP) end
+	local sg=Duel.GetMatchingGroup(Card.IsType,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,c,TYPE_SPELL+TYPE_TRAP)
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,sg,ct,0,0)
 end
 function c511018018.operation(e,tp,eg,ev,ep,re,r,rp)
 	local ct=c511018018.dt
-	local g=Duel.GetMatchingGroup(c511018018.filter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,e:GetHandler())
+	local g=Duel.GetMatchingGroup(Card.IsType,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,e:GetHandler(),TYPE_SPELL+TYPE_TRAP)
 	if g:GetCount()>=ct then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
 		local sg=g:Select(tp,ct,ct,nil)

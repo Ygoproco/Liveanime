@@ -1,4 +1,5 @@
 --Junk Warrior (Anime)
+--cleaned up by MLD
 function c511009416.initial_effect(c)
 	--synchro summon
 	aux.AddSynchroProcedure(c,c511009416.tfilter,aux.NonTuner(nil),1)
@@ -24,12 +25,12 @@ function c511009416.filter(c)
 	return c:IsFaceup() and c:IsLevelBelow(2)
 end
 function c511009416.value(e,c)
-	local wup=0
-	local wg=Duel.GetMatchingGroup(c511009416.filter,c:GetControler(),LOCATION_MZONE,0,c)
-	local wbc=wg:GetFirst()
-	while wbc do
-		wup=wup+wbc:GetAttack()
-		wbc=wg:GetNext()
+	local atk=0
+	local g=Duel.GetMatchingGroup(c511009416.filter,c:GetControler(),LOCATION_MZONE,0,c)
+	local tc=wg:GetFirst()
+	while tc do
+		atk=atk+tc:GetAttack()
+		tc=g:GetNext()
 	end
-	return wup
+	return atk
 end
