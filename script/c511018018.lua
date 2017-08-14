@@ -36,7 +36,6 @@ function c511018018.target(e,tp,eg,ev,ep,re,r,rp,chk)
 	local c=e:GetHandler()
 	local ct=c511018018.dt
 	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsType,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,ct,c,TYPE_SPELL+TYPE_TRAP) end
-	local ct=e:GetLabel()
 	local sg=Duel.GetMatchingGroup(Card.IsType,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,c,TYPE_SPELL+TYPE_TRAP)
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,sg,ct,0,0)
 end
