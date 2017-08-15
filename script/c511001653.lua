@@ -13,15 +13,24 @@ function c511001653.cfilter(c)
 	return c:IsSetCard(0x1045) and c:IsAbleToRemoveAsCost()
 end
 function c511001653.cost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(c511001653.cfilter,tp,LOCATION_GRAVE,0,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local g=Duel.SelectMatchingCard(tp,c511001653.cfilter,tp,LOCATION_GRAVE,0,1,1,nil)
-	Duel.Remove(g,POS_FACEUP,REASON_COST)
+	e:SetLabel(1)
+	if chk==0 then return true end
 end
 function c511001653.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsFaceup,tp,LOCATION_MZONE,0,1,nil) end
+	if chk==0 then
+		if e:GetLabel()~=1 then return false end
+		e:SetLabel(0)
+		return Duel.IsExistingMatchingCard(c511001653.cfilter,tp,LOCATION_GRAVE,0,1,nil) 
+			and Duel.IsExistingMatchingCard(Card.IsFaceup,tp,LOCATION_MZONE,0,1,nil)
+	end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+	local g=Duel.SelectMatchingCard(tp,c511001653.cfilter,tp,LOCATION_GRAVE,0,1,1,nil)
+	local code=g:GetFirst():GetOriginalCode()
+	Duel.Remove(g,POS_FACEUP,REASON_COST)
+	Duel.SetTargetParam(code)
 end
 function c511001653.activate(e,tp,eg,ep,ev,re,r,rp)
+	local code=Duel.GetChainInfo(0,CHAININFO_TARGET_PARAM)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
 	local g=Duel.SelectMatchingCard(tp,Card.IsFaceup,tp,LOCATION_MZONE,0,1,1,nil)
 	local tc=g:GetFirst()
