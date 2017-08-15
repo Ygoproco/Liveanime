@@ -27,7 +27,7 @@ end
 function c511009416.value(e,c)
 	local atk=0
 	local g=Duel.GetMatchingGroup(c511009416.filter,c:GetControler(),LOCATION_MZONE,0,c)
-	local tc=wg:GetFirst()
+	local tc=g:GetFirst()
 	while tc do
 		atk=atk+tc:GetAttack()
 		tc=g:GetNext()
