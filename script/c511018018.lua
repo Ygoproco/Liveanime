@@ -15,7 +15,7 @@ function c511018018.initial_effect(c)
 		c511018018.dt=0
 		local ge1=Effect.CreateEffect(c)
 		ge1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-		ge1:SetCode(EVENT_DESTROYED)
+		ge1:SetCode(EVENT_DESTROY)
 		ge1:SetOperation(c511018018.chkop)
 		Duel.RegisterEffect(ge1,0)
 		local ge2=Effect.CreateEffect(c)
