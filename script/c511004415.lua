@@ -1,8 +1,9 @@
 --D - doom dance
+--fixed by MLD
 function c511004415.initial_effect(c)
 	--activate
 	local e1=Effect.CreateEffect(c)
-	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	e1:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
 	e1:SetCategory(CATEGORY_ATKCHANGE)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
@@ -39,10 +40,10 @@ function c511004415.target(e,tp,eg,ev,ep,re,r,rp,chk,chkc)
 	local rc=Duel.SelectMatchingCard(tp,c511004415.cfilter,tp,LOCATION_GRAVE,0,1,1,nil):GetFirst()
 	Duel.SetTargetCard(tg)
 	Duel.SetTargetParam(rc:GetAttack())
-	Duel.Remove(rc,0,REASON_COST)
+	Duel.Remove(rc,POS_FACEUP,REASON_COST)
 end
 function c511004415.afilter(c)
-	return c:IsType(TYPE_MONSTER) and c:IsSetCard(0xc008) and c:GetAttackedGroupCount()~=0
+	return c:IsType(TYPE_MONSTER) and c:IsSetCard(0xc008) and c:GetAttackedCount()~=0
 end
 function c511004415.operation(e,tp,eg,ev,ep,re,r,rp)
 	local atk=Duel.GetChainInfo(0,CHAININFO_TARGET_PARAM)
@@ -54,7 +55,7 @@ function c511004415.operation(e,tp,eg,ev,ep,re,r,rp)
 		e1:SetValue(-atk)
 		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 		tc:RegisterEffect(e1)
-		if Duel.GetTurnPlayer()==tp and Duel.GetCurrentPhase()>=PHASE_BATTLE_START and Duel.GetCurrentPhase()<PHASE_MAIN2 then
+		if Duel.GetTurnPlayer()==tp and Duel.GetCurrentPhase()>=PHASE_BATTLE_START and Duel.GetCurrentPhase()<=PHASE_BATTLE then
 			local ag=Duel.SelectMatchingCard(tp,c511004415.afilter,tp,LOCATION_MZONE,0,1,1,nil,e,tp)
 			local ac=ag:GetFirst()
 			if not ac then return end
