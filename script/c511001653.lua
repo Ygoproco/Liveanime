@@ -36,6 +36,6 @@ function c511001653.activate(e,tp,eg,ep,ev,re,r,rp)
 	local tc=g:GetFirst()
 	if tc then
 		Duel.HintSelection(g)
-		tc:CopyEffect(70902743,RESET_EVENT+0x1fe0000,1)
+		tc:CopyEffect(code,RESET_EVENT+0x1fe0000,1)
 	end
 end
