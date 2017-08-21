@@ -1,4 +1,5 @@
 --エクシーズ・リフレクト
+--fixed by MLD
 function c511756007.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
@@ -16,7 +17,7 @@ end
 function c511756007.condition(e,tp,eg,ep,ev,re,r,rp)
 	if not Duel.IsChainDisablable(ev) then return false end
 	local ex,tg,tc=Duel.GetOperationInfo(ev,CATEGORY_DESTROY)
-	return ex and tg~=nil and tc+tg:FilterCount(c511002520.cfilter,nil,tp)-tg:GetCount()>0
+	return ex and tg~=nil and tc+tg:FilterCount(c511756007.cfilter,nil,tp)-tg:GetCount()>0
 end
 function c511756007.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
