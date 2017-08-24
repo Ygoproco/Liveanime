@@ -1,7 +1,6 @@
 --Slifer the Sky Dragon
 --マイケル・ローレンス・ディーによってスクリプト
 function c513000136.initial_effect(c)
-	c:SetUniqueOnField(1,0,513000136)
 	--Summon with 3 Tribute
 	local e1=Effect.CreateEffect(c)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
