@@ -21,7 +21,7 @@ function c511018001.initial_effect(c)
 	e2:SetCode(EVENT_ATTACK_ANNOUNCE)
 	e2:SetRange(LOCATION_GRAVE)
 	e2:SetCondition(c511018001.drcon)
-	e2:SetCost(c511018001.drcost)
+	e2:SetCost(aux.bfgcost)
 	e2:SetTarget(c511018001.drtg)
 	e2:SetOperation(c511018001.drop)
 	c:RegisterEffect(e2)
@@ -43,10 +43,6 @@ function c511018001.negop(e,tp,eg,ep,ev,re,r,rp)
 end
 function c511018001.drcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetAttacker():IsControler(1-tp) and Duel.GetAttackTarget()==nil
-end
-function c511018001.drcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsAbleToRemoveAsCost() end
-	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_COST)
 end
 function c511018001.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,1) end
