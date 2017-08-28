@@ -1,4 +1,4 @@
---Crush Card
+--Crush Card Virus (Anime)
 function c513000009.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
@@ -11,7 +11,7 @@ function c513000009.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function c513000009.cfilter(c,tp)
-	return c:IsAttribute(ATTRIBUTE_DARK) and c:IsAttackBelow(1000) and c:GetPreviousControler()==tp
+	return c:IsAttribute(ATTRIBUTE_DARK) and c:GetPreviousAttackOnField()<=1000 and c:GetPreviousControler()==tp
 end
 function c513000009.condition(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(c513000009.cfilter,1,nil,tp)

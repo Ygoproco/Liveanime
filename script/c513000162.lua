@@ -93,7 +93,7 @@ function c513000162.spop(e,tp,c)
 			e1:SetCondition(c513000162.spcon1)
 			e1:SetLabel(0)
 			e1:SetOperation(c513000162.spop2)
-			rc:RegisterEffect(e1)		
+			rc:RegisterEffect(e1)	   
 			rc:RegisterFlagEffect(513000162,RESET_EVENT+0x1fe0000,0,1)  
 		end
 		rc=g:GetNext()
