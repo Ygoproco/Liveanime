@@ -36,7 +36,7 @@ function c511005641.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c511005641.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local label=e:GetLabel()
-	if chkc then return c511005641.tg(e,tp,eg,ep,ev,re,r,rp,0,chkc) end
+	if chkc then return c511005641.rmtg(e,tp,eg,ep,ev,re,r,rp,0,chkc) end
 	if chk==0 then
 		if label==1 then e:SetLabel(0) end
 		return true
@@ -63,7 +63,7 @@ function c511005641.rmcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local ct=Duel.GetTargetCount(c511005641.rfilter,tp,0,LOCATION_GRAVE,nil)
 	local t={}
 	local l=1
-	while l<ct and l*500<=lp do
+	while l<=ct and l*500<=lp do
 		t[l]=l*500
 		l=l+1
 	end
