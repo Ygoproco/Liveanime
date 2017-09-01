@@ -28,6 +28,14 @@ function c511001040.initial_effect(c)
 	local e6=e2:Clone()
 	e6:SetCode(EVENT_CHAIN_SOLVED)
 	c:RegisterEffect(e6)
+	--def
+	local e7=Effect.CreateEffect(c)
+	e7:SetType(EFFECT_TYPE_SINGLE)
+	e7:SetCode(EFFECT_UPDATE_DEFENSE)
+	e7:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e7:SetRange(LOCATION_MZONE)
+	e7:SetValue(c511001040.defval)
+	c:RegisterEffect(e7)
 end
 function c511001040.cfilter(c)
 	return c:GetFlagEffect(511001040)>0
@@ -64,4 +72,17 @@ function c511001040.remop(e,tp,eg,ep,ev,re,r,rp)
 			Duel.SendtoGrave(og,REASON_RULE)
 		end
 	end
+end
+function c511001040.defval(e,c)
+	local g=c:GetOverlayGroup()
+	if not g or g:GetCount()<=0 then return 0 end
+	local def=0
+	local tc=g:GetFirst()
+	while tc do
+		local tdef=tc:GetDefense()
+		if tdef<0 then tdef=0 end
+		def=def+tdef
+		tc=g:GetNext()
+	end
+	return def
 end
