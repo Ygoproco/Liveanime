@@ -235,11 +235,7 @@ function c513000135.atkop(e,tp,eg,ep,ev,re,r,rp)
 		local sg=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
 		local ct=sg:GetCount()
 	if Duel.Destroy(sg,REASON_EFFECT)==ct then
-	local ATK=c:GetAttack()
-	Duel.SetTargetPlayer(1-tp)
-	Duel.SetTargetParam(ATK)
-	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
-	Duel.Damage(p,ATK,REASON_EFFECT)
+	Duel.Damage(1-tp,c:GetAttack(),REASON_EFFECT)
 		else
 		Duel.BreakEffect()	
 		local e1=Effect.CreateEffect(c)
