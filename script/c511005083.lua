@@ -36,7 +36,7 @@ function c511005083.initial_effect(c)
 	local e5=Effect.CreateEffect(c)
 	e5:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e5:SetCode(EVENT_ADJUST)
-	e5:SetRange(LOCATION_MZONE)
+	e5:SetRange(LOCATION_SZONE)
 	e5:SetOperation(c511005083.despop)
 	c:RegisterEffect(e5)
 	--Global check
@@ -58,13 +58,13 @@ function c511005083.initial_effect(c)
 		Duel.RegisterEffect(ge2,0)
 	end
 end
-function c511000700.cfilter(c,tp)
+function c511005083.cfilter(c,tp)
 	return bit.band(c:GetPreviousRaceOnField(),RACE_FIEND)==RACE_FIEND and bit.band(c:GetPreviousTypeOnField(),TYPE_XYZ)==TYPE_XYZ 
 		and c:GetPreviousControler()==tp and c:IsPreviousLocation(LOCATION_ONFIELD) and c:IsPreviousPosition(POS_FACEUP)
 end
 function c511005083.regop(e,tp,eg,ep,ev,re,r,rp)
-	if eg:IsExists(c511000700.cfilter,1,nil,tp) then c511005083[tp]=true end
-	if eg:IsExists(c511000700.cfilter,1,nil,1-tp) then c511005083[1-tp]=true end
+	if eg:IsExists(c511005083.cfilter,1,nil,tp) then c511005083[tp]=true end
+	if eg:IsExists(c511005083.cfilter,1,nil,1-tp) then c511005083[1-tp]=true end
 end
 function c511005083.clear(e,tp,eg,ep,ev,re,r,rp)
 	c511005083[0]=false
@@ -74,11 +74,8 @@ function c511005083.condition(e,tp,eg,ep,ev,re,r,rp)
 	return c511005083[tp]
 end
 function c511005083.despop(e,tp,eg,ep,ev,re,r,rp)
-	
-end
-function c511005083.op(e,tp,eg,ep,ev,re,r,rp)
-	local sg=Duel.GetMatchingGroup(aux.TRUE,tp,LOCATION_MZONE,0,nil)
-	if Duel.Destroy(sg,REASON_EFFECT)>0 then
+	local sg=Duel.GetMatchingGroup(function(c) return c:GetFlagEffect(511005083)==0 end,tp,LOCATION_MZONE,0,nil)
+	if sg:GetCount()>0 and Duel.Destroy(sg,REASON_EFFECT)>0 then
 		if Duel.GetLocationCount(tp,LOCATION_MZONE)>4 and not Duel.IsPlayerAffectedByEffect(tp,59822133) 
 			and Duel.IsPlayerCanSpecialSummonMonster(tp,511005082,0,0x4011,300,300,1,RACE_FIEND,ATTRIBUTE_DARK) then
 			for i=1,5 do
@@ -90,6 +87,7 @@ function c511005083.op(e,tp,eg,ep,ev,re,r,rp)
 				e1:SetOperation(c511005083.damop)
 				e1:SetReset(RESET_EVENT+0x1fe0000)
 				token:RegisterEffect(e1)
+				token:RegisterFlagEffect(511005083,RESET_EVENT+0x1fe0000,0,0)
 			end
 			Duel.SpecialSummonComplete()
 		end
