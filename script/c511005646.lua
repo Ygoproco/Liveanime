@@ -35,7 +35,7 @@ end
 
 function c511005646.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsAbleToGraveAsCost,tp,LOCATION_HAND,0,1,nil) end
-	local ct=Duel.DiscardHand(tp,Card.IsAbleToGraveAsCost,1,60,REASON_COST)
+	local ct=Duel.DiscardHand(tp,Card.IsAbleToGraveAsCost,1,1,REASON_COST)
 	e:SetLabel(ct)
 end
 
