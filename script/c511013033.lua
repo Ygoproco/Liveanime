@@ -1,4 +1,5 @@
 --Destiny HERO - Decider
+--fixed by MLD
 function c511013033.initial_effect(c)
 	--cannot be battle target
 	local e1=Effect.CreateEffect(c)
@@ -14,7 +15,6 @@ function c511013033.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_QUICK_O)
 	e2:SetProperty(EFFECT_FLAG_DAMAGE_STEP)
 	e2:SetCode(EVENT_CHAINING)
-	e2:SetCountLimit(1,511013033+EFFECT_COUNT_CODE_DUEL)
 	e2:SetRange(LOCATION_GRAVE)
 	e2:SetCondition(c511013033.damcon)
 	e2:SetTarget(c511013033.damtg)
@@ -26,7 +26,8 @@ function c511013033.atlimit(e,c)
 	return c:IsControler(1-tp) and c:IsLevelAbove(6) and not c:IsImmuneToEffect(e)
 end
 function c511013033.damcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():GetTurnID()==Duel.GetTurnCount() and not e:GetHandler():IsReason(REASON_RETURN)
+	return e:GetHandler():GetTurnID()==Duel.GetTurnCount() and not e:GetHandler():IsReason(REASON_RETURN) 
+		and aux.damcon1(e,tp,eg,ep,ev,re,r,rp)
 end
 function c511013033.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToHand() end

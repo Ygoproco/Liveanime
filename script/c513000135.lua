@@ -1,5 +1,5 @@
---Obelisk the Tormentor
---マイケル・ローレンス・ディーによってスクリプト
+--Obelisk the Tormentor (Anime)
+--scripted by MLD + Top + GameMaster
 function c513000135.initial_effect(c)
 	--Summon with 3 Tribute
 	local e1=Effect.CreateEffect(c)
@@ -54,6 +54,13 @@ function c513000135.initial_effect(c)
 	e8:SetRange(LOCATION_MZONE)
 	e8:SetValue(c513000135.tgfilter)
 	c:RegisterEffect(e8)
+	-- Cannot Disable effect
+	local e9=Effect.CreateEffect(c)
+	e9:SetType(EFFECT_TYPE_SINGLE)
+	e9:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e9:SetCode(EFFECT_CANNOT_DISABLE)
+	e9:SetRange(LOCATION_MZONE)
+	c:RegisterEffect(e9)
 	--immune spell
 	local e11=Effect.CreateEffect(c)
 	e11:SetType(EFFECT_TYPE_SINGLE)
@@ -227,9 +234,8 @@ function c513000135.atkop(e,tp,eg,ep,ev,re,r,rp)
 	if c:IsFaceup() and c:IsRelateToEffect(e) then
 		local sg=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
 		local ct=sg:GetCount()
-		if Duel.Destroy(sg,REASON_EFFECT)==ct then
-		local dam=c:GetAttack()
-		Duel.Damage(p,dam,REASON_EFFECT)
+	if Duel.Destroy(sg,REASON_EFFECT)==ct then
+	Duel.Damage(1-tp,c:GetAttack(),REASON_EFFECT)
 		else
 		Duel.BreakEffect()	
 		local e1=Effect.CreateEffect(c)
@@ -277,4 +283,4 @@ function c513000135.redatk(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ChangeAttackTarget(e:GetHandler())
 	end
 end
---MLD
+
