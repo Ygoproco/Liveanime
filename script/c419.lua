@@ -310,6 +310,7 @@ end
 function c419.op5(e,tp,eg,ep,ev,re,r,rp)
 	--ATK = 285, prev ATK = 284
 	--LVL = 585, prev LVL = 584
+	--DEF = 385, prev DEF = 384
 	local c=e:GetHandler()
 	local g=Duel.GetMatchingGroup(aux.TRUE,tp,0xff,0xff,nil)
 	if not g then return end
@@ -317,12 +318,20 @@ function c419.op5(e,tp,eg,ep,ev,re,r,rp)
 	while tc do
 		if tc:GetFlagEffect(285)==0 and tc:GetFlagEffect(585)==0 then
 			local atk=tc:GetAttack()
+			local def=tc:GetDefense()
 			if atk<=0 then
 				tc:RegisterFlagEffect(285,nil,0,1,0)
 				tc:RegisterFlagEffect(284,nil,0,1,0)
 			else
 				tc:RegisterFlagEffect(285,nil,0,1,atk)
 				tc:RegisterFlagEffect(284,nil,0,1,atk)
+			end
+			if def<=0 then
+				tc:RegisterFlagEffect(385,nil,0,1,0)
+				tc:RegisterFlagEffect(384,nil,0,1,0)
+			else
+				tc:RegisterFlagEffect(385,nil,0,1,atk)
+				tc:RegisterFlagEffect(384,nil,0,1,atk)
 			end
 			local lv=tc:GetLevel()
 			tc:RegisterFlagEffect(585,nil,0,1,lv)
@@ -335,6 +344,10 @@ function c419.atkcfilter(c)
 	if c:GetFlagEffect(285)==0 then return false end
 	return c:GetAttack()~=c:GetFlagEffectLabel(285)
 end
+function c419.defcfilter(c)
+	if c:GetFlagEffect(385)==0 then return false end
+	return c:GetDefense()~=c:GetFlagEffectLabel(385)
+end
 function c419.lvcfilter(c)
 	if c:GetFlagEffect(585)==0 then return false end
 	return c:GetLevel()~=c:GetFlagEffectLabel(585)
@@ -345,6 +358,12 @@ function c419.atkraiseeff(e,tp,eg,ep,ev,re,r,rp)
 	local g2=Group.CreateGroup() --gain atk
 	local g3=Group.CreateGroup() --lose atk
 	local g4=Group.CreateGroup() --gain atk from original
+	
+	local dg=Duel.GetMatchingGroup(c419.defcfilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
+	local g5=Group.CreateGroup() --change def
+	--local g6=Group.CreateGroup() --gain def
+	--local g7=Group.CreateGroup() --lose def
+	--local g8=Group.CreateGroup() --gain def from original
 	local tc=g:GetFirst()
 	while tc do
 		local prevatk=0
@@ -372,6 +391,35 @@ function c419.atkraiseeff(e,tp,eg,ep,ev,re,r,rp)
 		end
 		tc=g:GetNext()
 	end
+	
+	local dc=dg:GetFirst()
+	while dc do
+		local prevdef=0
+		if dc:GetFlagEffect(385)>0 then prevdef=dc:GetFlagEffectLabel(385) end
+		g5:AddCard(dc)
+		if prevdef>dc:GetDefense() then
+			--g7:AddCard(dc)
+		else
+			--g6:AddCard(dc)
+			if prevdef<=dc:GetBaseDefense() and dc:GetDefense()>dc:GetBaseDefense() then
+				--g8:AddCard(dc)
+			end
+		end
+		dc:ResetFlagEffect(384)
+		dc:ResetFlagEffect(385)
+		if prevdef>0 then
+			dc:RegisterFlagEffect(384,nil,0,1,prevdef)
+		else
+			dc:RegisterFlagEffect(384,nil,0,1,0)
+		end
+		if dc:GetDefense()>0 then
+			dc:RegisterFlagEffect(385,nil,0,1,dc:GetDefense())
+		else
+			dc:RegisterFlagEffect(385,nil,0,1,0)
+		end
+		dc=dg:GetNext()
+	end
+	
 	Duel.RaiseEvent(g1,511001265,re,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g1,511001441,re,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g2,511000377,re,REASON_EFFECT,rp,ep,0)
@@ -379,6 +427,8 @@ function c419.atkraiseeff(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RaiseEvent(g3,511000883,re,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g3,511009110,re,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g4,511002546,re,REASON_EFFECT,rp,ep,0)
+	Duel.RaiseEvent(g5,511009053,re,REASON_EFFECT,rp,ep,0)
+	--Duel.RaiseEvent(g5,???,re,REASON_EFFECT,rp,ep,0)
 	
 	local lvg=Duel.GetMatchingGroup(c419.lvcfilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
 	local lvc=lvg:GetFirst()
@@ -402,6 +452,12 @@ function c419.atkraiseadj(e,tp,eg,ep,ev,re,r,rp)
 	local g2=Group.CreateGroup() --gain atk
 	local g3=Group.CreateGroup() --lose atk
 	local g4=Group.CreateGroup() --gain atk from original
+	
+	local dg=Duel.GetMatchingGroup(c419.defcfilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
+	local g5=Group.CreateGroup() --change def
+	--local g6=Group.CreateGroup() --gain def
+	--local g7=Group.CreateGroup() --lose def
+	--local g8=Group.CreateGroup() --gain def from original
 	local tc=g:GetFirst()
 	while tc do
 		local prevatk=0
@@ -429,10 +485,40 @@ function c419.atkraiseadj(e,tp,eg,ep,ev,re,r,rp)
 		end
 		tc=g:GetNext()
 	end
+	
+	local dc=dg:GetFirst()
+	while dc do
+		local prevdef=0
+		if dc:GetFlagEffect(385)>0 then prevdef=dc:GetFlagEffectLabel(385) end
+		g5:AddCard(dc)
+		if prevdef>dc:GetDefense() then
+			--g7:AddCard(dc)
+		else
+			--g6:AddCard(dc)
+			if prevdef<=dc:GetBaseDefense() and dc:GetDefense()>dc:GetBaseDefense() then
+				--g8:AddCard(dc)
+			end
+		end
+		dc:ResetFlagEffect(284)
+		dc:ResetFlagEffect(285)
+		if prevdef>0 then
+			dc:RegisterFlagEffect(284,nil,0,1,prevdef)
+		else
+			dc:RegisterFlagEffect(284,nil,0,1,0)
+		end
+		if dc:GetAttack()>0 then
+			dc:RegisterFlagEffect(285,nil,0,1,dc:GetAttack())
+		else
+			dc:RegisterFlagEffect(285,nil,0,1,0)
+		end
+		dc=dg:GetNext()
+	end
+	
 	Duel.RaiseEvent(g1,511001265,e,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g2,511001762,e,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g3,511009110,e,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g4,511002546,e,REASON_EFFECT,rp,ep,0)
+	Duel.RaiseEvent(g5,511009053,e,REASON_EFFECT,rp,ep,0)
 	
 	local lvg=Duel.GetMatchingGroup(c419.lvcfilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
 	local lvc=lvg:GetFirst()
