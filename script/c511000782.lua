@@ -111,7 +111,9 @@ end
 function c511000782.regop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsReason(REASON_BATTLE) and c:GetReasonCard() and c:GetReasonCard():GetFlagEffectLabel(51100782)==e:GetLabel() then
-		e:GetLabelObject():SetCountLimit(1)
+		if e:GetLabelObject():GetLabel()~=1 then
+			e:GetLabelObject():SetCountLimit(1)
+		end
 		e:GetOwner():ResetFlagEffect(511000782)
 	end
 	e:Reset()
