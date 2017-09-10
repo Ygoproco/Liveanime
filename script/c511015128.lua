@@ -34,7 +34,9 @@ function c511015128.initial_effect(c)
 	c:RegisterEffect(e4)
 end
 function c511015128.regop(e,tp,eg,ep,ev,re,r,rp)
-	e:GetHandler():CompleteProcedure()
+	if re and re:GetHandler():IsCode(46411259) then
+		e:GetHandler():CompleteProcedure()
+	end
 end
 function c511015128.splimit(e,se,sp,st)
 	return se:GetHandler():IsCode(46411259)
