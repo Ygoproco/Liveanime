@@ -7,6 +7,7 @@ function c511009053.initial_effect(c)
 	--spsummon
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_DAMAGE)
+	e1:SetDescription(aux.Stringid(14577226,0))
 	e1:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DELAY+EFFECT_FLAG_DAMAGE_STEP)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
@@ -17,6 +18,7 @@ function c511009053.initial_effect(c)
 	--atk change
 	local e2=Effect.CreateEffect(c)
 	e2:SetCategory(CATEGORY_DESTROY)
+	e2:SetDescription(aux.Stringid(276357,0))
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DAMAGE_STEP)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(511001265)
@@ -58,10 +60,11 @@ function c511009053.damfilter(c,fc)
 	return c:IsFaceup() and c:IsReason(REASON_FUSION) and mg and mg:IsContains(c)
 end
 function c511009053.damtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(0x7c) and c511009053.spfilter(chkc,e:GetHandler()) end
-	if chk==0 then return Duel.IsExistingTarget(c511009053.spfilter,tp,0x7c,0x7c,1,nil,e:GetHandler()) end
+	local c=e:GetHandler()
+	if chkc then return chkc:IsLocation(0x7c) and c511009053.damfilter(chkc,c) end
+	if chk==0 then return Duel.IsExistingTarget(c511009053.damfilter,tp,0x7c,0x7c,1,nil,c) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectTarget(tp,c511009053.spfilter,tp,0x7c,0x7c,1,1,nil,e,tp)
+	local g=Duel.SelectTarget(tp,c511009053.damfilter,tp,0x7c,0x7c,1,1,nil,c)
 	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,g:GetFirst():GetAttack())
 end
 function c511009053.damop(e,tp,eg,ep,ev,re,r,rp)
