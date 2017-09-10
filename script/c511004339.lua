@@ -13,10 +13,10 @@ function c511004339.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function c511004339.filter1(c,tp)
-	return c:IsFaceup() and c:GetCounter(0x1107)~=0 and Duel.IsExistingMatchingCard(c511004339.filter2,tp,0,LOCATION_MZONE,1,nil,c,c:GetRace())
+	return c:IsFaceup() and c:GetCounter(0x1107)~=0 and Duel.IsExistingMatchingCard(c511004339.filter2,tp,0,LOCATION_MZONE,1,nil,c:GetRace())
 end
-function c511004339.filter2(c,mc,rc)
-	return c:GetType()==mc:GetType() and c:IsRace(rc)
+function c511004339.filter2(c,rc)
+	return c:IsFaceup() and c:IsRace(rc)
 end
 function c511004339.target(e,tp,eg,ev,ep,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_SZONE) and chkc:IsControler(tp) and c511004339.filter1(chkc,tp) end
@@ -29,7 +29,7 @@ function c511004339.activate(e,tp,eg,ev,ep,re,r,rp,chk)
 	local tc=Duel.GetFirstTarget()
 	if Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 then return end
 	if tc and tc:IsRelateToEffect(e) and tc:IsFaceup() then
-		local g=Duel.SelectMatchingCard(tp,c511004339.filter2,tp,0,LOCATION_MZONE,1,1,nil,tc,tc:GetRace())
+		local g=Duel.SelectMatchingCard(tp,c511004339.filter2,tp,0,LOCATION_MZONE,1,1,nil,tc:GetRace())
 		local tc2=g:GetFirst()
 		if tc2 then
 			Duel.HintSelection(g)

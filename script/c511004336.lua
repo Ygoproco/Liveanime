@@ -11,8 +11,11 @@ function c511004336.initial_effect(c)
 	e1:SetOperation(c511004336.op)
 	c:RegisterEffect(e1)  
 end
+function c511004336.filter(c)
+	return c:GetCounter(0x1107)>0
+end
 function c511004336.condition(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetAttacker():IsControler(1-tp) and Duel.GetAttacker():GetCounter(0x1107)>=1
+	return Duel.GetAttacker():IsControler(1-tp) and Duel.IsExistingMatchingCard(c511004336.filter,tp,LOCATION_ONFIELD,0,1,nil)
 end
 function c511004336.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0 end
