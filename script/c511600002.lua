@@ -1,7 +1,7 @@
 --Dimension Duel
---scripted by Larry126
+--scripted by Larry126 + GameMaster(GM)
 function c511600002.initial_effect(c)
---Activate
+	--Activate
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_PREDRAW)
@@ -11,7 +11,7 @@ function c511600002.initial_effect(c)
 	e1:SetCondition(c511600002.con)
 	e1:SetOperation(c511600002.op)
 	c:RegisterEffect(e1)	 
---unaffectable
+	--unaffectable
 	local e2=Effect.CreateEffect(c)
 	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e2:SetType(EFFECT_TYPE_SINGLE)
@@ -26,24 +26,24 @@ function c511600002.initial_effect(c)
 	local e5=e2:Clone()
 	e5:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
 	c:RegisterEffect(e5)
---Dimension Summon
+	--Dimension Summon
 	local e6=Effect.CreateEffect(c)
 	e6:SetDescription(aux.Stringid(4010,0))
 	e6:SetCategory(CATEGORY_SUMMON)
 	e6:SetType(EFFECT_TYPE_FIELD)
 	e6:SetCode(EFFECT_SUMMON_PROC)
 	e6:SetRange(LOCATION_REMOVED)
-	e6:SetTargetRange(0xff,0xff)
+	e6:SetTargetRange(LOCATION_HAND,LOCATION_HAND)
 	e6:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e6:SetTarget(function(e,c)return c:GetFlagEffect(51160002)==0 end)
 	e6:SetValue(6)
-	e6:SetCondition(c511600002.ntcon)
+	e6:SetCondition(c511600002.con35)
 	c:RegisterEffect(e6)
 	local e7=e6:Clone()
 	e7:SetTarget(function(e,c)return c:GetFlagEffect(51160002)>0 end)
 	e7:SetCode(EFFECT_LIMIT_SUMMON_PROC)
 	c:RegisterEffect(e7)
---no battle damage
+	--no battle damage
 	local e8=Effect.CreateEffect(c)
 	e8:SetType(EFFECT_TYPE_FIELD)
 	e8:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
@@ -52,7 +52,7 @@ function c511600002.initial_effect(c)
 	e8:SetTargetRange(1,1)
 	e8:SetCondition(c511600002.bcon)
 	c:RegisterEffect(e8)
---Damage
+	--Damage
 	local e9=Effect.CreateEffect(c)
 	e9:SetCategory(CATEGORY_DAMAGE)
 	e9:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -62,7 +62,7 @@ function c511600002.initial_effect(c)
 	e9:SetTarget(c511600002.damcon)
 	e9:SetOperation(c511600002.damop)
 	c:RegisterEffect(e9)
---spirit
+	--spirit
 	local e10=Effect.CreateEffect(c)
 	e10:SetCategory(CATEGORY_ATKCHANGE+CATEGORY_DEFCHANGE)
 	e10:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -73,12 +73,10 @@ function c511600002.initial_effect(c)
 	e10:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	c:RegisterEffect(e10)
 	local e11=e10:Clone()
-	e11:SetCode(EVENT_FLIP_SUMMON_SUCCESS)
+	e11:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e11)
-	local e12=e10:Clone()
-	e12:SetCode(EVENT_SPSUMMON_SUCCESS)
-	c:RegisterEffect(e12)
 end
+
 function Auxiliary.ComposeNumberDigitByDigit(tp,min,max)
 	if min>max then min,max=max,min end
 	local mindc=#tostring(min)
@@ -135,18 +133,22 @@ function Auxiliary.ComposeNumberDigitByDigit(tp,min,max)
 	end
 	return number
 end
+
 --tribute
-function c511600002.ntcon(e,c,minc)
-	if c==nil then return true end
-	return minc==0 and Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0
+function c511600002.con35(e,c)
+local c=e:GetHandler()
+ return Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0 and not (c:IsHasEffect(c,EFFECT_SPSUMMON_CONDITION) or c:IsHasEffect(c,SUMMON_TYPE_ADVANCE))
 end
-------------------------------------------------------------------------
+
+
 function c511600002.sptfilter(c)
-	return c:IsType(TYPE_MONSTER+TYPE_TRAPMONSTER+TYPE_TOKEN) and c:IsOnField()
+	return c:IsType(TYPE_MONSTER) and c:IsOnField() and not c:IsPreviousLocation(LOCATION_GRAVE+LOCATION_DECK+LOCATION_REMOVED)
 end
+
 function c511600002.spttg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return eg:IsExists(c511600002.sptfilter,1,nil) end
 end
+
 function c511600002.sptop(e,tp,eg,ep,ev,re,r,rp)
 	local g=eg:Filter(c511600002.sptfilter,nil)
 	local c=e:GetHandler()
@@ -177,7 +179,7 @@ function c511600002.sptop(e,tp,eg,ep,ev,re,r,rp)
 			e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_UNCOPYABLE)
 			e1:SetRange(LOCATION_MZONE)
 			e1:SetValue(catk)
-			e1:SetReset(RESET_EVENT+0xfe0000)
+			e1:SetReset(RESET_EVENT+0x1fe0000)
 			tc:RegisterEffect(e1)
 		end
 		if textdef~=-2 and textdef~=0 then
@@ -197,21 +199,22 @@ function c511600002.sptop(e,tp,eg,ep,ev,re,r,rp)
 			e2:SetProperty(EFFECT_FLAG_SINGLE_RANGE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_UNCOPYABLE)
 			e2:SetRange(LOCATION_MZONE)
 			e2:SetValue(cdef)
-			e2:SetReset(RESET_EVENT+0xfe0000)
+			e2:SetReset(RESET_EVENT+0x1fe0000)
 			tc:RegisterEffect(e2)
 		end
 		tc=g:GetNext()
 	end
 end
 
-------------------------------------------------------------------------
 --inflict battle damage
 function c511600002.damfilter(c)
-	return c:IsType(TYPE_MONSTER+TYPE_TRAPMONSTER+TYPE_TOKEN) and c:IsPreviousLocation(LOCATION_ONFIELD)
+	return c:IsType(TYPE_MONSTER) and c:IsPreviousLocation(LOCATION_ONFIELD)
 end
+
 function c511600002.damcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(c511600002.damfilter,1,nil)
 end
+
 function c511600002.damop(e,tp,eg,ep,ev,re,r,rp)
 	local g=eg:Filter(c511600002.damfilter,nil)
 	local dam1=0
@@ -233,23 +236,26 @@ function c511600002.damop(e,tp,eg,ep,ev,re,r,rp)
 	end
 	Duel.RDComplete()
 end
-------------------------------------------------------------------------
+
 --no battle damage
 function c511600002.bcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetAttackTarget()~=nil
 end
-------------------------------------------------------------------------
+
 --speed Duel Filter
 function c511600002.SDfilter(c)
 	return c:GetCode()==511004001
 end
+
 --vanilla mode filter
 function c511600002.Vfilter(c)
 	return c:GetCode()==511004400
 end
+
 function c511600002.con(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnCount()==1
 end
+
 function c511600002.op(e,tp,eg,ep,ev,re,r,rp,chk)
 	--check if number of card >20 if speed duel or >40 if other duel
 	if Duel.IsExistingMatchingCard(c511600002.SDfilter,tp,LOCATION_DECK+LOCATION_HAND+LOCATION_REMOVED,0,1,nil) and Duel.GetMatchingGroup(nil,tp,LOCATION_HAND+LOCATION_DECK,0,nil):GetCount()<20 then
@@ -268,7 +274,7 @@ function c511600002.op(e,tp,eg,ep,ev,re,r,rp,chk)
 	if e:GetHandler():GetPreviousLocation()==LOCATION_HAND and Duel.IsPlayerCanDraw(e:GetHandlerPlayer(),1)then
 		Duel.Draw(tp,1,REASON_RULE)
 	end
-	local g1=Duel.GetMatchingGroup(Card.IsType,tp,0xff,0xff,nil,TYPE_MONSTER)
+	local g1=Duel.GetMatchingGroup(Card.IsType,tp,LOCATION_HAND,LOCATION_HAND,nil,TYPE_MONSTER)
 	if g1 and g1:GetCount()>0 then
 		local tc=g1:GetFirst()
 		while tc do
@@ -282,13 +288,10 @@ function c511600002.op(e,tp,eg,ep,ev,re,r,rp,chk)
 			local e2=e1:Clone()
 			e2:SetCode(EFFECT_SPSUMMON_COST)
 			tc:RegisterEffect(e2)
-			local e3=e1:Clone()
-			e3:SetCode(EFFECT_FLIPSUMMON_COST)
-			tc:RegisterEffect(e3)
 			tc=g1:GetNext()
 		end
 	end
-	local g2=Duel.GetMatchingGroup(Card.IsHasEffect,tp,0xff,0xff,nil,EFFECT_LIMIT_SUMMON_PROC)
+	local g2=Duel.GetMatchingGroup(Card.IsHasEffect,tp,LOCATION_HAND,LOCATION_HAND,nil,EFFECT_LIMIT_SUMMON_PROC)
 	local tc2=g2:GetFirst()
 	if tc2 then
 		while tc2 do
@@ -297,6 +300,7 @@ function c511600002.op(e,tp,eg,ep,ev,re,r,rp,chk)
 		end
 	end
 end
+
 function c511600002.lvop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local e1=Effect.CreateEffect(c)
@@ -306,7 +310,7 @@ function c511600002.lvop(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_UNCOPYABLE)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetValue(0)
-	e1:SetReset(RESET_EVENT+0xfe0000)
+	e1:SetReset(RESET_EVENT+0x1fe0000)
 	c:RegisterEffect(e1)
 	local e2=e1:Clone()
 	e2:SetCategory(CATEGORY_DEFCHANGE)
