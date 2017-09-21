@@ -1,5 +1,6 @@
 --Battle City
 --Scripted by Edo9300
+--updated by GameMaster(GM)
 function c511004014.initial_effect(c)
 	--activate
 	local e1=Effect.CreateEffect(c)
@@ -55,14 +56,14 @@ function c511004014.initial_effect(c)
 	e5:SetTarget(function(e,c)return c:GetLevel()>=10 and c:GetFlagEffect(511004017)==1 end)
 	e5:SetCode(EFFECT_LIMIT_SET_PROC)
 	c:RegisterEffect(e5)
-	--Cannot Attack
+	--Extra deck monsters cannot attack turn they are summoned from extra deck
 	local e6=Effect.CreateEffect(c)
 	e6:SetType(EFFECT_TYPE_FIELD)
 	e6:SetCode(EFFECT_CANNOT_ATTACK)
 	e6:SetRange(LOCATION_REMOVED)
 	e6:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)	
 	e6:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e6:SetTarget(function(e,c)return c:IsStatus(STATUS_SPSUMMON_TURN) and c:GetFlagEffect(511004016)==0 end)
+	e6:SetTarget(c511004014.tg6)
 	c:RegisterEffect(e6)
 	--Quick
 	local e7=Effect.CreateEffect(c)
@@ -105,6 +106,11 @@ function c511004014.initial_effect(c)
 	e11a:SetCode(EVENT_BE_MATERIAL)
 	c:RegisterEffect(e11a)
 end
+
+function c511004014.tg6(e,c)
+	return c:IsPreviousLocation(LOCATION_EXTRA) and c:IsStatus(STATUS_SPSUMMON_TURN) and c:GetFlagEffect(511004016)==0  and  not c:IsHasEffect(511005701)-- Quick attack
+end
+
 function c511004014.ttcon(e,c)
 	if c==nil then return true end
 	return Duel.GetTributeCount(c)>=3
