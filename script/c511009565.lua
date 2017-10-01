@@ -8,7 +8,7 @@ function c511009565.initial_effect(c)
 	e2:SetCategory(CATEGORY_DAMAGE)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DAMAGE_STEP)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-	e2:SetCode(511001762)
+	e2:SetCode(511000377)
 	e2:SetRange(LOCATION_PZONE)
 	e2:SetLabel(LOCATION_PZONE)
 	e2:SetCountLimit(1)
@@ -17,9 +17,19 @@ function c511009565.initial_effect(c)
 	e2:SetOperation(c511009565.op)
 	c:RegisterEffect(e2)
 	local e3=e2:Clone()
+	e3:SetCode(511001441)
 	e3:SetLabel(LOCATION_MZONE)
 	e3:SetRange(LOCATION_MZONE)
+	e3:SetCountLimit(1,EFFECT_COUNT_CODE_SINGLE)
 	c:RegisterEffect(e3)
+	local e4=e3:Clone()
+	e4:SetCode(511009565)
+	e4:SetCondition(c511009565.con2)
+	e4:SetTarget(c511009565.tg2)
+	e4:SetLabel(LOCATION_MZONE)
+	e4:SetRange(LOCATION_MZONE)
+	e4:SetCountLimit(1,EFFECT_COUNT_CODE_SINGLE)
+	c:RegisterEffect(e4)
 	if not c511009565.global_check then
 		c511009565.global_check=true
 		--register
@@ -39,12 +49,13 @@ function c511009565.con(e,tp,eg,ep,ev,re,r,rp)
 	if ec:GetFlagEffect(284)>0 then val=ec:GetFlagEffectLabel(284) end
 	return ec:IsControler(1-tp) and ec:GetAttack()~=val
 end
-function c511009565.filter(c)
-	return c:IsFaceup() and c:IsSetCard(0xc6)
+function c511009565.filter(c,label)
+	return c:IsFaceup() and (label==LOCATION_PZONE or c:IsSetCard(0xc6))
 end
 function c511009565.tg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and c511009565.filter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(c511009565.filter,tp,LOCATION_MZONE,0,1,nil) end
+	local label=e:GetLabel()
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and c511009565.filter(chkc,label) end
+	if chk==0 then return Duel.IsExistingTarget(c511009565.filter,tp,LOCATION_MZONE,0,1,nil,label) end
 	local ec=eg:GetFirst()
 	local atk=0
 	local val=0
@@ -52,7 +63,7 @@ function c511009565.tg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if ec:GetAttack()>val then atk=ec:GetAttack()-val
 	else atk=val-ec:GetAttack() end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-	Duel.SelectTarget(tp,c511009565.filter,tp,LOCATION_MZONE,0,1,1,nil)
+	Duel.SelectTarget(tp,c511009565.filter,tp,LOCATION_MZONE,0,1,1,nil,label)
 	Duel.SetTargetParam(atk)
 end
 function c511009565.op(e,tp,eg,ep,ev,re,r,rp)
@@ -77,4 +88,24 @@ function c511009565.atkchk(e,tp,eg,ep,ev,re,r,rp)
 		Duel.RegisterFlagEffect(tp,419,nil,0,1)
 		Duel.RegisterFlagEffect(1-tp,419,nil,0,1)
 	end
+end
+function c511009565.con2(e,tp,eg,ep,ev,re,r,rp)
+	local ec=eg:GetFirst()
+	if eg:GetCount()~=1 then return false end
+	local val=0
+	if ec:GetFlagEffect(384)>0 then val=ec:GetFlagEffectLabel(384) end
+	return ec:IsControler(1-tp) and ec:GetDefense()~=val
+end
+function c511009565.tg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and c511009565.filter(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(c511009565.filter,tp,LOCATION_MZONE,0,1,nil) end
+	local ec=eg:GetFirst()
+	local def=0
+	local val=0
+	if ec:GetFlagEffect(384)>0 then val=ec:GetFlagEffectLabel(384) end
+	if ec:GetDefense()>val then def=ec:GetDefense()-val
+	else def=val-ec:GetDefense() end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
+	Duel.SelectTarget(tp,c511009565.filter,tp,LOCATION_MZONE,0,1,1,nil)
+	Duel.SetTargetParam(def)
 end
