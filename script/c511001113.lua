@@ -19,10 +19,10 @@ function c511001113.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function c511001113.cost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.GetCurrentPhase()~=PHASE_MAIN2 end
+	if chk==0 then return Duel.GetActivityCount(tp,ACTIVITY_ATTACK)==0 end
 	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetCode(EFFECT_CANNOT_BP)
+	e1:SetCode(EFFECT_CANNOT_ATTACK_ANNOUNCE)
 	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_OATH)
 	e1:SetTargetRange(1,0)
 	e1:SetReset(RESET_PHASE+PHASE_END)
@@ -32,9 +32,9 @@ function c511001113.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return false end
 	if chk==0 then return Duel.IsExistingTarget(Card.IsAbleToRemove,tp,LOCATION_MZONE,0,1,nil)
 		and Duel.IsExistingTarget(Card.IsAbleToRemove,tp,0,LOCATION_MZONE,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(612115,0))
+	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(511001113,1))
 	local g1=Duel.SelectTarget(tp,Card.IsAbleToRemove,tp,LOCATION_MZONE,0,1,1,nil)
-	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(612115,0))
+	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(511001113,2))
 	local g2=Duel.SelectTarget(tp,Card.IsAbleToRemove,tp,0,LOCATION_MZONE,1,1,nil) 
 	e:SetLabelObject(g1:GetFirst())
 	g1:Merge(g2)
@@ -42,7 +42,6 @@ function c511001113.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.SetOperationInfo(0,CATEGORY_REMOVE,g1,2,0,0)
 end
 function c511001113.desop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) then return end
 	local tc1=e:GetLabelObject()
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 	if g:GetCount()<=1 then return end
@@ -52,10 +51,12 @@ function c511001113.desop(e,tp,eg,ep,ev,re,r,rp)
 	local coin=Duel.SelectOption(tp,60,61)
 	local res=Duel.TossCoin(tp,1)
 	if coin~=res then
-		Duel.Remove(tc2,POS_FACEUP,REASON_EFFECT)
-		Duel.Damage(1-tp,tc2:GetBaseAttack(),REASON_EFFECT)
+		if Duel.Remove(tc2,POS_FACEUP,REASON_EFFECT)>0 then
+			Duel.Damage(1-tp,tc2:GetBaseAttack(),REASON_EFFECT)
+		end
 	else
-		Duel.Remove(tc1,POS_FACEUP,REASON_EFFECT)
-		Duel.Damage(tp,tc1:GetBaseAttack(),REASON_EFFECT)
+		if Duel.Remove(tc1,POS_FACEUP,REASON_EFFECT)>0 then
+			Duel.Damage(tp,tc1:GetBaseAttack(),REASON_EFFECT)
+		end
 	end
 end
