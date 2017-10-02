@@ -319,20 +319,12 @@ function c419.op5(e,tp,eg,ep,ev,re,r,rp)
 		if tc:GetFlagEffect(285)==0 and tc:GetFlagEffect(585)==0 then
 			local atk=tc:GetAttack()
 			local def=tc:GetDefense()
-			if atk<=0 then
-				tc:RegisterFlagEffect(285,nil,0,1,0)
-				tc:RegisterFlagEffect(284,nil,0,1,0)
-			else
-				tc:RegisterFlagEffect(285,nil,0,1,atk)
-				tc:RegisterFlagEffect(284,nil,0,1,atk)
-			end
-			if def<=0 then
-				tc:RegisterFlagEffect(385,nil,0,1,0)
-				tc:RegisterFlagEffect(384,nil,0,1,0)
-			else
-				tc:RegisterFlagEffect(385,nil,0,1,atk)
-				tc:RegisterFlagEffect(384,nil,0,1,atk)
-			end
+			if atk<0 then atk=0 end
+			if def<0 then def=0 end
+			tc:RegisterFlagEffect(285,nil,0,1,atk)
+			tc:RegisterFlagEffect(284,nil,0,1,atk)
+			tc:RegisterFlagEffect(385,nil,0,1,def)
+			tc:RegisterFlagEffect(384,nil,0,1,def)
 			local lv=tc:GetLevel()
 			tc:RegisterFlagEffect(585,nil,0,1,lv)
 			tc:RegisterFlagEffect(584,nil,0,1,lv)
@@ -361,7 +353,7 @@ function c419.atkraiseeff(e,tp,eg,ep,ev,re,r,rp)
 	
 	local dg=Duel.GetMatchingGroup(c419.defcfilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
 	local g5=Group.CreateGroup() --change def
-	--local g6=Group.CreateGroup() --gain def
+	local g6=Group.CreateGroup() --gain def
 	--local g7=Group.CreateGroup() --lose def
 	--local g8=Group.CreateGroup() --gain def from original
 	local tc=g:GetFirst()
@@ -400,7 +392,7 @@ function c419.atkraiseeff(e,tp,eg,ep,ev,re,r,rp)
 		if prevdef>dc:GetDefense() then
 			--g7:AddCard(dc)
 		else
-			--g6:AddCard(dc)
+			g6:AddCard(dc)
 			if prevdef<=dc:GetBaseDefense() and dc:GetDefense()>dc:GetBaseDefense() then
 				--g8:AddCard(dc)
 			end
@@ -428,7 +420,8 @@ function c419.atkraiseeff(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RaiseEvent(g3,511009110,re,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g4,511002546,re,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g5,511009053,re,REASON_EFFECT,rp,ep,0)
-	--Duel.RaiseEvent(g5,???,re,REASON_EFFECT,rp,ep,0)
+	Duel.RaiseEvent(g5,511009565,re,REASON_EFFECT,rp,ep,0)
+	--Duel.RaiseEvent(g6,,re,REASON_EFFECT,rp,ep,0)
 	
 	local lvg=Duel.GetMatchingGroup(c419.lvcfilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
 	local lvc=lvg:GetFirst()
