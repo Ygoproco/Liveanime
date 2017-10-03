@@ -53,7 +53,7 @@ function c511000210.discon(e,tp,eg,ep,ev,re,r,rp)
 		e:Reset()
 		return false
 	end
-	return g:IsContains(re:GetHandler()) and Duel.IsChainDisablable(ev)
+	return g:IsContains(re:GetHandler()) and re:GetCode()==EVENT_SPSUMMON_SUCCESS and Duel.IsChainDisablable(ev)
 end
 function c511000210.disop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.NegateEffect(ev)
