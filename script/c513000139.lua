@@ -1,5 +1,9 @@
+--The Wicked Eraser (Anime)
 --邪神イレイザー
 --マイケル・ローレンス・ディーによってスクリプト
+--scripted by MLD
+--credit to TPD & Cybercatman
+--updated by Larry126
 function c513000139.initial_effect(c)
 	--summon with 3 tribute
 	local e1=Effect.CreateEffect(c)
@@ -13,74 +17,238 @@ function c513000139.initial_effect(c)
 	local e2=e1:Clone()
 	e2:SetCode(EFFECT_LIMIT_SET_PROC)
 	c:RegisterEffect(e2)
-	--cannot special summon
-	local e3=Effect.CreateEffect(c)
-	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
-	e3:SetType(EFFECT_TYPE_SINGLE)
-	e3:SetCode(EFFECT_SPSUMMON_CONDITION)
-	c:RegisterEffect(e3)
 	--atk
-	local e4=Effect.CreateEffect(c)
-	e4:SetType(EFFECT_TYPE_SINGLE)
-	e4:SetCode(EFFECT_SET_ATTACK)
-	e4:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-	e4:SetRange(LOCATION_MZONE)
-	e4:SetValue(c513000139.adval)
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_SINGLE)
+	e3:SetCode(EFFECT_SET_ATTACK)
+	e3:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetValue(c513000139.adval)
+	c:RegisterEffect(e3)
+	local e4=e3:Clone()
+	e4:SetCode(EFFECT_SET_DEFENSE)
 	c:RegisterEffect(e4)
-	local e5=e4:Clone()
-	e5:SetCode(EFFECT_SET_DEFENSE)
-	c:RegisterEffect(e5)
 	--Eraser
-	local e6=Effect.CreateEffect(c)
-	e6:SetDescription(aux.Stringid(57793869,0))
-	e6:SetCategory(CATEGORY_DESTROY)
-	e6:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
-	e6:SetCode(EVENT_TO_GRAVE)
-	e6:SetCondition(c513000139.erascon)
-	e6:SetTarget(c513000139.erastg)
-	e6:SetOperation(c513000139.erasop)
-	c:RegisterEffect(e6)
-	--suicide
-	local e7=Effect.CreateEffect(c)
-	e7:SetDescription(aux.Stringid(57793869,1))
-	e7:SetType(EFFECT_TYPE_IGNITION)
-	e7:SetCategory(CATEGORY_DESTROY)
-	e7:SetRange(LOCATION_MZONE)
-	e7:SetTarget(c513000139.destg)
-	e7:SetOperation(c513000139.desop)
-	c:RegisterEffect(e7)
-	--Summon Cannot be Negated
-	local e8=Effect.CreateEffect(c)
-	e8:SetType(EFFECT_TYPE_SINGLE)
-	e8:SetCode(EFFECT_CANNOT_DISABLE_SUMMON)
-	e8:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
-	c:RegisterEffect(e8)
-	--cannot be target
-	local e10=Effect.CreateEffect(c)
-	e10:SetType(EFFECT_TYPE_SINGLE)
-	e10:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
-	e10:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-	e10:SetRange(LOCATION_MZONE)
-	e10:SetValue(c513000139.tgfilter)
-	c:RegisterEffect(e10)
-	--ATK/DEF effects are only applied until the End Phase
-	local e13=Effect.CreateEffect(c)
-	e13:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e13:SetProperty(EFFECT_FLAG_REPEAT)
-	e13:SetRange(LOCATION_MZONE)
-	e13:SetCode(EVENT_PHASE+PHASE_END)
-	e13:SetCountLimit(1)
-	e13:SetOperation(c513000139.atkdefresetop)
-	c:RegisterEffect(e13)
-	--indestructable
-	local e17=Effect.CreateEffect(c)
-	e17:SetType(EFFECT_TYPE_SINGLE)
-	e17:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-	e17:SetCode(EFFECT_INDESTRUCTABLE_EFFECT)
-	e17:SetRange(LOCATION_MZONE)
-	e17:SetValue(c513000139.indes)
-	c:RegisterEffect(e17)
+	local e5=Effect.CreateEffect(c)
+	e5:SetDescription(aux.Stringid(57793869,0))
+	e5:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+	e5:SetCode(EVENT_TO_GRAVE)
+	e5:SetTarget(c513000139.erastg)
+	e5:SetOperation(c513000139.erasop)
+	c:RegisterEffect(e5)
+	if not c513000139.global_check then
+		c513000139.global_check=true
+	--hierarchy
+		if Duel.GetFlagEffect(0,513000065)==0 and Duel.GetFlagEffect(1,513000065)==0 then
+			Duel.RegisterFlagEffect(0,513000065,0,0,1)
+			Duel.RegisterFlagEffect(1,513000065,0,0,1)
+		--rank
+			local rank1=Effect.CreateEffect(c)
+			rank1:SetType(EFFECT_TYPE_FIELD)
+			rank1:SetCode(513000065)
+			rank1:SetTarget(c513000139.rank1)
+			rank1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_IGNORE_RANGE)
+			Duel.RegisterEffect(rank1,0) 
+			local rank2=Effect.CreateEffect(c)
+			rank2:SetType(EFFECT_TYPE_FIELD)
+			rank2:SetCode(513000065)
+			rank2:SetTarget(c513000139.rank2)
+			rank2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_IGNORE_RANGE)
+			Duel.RegisterEffect(rank2,0)
+			local immunity=Effect.CreateEffect(c)
+			immunity:SetType(EFFECT_TYPE_FIELD)
+			immunity:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
+			immunity:SetCode(EFFECT_IMMUNE_EFFECT)
+			immunity:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+			immunity:SetTarget(c513000139.hrtg)
+			immunity:SetValue(c513000139.hrfilter)
+			Duel.RegisterEffect(immunity,0)
+		--control
+			local control=Effect.CreateEffect(c)
+			control:SetType(EFFECT_TYPE_FIELD)
+			control:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+			control:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
+			control:SetCode(EFFECT_CANNOT_CHANGE_CONTROL)
+			control:SetTarget(c513000139.control)
+			Duel.RegisterEffect(control,0)
+		--last 1 turn
+			local last=Effect.CreateEffect(c)
+			last:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+			last:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+			last:SetCode(EVENT_ADJUST)
+			last:SetTarget(c513000139.lasttg)
+			last:SetOperation(c513000139.lastop)
+			Duel.RegisterEffect(last,0)
+			local check=Effect.CreateEffect(c)
+			check:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+			check:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+			check:SetCode(EVENT_CHAINING)
+			check:SetOperation(c513000139.sdop)
+			Duel.RegisterEffect(check,0)
+		end
+	end
 end
+function c513000139.sdop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	local tc=re:GetHandler()
+	if tc:GetFlagEffect(1211920)>0 then
+		tc:ResetFlagEffect(1211920)
+	end
+	tc:RegisterFlagEffect(1211920,RESET_EVENT+0x1fe0000,0,1,Duel.GetTurnCount()) 
+	if re:IsHasProperty(EFFECT_FLAG_IGNORE_IMMUNE) then tc:RegisterFlagEffect(128,0,0,0) end
+end
+function c513000139.rank1(e,c)
+	local code1,code2=c:GetOriginalCodeRule() 
+	return c:IsFaceup()
+		and (code1==10000000 or code1==10000010 or code1==10000020
+		or code1==62180201 or code1==57793869 or code1==21208154
+		or code2==10000000 or code2==10000010 or code2==10000020
+		or code2==62180201 or code2==57793869 or code2==21208154)
+end
+function c513000139.rank2(e,c)
+	local code1,code2=c:GetOriginalCodeRule() 
+	return c:IsFaceup() and (code1==10000010 or code1==21208154 or code2==10000010 or code2==21208154)
+end
+function c513000139.hrtg(e,c)
+	return c:IsHasEffect(513000065) and c:IsFaceup()
+end
+function c513000139.hrfilter(e,te,c)
+	if not te then return false end
+	if not c:IsHasEffect(513000065) or not c:IsFaceup() then return false end
+	local tc=te:GetOwner()
+	return (te:IsActiveType(TYPE_MONSTER) and c~=tc
+		and c:GetEffectCount(513000065)>tc:GetEffectCount(513000065))
+		or (te:IsHasCategory(CATEGORY_TOHAND+CATEGORY_DESTROY+CATEGORY_REMOVE+CATEGORY_TODECK+CATEGORY_RELEASE+CATEGORY_TOGRAVE)
+		and te:IsActiveType(TYPE_SPELL+TYPE_TRAP))
+		or (tc:GetFlagEffectLabel(1211920) 
+		and te:GetType()==EFFECT_TYPE_EQUIP 
+		and Duel.GetTurnCount()-tc:GetFlagEffectLabel(1211920)>=1
+		and Duel.GetTurnCount()-c:GetTurnID()>=1)
+end
+function c513000139.control(e,c)
+	return c:IsHasEffect(513000065) and c:IsFaceup() and not c:IsHasEffect(513000134)
+end
+function c513000139.lastfilter(c)
+	return c:GetFlagEffect(51300065)>0
+end
+function c513000139.lasttg(e,tp,eg,ev,ep,re,r,rp)
+	local g=Duel.GetMatchingGroup(Card.IsHasEffect,tp,LOCATION_MZONE,LOCATION_MZONE,nil,513000065)
+	return g:IsExists(aux.NOT(c513000139.lastfilter),1,nil)
+end
+function c513000139.lastop(e,tp,eg,ev,ep,re,r,rp)
+	local g=Duel.GetMatchingGroup(Card.IsHasEffect,tp,LOCATION_MZONE,LOCATION_MZONE,nil,513000065)
+	local tg=g:Filter(aux.NOT(c513000139.lastfilter),nil)
+	tg:ForEach(function(c)
+		c:RegisterFlagEffect(51300065,RESET_EVENT+0x1fe0000,0,1)
+		--If Special Summoned: Send to previous location
+		local e1=Effect.CreateEffect(c)
+		e1:SetDescription(aux.Stringid(4010,8))
+		e1:SetCategory(CATEGORY_TOGRAVE+CATEGORY_REMOVE+CATEGORY_TOHAND+CATEGORY_TODECK)
+		e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
+		e1:SetRange(LOCATION_MZONE)
+		e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE+EFFECT_FLAG_REPEAT+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+		e1:SetCountLimit(1)
+		e1:SetCode(EVENT_PHASE+PHASE_END)
+		e1:SetReset(RESET_EVENT+0x1fe0000)
+		e1:SetCondition(c513000139.stgcon)
+		e1:SetTarget(c513000139.stgtg)
+		e1:SetOperation(c513000139.stgop)
+		c:RegisterEffect(e1)
+		--ATK/DEF effects are only applied until the End Phase
+		local e2=Effect.CreateEffect(c)
+		e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+		e2:SetProperty(EFFECT_FLAG_SINGLE_RANGE+EFFECT_FLAG_REPEAT+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+		e2:SetRange(LOCATION_MZONE)
+		e2:SetCode(EVENT_PHASE+PHASE_END)
+		e2:SetReset(RESET_EVENT+0x1fe0000)
+		e2:SetCountLimit(1)
+		e2:SetCondition(c513000139.atkdefresetcon)
+		e2:SetOperation(c513000139.atkdefresetop)
+		c:RegisterEffect(e2)
+		--release limit
+		local e3=Effect.CreateEffect(c)
+		e3:SetType(EFFECT_TYPE_SINGLE)
+		e3:SetCode(EFFECT_UNRELEASABLE_SUM)
+		e3:SetProperty(EFFECT_FLAG_SINGLE_RANGE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+		e3:SetRange(LOCATION_MZONE)
+		e3:SetReset(RESET_EVENT+0x1fe0000)
+		e3:SetValue(c513000139.recon)
+		c:RegisterEffect(e3)
+		local e4=e3:Clone()
+		e4:SetCondition(c513000139.recon2)
+		e4:SetCode(EFFECT_UNRELEASABLE_NONSUM)
+		c:RegisterEffect(e4)
+		local e5=Effect.CreateEffect(c)
+		e5:SetDescription(aux.Stringid(4010,9))
+		e5:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+		e5:SetCode(EVENT_BE_BATTLE_TARGET)
+		e5:SetRange(LOCATION_MZONE)
+		e5:SetProperty(EFFECT_FLAG_SINGLE_RANGE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+		e5:SetReset(RESET_EVENT+0x1fe0000)
+		e5:SetCondition(c513000139.negatkcon)
+		e5:SetOperation(c513000139.negatkop)
+		c:RegisterEffect(e5)
+	end)
+end
+function c513000139.negatkcon(e,tp,eg,ep,ev,re,r,rp)
+	local ac=Duel.GetAttacker()
+	return ac:IsHasEffect(513000065) 
+		and e:GetHandler():GetEffectCount(513000065)>ac:GetEffectCount(513000065)
+end
+function c513000139.negatkop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.NegateAttack()
+end
+function c513000139.recon(e,c)
+	return e:GetHandler():IsHasEffect(513000065) and c:GetControler()~=e:GetHandler():GetControler()
+end
+function c513000139.recon2(e)
+	return e:GetHandler():IsHasEffect(513000065) and Duel.GetTurnPlayer()~=e:GetOwnerPlayer()
+end
+function c513000139.atkdefresetcon(e,tp,eg,ep,ev,re,r,rp)
+	return e:GetHandler():IsHasEffect(513000065)
+end
+function c513000139.atkdefresetop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	local g=Duel.GetMatchingGroup(nil,tp,0xff,0xff,c)
+	for tc in aux.Next(g) do
+		if tc:GetOriginalCode()~=c:GetOriginalCode() and tc:GetFlagEffect(128)==0 then
+			c:ResetEffect(tc:GetOriginalCode(),RESET_CARD)
+			tc:ResetFlagEffect(128)
+		end
+	end
+end
+function c513000139.stgcon(e,tp,eg,ep,ev,re,r,rp)
+	return bit.band(e:GetHandler():GetSummonType(),SUMMON_TYPE_SPECIAL)==SUMMON_TYPE_SPECIAL
+		and e:GetHandler():IsHasEffect(513000065)
+end
+function c513000139.stgtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	local c=e:GetHandler()
+	if c:IsPreviousLocation(LOCATION_GRAVE) then
+		Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,c,1,0,0)
+	elseif c:IsPreviousLocation(LOCATION_DECK) then
+		Duel.SetOperationInfo(0,CATEGORY_TODECK,c,1,0,0)
+	elseif c:IsPreviousLocation(LOCATION_HAND) then
+		Duel.SetOperationInfo(0,CATEGORY_TOHAND,c,1,0,0)
+	elseif c:IsPreviousLocation(LOCATION_REMOVED) then
+		Duel.SetOperationInfo(0,CATEGORY_REMOVE,c,1,0,0)
+	end
+end
+function c513000139.stgop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if c:IsRelateToEffect(e) and c:IsFaceup() then
+		if c:IsPreviousLocation(LOCATION_GRAVE) then
+			Duel.SendtoGrave(c,REASON_EFFECT)
+		elseif c:IsPreviousLocation(LOCATION_DECK) then
+			Duel.SendtoDeck(c,nil,2,REASON_EFFECT)
+		elseif c:IsPreviousLocation(LOCATION_HAND) then
+			Duel.SendtoHand(c,nil,REASON_EFFECT)
+		elseif c:IsPreviousLocation(LOCATION_REMOVED) then
+			Duel.Remove(c,POS_FACEUP,REASON_EFFECT)
+		end
+	end
+end
+-------------------------------------------------------------------
 function c513000139.ttcon(e,c)
 	if c==nil then return true end
 	return Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>-3 and Duel.GetTributeCount(c)>=3
@@ -93,63 +261,12 @@ end
 function c513000139.adval(e,c)
 	return Duel.GetFieldGroupCount(c:GetControler(),0,LOCATION_ONFIELD)*1000
 end
-function c513000139.erascon(e)
-	return e:GetHandler():IsReason(REASON_DESTROY)
-end
 function c513000139.erastg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	local dg=Duel.GetMatchingGroup(Card.IsDestructable,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,dg,dg:GetCount(),0,0)
+	local g=Duel.GetMatchingGroup(Card.IsAbleToGrave,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
+	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,g,g:GetCount(),0,0)
 end
 function c513000139.erasop(e,tp,eg,ep,ev,re,r,rp)
-	local dg=Duel.GetMatchingGroup(nil,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
-	Duel.Destroy(dg,REASON_EFFECT)
+	local g=Duel.GetMatchingGroup(nil,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
+	Duel.SendtoGrave(g,REASON_EFFECT)
 end
-function c513000139.destg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsDestructable() end
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,e:GetHandler(),1,0,0)
-end
-function c513000139.desop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Destroy(e:GetHandler(),REASON_EFFECT)
-end
-function c513000139.sumsuc(e,tp,eg,ep,ev,re,r,rp)
-	Duel.SetChainLimitTillChainEnd(c513000139.chainlm)
-end
-function c513000139.chainlm(e,rp,tp)
-	return e:GetHandler():IsAttribute(ATTRIBUTE_DEVINE)
-end
-function c513000139.efilter(e,te)
-	return te:IsActiveType(TYPE_EFFECT) and te:GetOwner()~=e:GetOwner() and not te:GetHandler():IsAttribute(ATTRIBUTE_DEVINE)
-end
-function c513000139.tgfilter(e,re)
-	if not re or not re:IsActiveType(TYPE_SPELL+TYPE_TRAP) then return false end
-	return re:IsHasCategory(CATEGORY_TOHAND+CATEGORY_DESTROY+CATEGORY_REMOVE+CATEGORY_TODECK+CATEGORY_RELEASE+CATEGORY_TOGRAVE)
-end
-function c513000139.tgg(c,card)
-	return c:GetCardTarget() and c:GetCardTarget():IsContains(card)
-end
-function c513000139.atkdefresetop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE)
-	e1:SetCode(EFFECT_SET_ATTACK_FINAL)
-	e1:SetValue(c513000139.adval)
-	e1:SetReset(RESET_EVENT+0x1fe0000)
-	c:RegisterEffect(e1)
-	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_SINGLE)
-	e2:SetCode(EFFECT_SET_DEFENSE_FINAL)
-	e2:SetValue(c513000139.adval)
-	e2:SetReset(RESET_EVENT+0x1fe0000)
-	c:RegisterEffect(e2)
-	local eqg=c:GetEquipGroup()
-	local tgg=Duel.GetMatchingGroup(c513000139.tgg,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil,c)
-	eqg:Merge(tgg)
-	if eqg:GetCount()>0 then
-		Duel.Destroy(eqg,REASON_EFFECT)
-	end
-end
-function c513000139.indes(e,re,rp)
-	return not re:GetOwner():IsCode(10000010) and re:GetOwner()~=e:GetOwner()
-end
---MLD
