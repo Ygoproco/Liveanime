@@ -21,13 +21,13 @@ function c511004419.initial_effect(c)
 		Duel.RegisterEffect(ge1,0)
 	end
 end
-function c511004419.gop(e,tp,eg,ev,ep,re,r,rp)
+function c511004419.gop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterFlagEffect(ep,511004419,RESET_PHASE+PHASE_END,0,1)
 end
-function c511004419.condition(e,tp,eg,ev,ep,re,r,rp)
+function c511004419.condition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetCurrentPhase()>=PHASE_BATTLE_START and Duel.GetCurrentPhase()<=PHASE_BATTLE and Duel.GetTurnPlayer()==tp
 end
-function c511004419.target(e,tp,eg,ev,ep,re,r,rp,chk)
+function c511004419.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetFlagEffect(tp,511004419)~=0 or Duel.GetFlagEffect(1-tp,511004419)~=0 end
 	local dep=nil
 	if Duel.GetFlagEffect(tp,511004419)~=0 and Duel.GetFlagEffect(1-tp,511004419)~=0 then

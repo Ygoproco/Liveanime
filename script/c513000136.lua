@@ -46,6 +46,13 @@ function c513000136.initial_effect(c)
 	e7:SetCondition(c513000136.recon2)
 	e7:SetCode(EFFECT_UNRELEASABLE_NONSUM)
 	c:RegisterEffect(e7)
+	-- Cannot Disable effect
+	local e9=Effect.CreateEffect(c)
+	e9:SetType(EFFECT_TYPE_SINGLE)
+	e9:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e9:SetCode(EFFECT_CANNOT_DISABLE)
+	e9:SetRange(LOCATION_MZONE)
+	c:RegisterEffect(e9)
 	--immune spell
 	local e11=Effect.CreateEffect(c)
 	e11:SetType(EFFECT_TYPE_SINGLE)

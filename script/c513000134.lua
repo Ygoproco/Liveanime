@@ -85,6 +85,13 @@ function c513000134.initial_effect(c)
 	e12:SetTarget(c513000134.stgtg)
 	e12:SetOperation(c513000134.stgop)
 	c:RegisterEffect(e12)
+	-- Cannot Disable effect
+	local e13=Effect.CreateEffect(c)
+	e13:SetType(EFFECT_TYPE_SINGLE)
+	e13:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e13:SetCode(EFFECT_CANNOT_DISABLE)
+	e13:SetRange(LOCATION_MZONE)
+	c:RegisterEffect(e13)
 	--Point-to-Point Transfer
 	local e15=Effect.CreateEffect(c)
 	e15:SetDescription(aux.Stringid(51100236,1))

@@ -108,9 +108,9 @@ function c100000150.synfilter2(c,add,lv,nontuner,syncard,pe,tc,ft)
 	local lv1=bit.band(ntlv,0xffff)
 	local lv2=bit.rshift(ntlv,16)
 	if add then
-		return c:GetSynchroLevel(syncard)==lv+lv1 or c:GetSynchroLevel(syncard)==lv+lv2
+		return c:GetSynchroLevel(syncard)==lv+lv1 or ((lv2>0 or nontuner:IsStatus(STATUS_NO_LEVEL)) and c:GetSynchroLevel(syncard)==lv+lv2)
 	else
-		return c:GetSynchroLevel(syncard)==lv-lv1 or c:GetSynchroLevel(syncard)==lv-lv2
+		return c:GetSynchroLevel(syncard)==lv-lv1 or ((lv2>0 or nontuner:IsStatus(STATUS_NO_LEVEL)) and c:GetSynchroLevel(syncard)==lv-lv2)
 	end
 end
 function c100000150.syncon(e,c,tuner,mg)

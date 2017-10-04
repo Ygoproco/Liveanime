@@ -1,7 +1,14 @@
 --Elemental HERO Neo Bubbleman (anime)
+--fixed by MLD
 function c511015128.initial_effect(c)
 	c:EnableReviveLimit()
 	--spsummon condition
+	local e1=Effect.CreateEffect(c)
+	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
+	e1:SetOperation(c511015128.regop)
+	c:RegisterEffect(e1)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
@@ -25,6 +32,11 @@ function c511015128.initial_effect(c)
 	e4:SetTarget(c511015128.destg)
 	e4:SetOperation(c511015128.desop)
 	c:RegisterEffect(e4)
+end
+function c511015128.regop(e,tp,eg,ep,ev,re,r,rp)
+	if re and re:GetHandler():IsCode(46411259) then
+		e:GetHandler():CompleteProcedure()
+	end
 end
 function c511015128.splimit(e,se,sp,st)
 	return se:GetHandler():IsCode(46411259)
