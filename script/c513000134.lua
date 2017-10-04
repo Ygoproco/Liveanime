@@ -374,7 +374,7 @@ function c513000134.immortal(e,tp,eg,ep,ev,re,r,rp,chk)
 	if c513000134.payatkcost(e,tp,eg,ep,ev,re,r,rp,0) then
 		local op=Duel.SelectOption(tp,aux.Stringid(4012,3),aux.Stringid(4012,4),aux.Stringid(4012,5))
 		if op==0 then
-			c513000134.payatkcost(e,tp,eg,ep,ev,re,r,rp,0)
+			c513000134.payatkcost(e,tp,eg,ep,ev,re,r,rp,1)
 			e:SetOperation(c513000134.payatkop)
 		elseif op==1 then
 			e:SetOperation(c513000134.egpop)
