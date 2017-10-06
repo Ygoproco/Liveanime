@@ -1,12 +1,12 @@
 --Golden Castle of Stromberg
---modified by GameMaster
+--scripted by GameMaster
 function c513000144.initial_effect(c)
 	--activate
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	c:RegisterEffect(e1)
-	--Discard half deck
+	--Discard half of opponents deck
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_DELAY)
@@ -16,7 +16,7 @@ function c513000144.initial_effect(c)
 	e2:SetCountLimit(1)
 	e2:SetOperation(c513000144.mtop)
 	c:RegisterEffect(e2)
-	--special summon
+	--special summon Lv <=4 from deck
 	local e3=Effect.CreateEffect(c)
 	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e3:SetType(EFFECT_TYPE_IGNITION)
@@ -28,7 +28,7 @@ function c513000144.initial_effect(c)
 	e3:SetTarget(c513000144.target)
 	e3:SetOperation(c513000144.operation)
 	c:RegisterEffect(e3)
-	--Cannot Normal Summon
+	--Cannot Normal Summon Monsters
 	local e4=Effect.CreateEffect(c)
 	e4:SetType(EFFECT_TYPE_FIELD)
 	e4:SetRange(LOCATION_SZONE)
@@ -36,7 +36,7 @@ function c513000144.initial_effect(c)
 	e4:SetCode(EFFECT_CANNOT_SUMMON)
 	e4:SetTargetRange(1,0)
 	c:RegisterEffect(e4)
-	--Opponent's monsters must attack
+	--Opponents monsters must attack
 	local e5=Effect.CreateEffect(c)
 	e5:SetType(EFFECT_TYPE_FIELD)
 	e5:SetCode(EFFECT_MUST_ATTACK)
@@ -54,7 +54,7 @@ function c513000144.initial_effect(c)
 	e6:SetTarget(c513000144.atktg)
 	e6:SetOperation(c513000144.atkop)
 	c:RegisterEffect(e6)
-	--indes
+	--indestructable
 	local e7=Effect.CreateEffect(c)
 	e7:SetType(EFFECT_TYPE_SINGLE)
 	e7:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
@@ -62,7 +62,7 @@ function c513000144.initial_effect(c)
 	e7:SetCode(EFFECT_INDESTRUCTABLE_EFFECT)
 	e7:SetValue(c513000144.indval)
 	c:RegisterEffect(e7)
-	--Cannot End
+	--Cannot End-Phase
 	local e8=Effect.CreateEffect(c)
 	e8:SetType(EFFECT_TYPE_FIELD)
 	e8:SetCode(EFFECT_CANNOT_EP)
@@ -71,6 +71,18 @@ function c513000144.initial_effect(c)
 	e8:SetTargetRange(0,1)
 	e8:SetCondition(c513000144.batcon)
 	c:RegisterEffect(e8)
+	--Monsters summoned by castle must attack
+	local e9=Effect.CreateEffect(c)
+	e9:SetType(EFFECT_TYPE_FIELD)
+	e9:SetCode(EFFECT_MUST_ATTACK)
+	e9:SetRange(LOCATION_FZONE)
+	e9:SetTargetRange(LOCATION_MZONE,0)
+	e9:SetTarget(c513000144.tg9)
+	c:RegisterEffect(e9)
+end
+
+function c513000144.tg9(e,c)
+return e:GetHandler():IsHasCardTarget(c)
 end
 
 function c513000144.condition103(e,tp,eg,ep,ev,re,r,rp)
@@ -108,26 +120,39 @@ local g=Duel.GetMatchingGroup(c513000144.filter,tp,LOCATION_DECK,0,nil,e,tp)
 	if g:GetCount()>0 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 		local g2=g:RandomSelect(tp,1):GetFirst()
-		if Duel.SpecialSummon(g2,0,tp,tp,false,false,POS_FACEUP_ATTACK)==0 then return end
-		c:SetCardTarget(g2)
-		--Must Attack
-		local e2=Effect.CreateEffect(c)
-		e2:SetType(EFFECT_TYPE_SINGLE)
-	    e2:SetCode(EFFECT_MUST_ATTACK)
-		g2:RegisterEffect(e2)
-		local e3=Effect.CreateEffect(c)
-		e3:SetType(EFFECT_TYPE_FIELD)
-		e3:SetCode(EFFECT_CANNOT_EP)
-		e3:SetRange(LOCATION_MZONE)
-		e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-		e3:SetTargetRange(1,0)
-		e3:SetCondition(c513000144.becon)
-		g2:RegisterEffect(e3)
+if Duel.SpecialSummon(g2,0,tp,tp,false,false,POS_FACEUP_ATTACK)==0 then return end
+c:SetCardTarget(g2)
+--resets target of card
+    local e3=Effect.CreateEffect(e:GetHandler())
+    e3:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
+    e3:SetRange(LOCATION_MZONE)
+    e3:SetCode(EVENT_LEAVE_FIELD_P)
+    e3:SetCondition(c513000144.descon2)
+    e3:SetOperation(c513000144.desop2)
+    g2:RegisterEffect(e3)
 		Duel.SpecialSummonComplete()
 		end	
+if c:IsPreviousPosition(POS_FACEUP) and c:GetPreviousCodeOnField()==513000144 and c:IsPreviousLocation(LOCATION_ONFIELD) then 
+e:GetHandler():CancelCardTarget(g2)		
 	end
-function c513000144.becon(e)
-	return e:GetHandler():IsAttackable()
+end
+
+function c513000144.descon2(e,tp,eg,ep,ev,re,r,rp)
+	local tc=e:GetHandler():GetFirstCardTarget()
+    return tc and eg:IsContains(tc)
+end
+function c513000144.desop2(e,tp,eg,ep,ev,re,r,rp)
+	e:GetHandler():CancelCardTarget(e:GetHandler():GetFirstCardTarget())
+end
+
+
+function Auxiliary.PersistentTargetFilter(e,c)
+	return e:GetHandler():IsHasCardTarget(c)
+end
+	
+function c513000144.becon(e,tp,eg,ep,ev,re,r,rp)
+local g=e:GetHandler():GetCardTarget()
+	return g:IsExists(Card.IsControler,1,nil,tp)
 end
 function c513000144.atkcon(e,tp,eg,ep,ev,re,r,rp)
 	return tp~=Duel.GetTurnPlayer()
