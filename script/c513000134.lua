@@ -369,6 +369,9 @@ function c513000134.imcon(e)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_SPECIAL)
 end
 -------------------------------------------
+function c513000134.egpcon(e,tp,eg,ep,ev,re,r,rp)
+	return e:GetHandler():IsPreviousLocation(LOCATION_GRAVE)
+end
 function c513000134.immortal(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	if c513000134.payatkcost(e,tp,eg,ep,ev,re,r,rp,0) then
@@ -581,69 +584,66 @@ function c513000134.dirop(e,tp,eg,ep,ev,re,r,rp)
 end
 -------------------------------------------
 --Egyption God Phoenix
-function c513000134.egpcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():IsPreviousLocation(LOCATION_GRAVE)
-end
 function c513000134.egpop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsFaceup() then
-		local e0=Effect.CreateEffect(c)
-		e0:SetType(EFFECT_TYPE_SINGLE)
-		e0:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE)
-		e0:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
-		e0:SetCode(EFFECT_CHANGE_CODE)
-		e0:SetValue(511000237)
-		c:RegisterEffect(e0)
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
-		e1:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
-		e1:SetValue(1)
-		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
+		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+		e1:SetReset(RESET_EVENT+0x1fe1000+RESET_PHASE+PHASE_END)
+		e1:SetCode(EFFECT_CHANGE_CODE)
+		e1:SetValue(511000237)
 		c:RegisterEffect(e1)
 		local e2=Effect.CreateEffect(c)
-		e2:SetType(EFFECT_TYPE_SINGLE)
-		e2:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)
-		e2:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
-		e2:SetValue(1)
+		e2:SetDescription(aux.Stringid(4012,7))
+		e2:SetCategory(CATEGORY_DESTROY)
+		e2:SetType(EFFECT_TYPE_QUICK_O)
+		e2:SetCode(EVENT_FREE_CHAIN)
+		e2:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_IGNORE_IMMUNE)
+		e2:SetRange(LOCATION_MZONE)
+		e2:SetCost(c513000134.descost)
+		e2:SetTarget(c513000134.destg)
+		e2:SetOperation(c513000134.desop)
 		e2:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 		c:RegisterEffect(e2)
+		--immune
 		local e3=Effect.CreateEffect(c)
-		e3:SetDescription(aux.Stringid(4012,7))
-		e3:SetCategory(CATEGORY_DESTROY)
-		e3:SetType(EFFECT_TYPE_QUICK_O)
-		e3:SetCode(EVENT_FREE_CHAIN)
-		e3:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_IGNORE_IMMUNE)
-		e3:SetRange(LOCATION_MZONE)
-		e3:SetCost(c513000134.descost)
-		e3:SetTarget(c513000134.destg)
-		e3:SetOperation(c513000134.desop)
+		e3:SetType(EFFECT_TYPE_SINGLE)
+		e3:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
+		e3:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
+		e3:SetValue(1)
 		e3:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 		c:RegisterEffect(e3)
-		--immune
-		local e4=Effect.CreateEffect(c)
-		e4:SetType(EFFECT_TYPE_SINGLE)
-		e4:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
-		e4:SetCode(EFFECT_IMMUNE_EFFECT)
-		e4:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
-		e4:SetValue(c513000134.egpfilter)
+		local e4=e3:Clone()
+		e4:SetCode(EFFECT_INDESTRUCTABLE)
 		c:RegisterEffect(e4)
+		local e5=e3:Clone()
+		e5:SetCode(EFFECT_UNRELEASABLE_EFFECT)
+		c:RegisterEffect(e5)
+		local e6=e3:Clone()
+		e6:SetCode(EFFECT_CANNOT_REMOVE)
+		c:RegisterEffect(e6)
+		local e7=e3:Clone()
+		e7:SetCode(EFFECT_CANNOT_TO_HAND)
+		c:RegisterEffect(e7)
+		local e8=e3:Clone()
+		e8:SetCode(EFFECT_CANNOT_TO_DECK)
+		c:RegisterEffect(e8)
+		local e9=e3:Clone()
+		e9:SetCode(EFFECT_CANNOT_TO_GRAVE)
+		c:RegisterEffect(e9)
 	end
-end
-function c513000134.egpfilter(e,te)
-	if not te then return false end
-	return te:IsHasCategory(CATEGORY_TOHAND+CATEGORY_DESTROY+CATEGORY_REMOVE+CATEGORY_TODECK+CATEGORY_RELEASE+CATEGORY_TOGRAVE)
 end
 function c513000134.descost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckLPCost(tp,1000) end
 	Duel.PayLPCost(tp,1000)
 end
 function c513000134.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsAbleToGrave() end
-	if chk==0 then return Duel.IsExistingTarget(Card.IsAbleToGrave,tp,LOCATION_MZONE,LOCATION_MZONE,1,e:GetHandler()) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-	local g=Duel.SelectTarget(tp,Card.IsAbleToGrave,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,e:GetHandler())
-	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,g,1,0,0)
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsDestructable(e) end
+	if chk==0 then return Duel.IsExistingTarget(Card.IsDestructable,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil,e) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
+	local g=Duel.SelectTarget(tp,Card.IsDestructable,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil,e)
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,1,0,0)
 end
 function c513000134.desop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
@@ -670,13 +670,12 @@ function c513000134.desop(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetReset(RESET_EVENT+0x1fe0000)
 		tc:RegisterEffect(e2)
 		Duel.BreakEffect()
-		Duel.SendtoGrave(tc,REASON_EFFECT)
+		Duel.Destroy(tc,REASON_EFFECT)
 	end
 end
 function c513000134.desfil(e,te)
 	return te:GetOwner()~=e:GetOwner()
 end
-
 function c513000134.kek(e)
 	return true
 end
