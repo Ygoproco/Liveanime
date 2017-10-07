@@ -14,7 +14,6 @@ end
 function c511016003.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,2,e:GetHandler()) 
 		and Duel.IsExistingMatchingCard(c511016003.filter,tp,LOCATION_GRAVE,0,1,nil) end
-		Duel.SetOperationInfo(0,CATEGORY_HANDES,nil,0,tp,2)
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_GRAVE)
 end
 function c511016003.operation(e,tp,eg,ep,ev,re,r,rp)
@@ -28,11 +27,18 @@ function c511016003.operation(e,tp,eg,ep,ev,re,r,rp)
 			Duel.HintSelection(g)
 			if Duel.SendtoHand(tc,nil,REASON_EFFECT)>0 then
 				local e1=Effect.CreateEffect(e:GetHandler())
-				e1:SetType(EFFECT_TYPE_SINGLE)
+				e1:SetType(EFFECT_TYPE_FIELD)
+				e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
 				e1:SetCode(EFFECT_FORBIDDEN)
-				e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
-				tc:RegisterEffect(e1)
+				e1:SetTarget(c511016003.bantg)
+				e1:SetLabelObject(tc)
+				e1:SetTargetRange(0x7f,0x7f)
+				e1:SetReset(RESET_PHASE+PHASE_END)
+				Duel.RegisterEffect(e1,tp)
 			end
 		end
 	end
+end
+function c511016003.bantg(e,c)
+	return e:GetLabelObject()==c
 end
