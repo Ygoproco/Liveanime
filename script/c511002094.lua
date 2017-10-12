@@ -85,10 +85,7 @@ function c511002094.initial_effect(c)
 	c:RegisterEffect(ee)
 end
 function c511002094.ctcon2(e,re)
-	return not re:GetHandler():IsCode(100100103) and re:GetHandler()~=e:GetHandler()
-end
-function c511002094.filter(c)
-	return c:GetCode()~=511002094
+	return re:GetOwner()~=e:GetOwner() and e:GetHandler():GetFlagEffect(110000000)==0
 end
 function c511002094.op(e,tp,eg,ep,ev,re,r,rp,chk)
 	local tc=Duel.GetFieldCard(tp,LOCATION_SZONE,5)
@@ -116,9 +113,9 @@ function c511002094.op(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 end
 function c511002094.damop(e,tp,eg,ep,ev,re,r,rp)
-	local c=re:GetHandler()
-	if re:IsHasType(EFFECT_TYPE_ACTIVATE) and re:IsActiveType(TYPE_SPELL) and c~=e:GetHandler()
-	 and c:GetControler()==e:GetHandler():GetControler() and not c:IsSetCard(0x200) then
+	local rc=re:GetHandler()
+	if re:IsHasType(EFFECT_TYPE_ACTIVATE) and re:IsActiveType(TYPE_SPELL) and rc~=e:GetHandler()
+		and e:GetHandler():IsControler(rc:GetControler()) and not rc:IsSetCard(0x200) then
 		Duel.Damage(rp,2000,REASON_EFFECT)
 	end
 end
