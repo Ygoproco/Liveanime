@@ -20,7 +20,5 @@ function c100100153.tdop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFieldCard(tp,LOCATION_SZONE,5)
 	if not tc then return end
 	tc:RegisterFlagEffect(110000000,RESET_CHAIN,0,1)
-	if tc:IsCode(110000000) then
-		tc:AddCounter(0x91,1)
-	end
+	tc:AddCounter(0x91,1)
 end
