@@ -15,6 +15,7 @@ function c511015103.filter(c,e,tp)
 		and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function c511015103.xyzfilter(c,e,mg)
+	local chkxyz=false
 	if mg:IsExists(Card.IsCode,1,nil,47198668) then
 		local tc = mg:Filter(Card.IsCode,nil,47198668):GetFirst()
 		--
@@ -22,8 +23,10 @@ function c511015103.xyzfilter(c,e,mg)
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(511001225)
 		tc:RegisterEffect(e1)
+		chkxyz=c:IsXyzSummonable(mg)
+		e1:Reset()
 	end
-	return c:IsXyzSummonable(mg)
+	return chkxyz
 end
 
 function c511015103.mfilter1(c,e,mg,exg,ft)
