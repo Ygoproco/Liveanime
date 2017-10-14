@@ -40,7 +40,7 @@ function c511806000.operation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e2,tp)
 end
 function c511806000.cfilter(c)
-	return c:IsSetCard(0x55) and c:IsType(TYPE_MONSTER) and c:GetCode()~=806000098 and c:IsAbleToGraveAsCost()
+	return c:IsSetCard(0x55) and c:IsType(TYPE_MONSTER) and c:IsAbleToGraveAsCost()
 end
 function c511806000.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c511806000.cfilter,tp,LOCATION_HAND,0,1,nil) end
