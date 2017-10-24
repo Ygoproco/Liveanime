@@ -11,7 +11,8 @@ function c511247015.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function c511247015.condition(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetTurnPlayer()~=tp and Duel.GetAttackTarget()==nil and Duel.GetFieldGroupCount(c:GetControler(),LOCATION_MZONE,0,nil)==0
+	return Duel.GetTurnPlayer()~=tp and Duel.GetAttackTarget()==nil 
+		and Duel.GetFieldGroupCount(c:GetControler(),LOCATION_MZONE,0,nil)==0
 end
 function c511247015.filter(c)
 	return c:IsSetCard(0x21) and c:IsAbleToHand() and not c:IsCode(64187086)
