@@ -21,7 +21,7 @@ end
 function c511009445.condition(e,tp,eg,ep,ev,re,r,rp)
 	if not Duel.IsExistingMatchingCard(c511009445.confilter,tp,LOCATION_MZONE,0,1,nil) then return false end
 	local ex,tg,tc=Duel.GetOperationInfo(ev,CATEGORY_DESTROY)
-	return ex and tg~=nil and tc+tg:FilterCount(c511009445.cfilter,nil,tp)-tg:GetCount()>0
+	return ex and tg~=nil and tc+tg:FilterCount(c511009445.cfilter,nil,1-tp)-tg:GetCount()>0
 end
 function c511009445.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
