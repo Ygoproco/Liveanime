@@ -20,7 +20,7 @@ end
 function c511000407.activate(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.NegateEffect(ev) and re:GetHandler():IsRelateToEffect(re) then
 		local c=e:GetHandler()
-		if not re or not c511001939.cfilter(tc,e,tp,eg,ep,ev,re,r,rp,chain) then return end
+		if not re then return end
 		local tpe=tc:GetType()
 		if bit.band(tpe,TYPE_FIELD)~=0 then
 			local fc=Duel.GetFieldCard(1-tp,LOCATION_SZONE,5)
@@ -43,12 +43,24 @@ function c511000407.activate(e,tp,eg,ep,ev,re,r,rp)
 			local tc=te2:GetHandler()
 			local g=Group.FromCards(tc)
 			local p=tc:GetControler()
-			if tg then tg(e,tp,g,p,chain,te2,REASON_EFFECT,p,1) end
+			if tg and tg(e,tp,g,p,chain,te2,REASON_EFFECT,p,0) then
+				tg(e,tp,g,p,chain,te2,REASON_EFFECT,p,1)
+			else
+				return
+			end
 		elseif re:GetCode()==EVENT_FREE_CHAIN then
-			if tg then tg(e,tp,eg,ep,ev,re,r,rp,1) end
+			if tg and tg(e,tp,eg,ep,ev,re,r,rp,0) then
+				tg(e,tp,eg,ep,ev,re,r,rp,1)
+			else
+				return
+			end
 		else
 			local res,teg,tep,tev,tre,tr,trp=Duel.CheckEvent(re:GetCode(),true)
-			if tg then tg(e,tp,teg,tep,tev,tre,tr,trp,1) end
+			if tg and tg(e,tp,teg,tep,tev,tre,tr,trp,0) then
+				tg(e,tp,teg,tep,tev,tre,tr,trp,1)
+			else
+				return
+			end
 		end
 		if bit.band(tpe,TYPE_EQUIP+TYPE_CONTINUOUS+TYPE_FIELD)==0 then
 			c:CancelToGrave(false)
