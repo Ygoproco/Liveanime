@@ -521,7 +521,7 @@ function c419.atkraiseadj(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RaiseEvent(g3,511009110,e,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g4,511002546,e,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g5,511009053,e,REASON_EFFECT,rp,ep,0)
-	Duel.RaiseEvent(g9,511010103,re,REASON_EFFECT,rp,ep,0)
+	Duel.RaiseEvent(g9,511010103,e,REASON_EFFECT,rp,ep,0)
 	
 	local lvg=Duel.GetMatchingGroup(c419.lvcfilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
 	local lvc=lvg:GetFirst()
