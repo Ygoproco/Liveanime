@@ -37,8 +37,9 @@ function c511000067.initial_effect(c)
 end
 function c511000067.regop(e,tp,eg,ep,ev,re,r,rp)
 	local ct=eg:FilterCount(aux.FilterEqualFunction(Card.GetSummonPlayer,1-tp),nil)
+	local te=re~=nil and re or e
 	for i=1,ct do
-		Duel.RaiseSingleEvent(e:GetHandler(),511000067,re,r,rp,ep,ev)
+		Duel.RaiseSingleEvent(e:GetHandler(),511000067,te,r,rp,ep,ev)
 	end
 end
 function c511000067.sptg(e,tp,eg,ep,ev,re,r,rp,chk)

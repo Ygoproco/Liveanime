@@ -350,6 +350,7 @@ function c419.atkraiseeff(e,tp,eg,ep,ev,re,r,rp)
 	local g2=Group.CreateGroup() --gain atk
 	local g3=Group.CreateGroup() --lose atk
 	local g4=Group.CreateGroup() --gain atk from original
+	local g9=Group.CreateGroup() --lose atk from original
 	
 	local dg=Duel.GetMatchingGroup(c419.defcfilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
 	local g5=Group.CreateGroup() --change def
@@ -367,6 +368,9 @@ function c419.atkraiseeff(e,tp,eg,ep,ev,re,r,rp)
 			g2:AddCard(tc)
 			if prevatk<=tc:GetBaseAttack() and tc:GetAttack()>tc:GetBaseAttack() then
 				g4:AddCard(tc)
+			end
+			if prevatk>=tc:GetBaseAttack() and tc:GetAttack()<tc:GetBaseAttack() then
+				g9:AddCard(tc)
 			end
 		end
 		tc:ResetFlagEffect(284)
@@ -421,6 +425,7 @@ function c419.atkraiseeff(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RaiseEvent(g4,511002546,re,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g5,511009053,re,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g5,511009565,re,REASON_EFFECT,rp,ep,0)
+	Duel.RaiseEvent(g9,511010103,re,REASON_EFFECT,rp,ep,0)
 	--Duel.RaiseEvent(g6,,re,REASON_EFFECT,rp,ep,0)
 	
 	local lvg=Duel.GetMatchingGroup(c419.lvcfilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
@@ -445,6 +450,7 @@ function c419.atkraiseadj(e,tp,eg,ep,ev,re,r,rp)
 	local g2=Group.CreateGroup() --gain atk
 	local g3=Group.CreateGroup() --lose atk
 	local g4=Group.CreateGroup() --gain atk from original
+	local g9=Group.CreateGroup() --lose atk from original
 	
 	local dg=Duel.GetMatchingGroup(c419.defcfilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
 	local g5=Group.CreateGroup() --change def
@@ -462,6 +468,9 @@ function c419.atkraiseadj(e,tp,eg,ep,ev,re,r,rp)
 			g2:AddCard(tc)
 			if prevatk<=tc:GetBaseAttack() and tc:GetAttack()>tc:GetBaseAttack() then
 				g4:AddCard(tc)
+			end
+			if prevatk>=tc:GetBaseAttack() and tc:GetAttack()<tc:GetBaseAttack() then
+				g9:AddCard(tc)
 			end
 		end
 		tc:ResetFlagEffect(284)
@@ -512,6 +521,7 @@ function c419.atkraiseadj(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RaiseEvent(g3,511009110,e,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g4,511002546,e,REASON_EFFECT,rp,ep,0)
 	Duel.RaiseEvent(g5,511009053,e,REASON_EFFECT,rp,ep,0)
+	Duel.RaiseEvent(g9,511010103,e,REASON_EFFECT,rp,ep,0)
 	
 	local lvg=Duel.GetMatchingGroup(c419.lvcfilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
 	local lvc=lvg:GetFirst()
