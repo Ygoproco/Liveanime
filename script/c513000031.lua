@@ -133,10 +133,13 @@ function c513000031.desop(e,tp,eg,ep,ev,re,r,rp)
 		end
 		local tc=g:GetFirst()
 		while tc do
-			if tc:SetStatus(STATUS_BATTLE_DESTROYED,true)~=0 and tc:IsLocation(LOCATION_ONFIELD) then
-			Duel.Destroy(tc,REASON_BATTLE)
+			if tc:GetControler()~=e:GetHandler():GetControler() then
+				Duel.Hint(HINT_CARD,0,513000031)
 				if tc:SetStatus(STATUS_BATTLE_DESTROYED,true)~=0 and tc:IsLocation(LOCATION_ONFIELD) then
-				Duel.SendtoGrave(tc,REASON_DESTROY+REASON_BATTLE)
+					Duel.Destroy(tc,REASON_BATTLE)
+					if tc:SetStatus(STATUS_BATTLE_DESTROYED,true)~=0 and tc:IsLocation(LOCATION_ONFIELD) then
+						Duel.SendtoGrave(tc,REASON_DESTROY+REASON_BATTLE)
+					end
 				end
 			end
 			tc=g:GetNext()
