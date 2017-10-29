@@ -52,45 +52,6 @@ function c170000170.initial_effect(c)
 	e11:SetRange(LOCATION_MZONE)
 	e11:SetValue(c170000170.adval)
 	c:RegisterEffect(e11)
-	if not c170000170.global_check then
-		c170000170.global_check=true
-		--avatar
-		local ge1=Effect.CreateEffect(c)
-		ge1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-		ge1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE)
-		ge1:SetCode(EVENT_ADJUST)
-		ge1:SetOperation(c170000170.avatarop)
-		Duel.RegisterEffect(ge1,0)
-	end
-end
-function c170000170.avatarfilter(c)
-	return c:GetOriginalCode()==21208154 and aux.NOT(c:GetFlagEffect(9999999)>0)
-end
-function c170000170.avatarop(e,tp,eg,ev,ep,re,r,rp)
-	local g=Duel.GetMatchingGroup(c170000170.avatarfilter,tp,0xff,0xff,nil)
-	g:ForEach(function(c)
-		c:RegisterFlagEffect(9999999,RESET_EVENT+0x1fe0000,0,1)
-		local atkte=c:GetCardEffect(EFFECT_SET_ATTACK_FINAL)
-		local defte=c:GetCardEffect(EFFECT_SET_DEFENSE_FINAL)
-		atkte:SetValue(c170000170.avaval)
-		defte:SetValue(c170000170.avaval)
-	end)
-end
-function c170000170.avafilter(c)
-	return c:IsFaceup() and c:GetCode()~=21208154
-end
-function c170000170.avaval(e,c)
-	local g=Duel.GetMatchingGroup(c170000170.avafilter,0,LOCATION_MZONE,LOCATION_MZONE,nil)
-	if g:GetCount()==0 then 
-		return 100
-	else
-		local tg,val=g:GetMaxGroup(Card.GetAttack)
-		if val>=9999999 then
-			return val
-		else
-			return val+100
-		end
-	end
 end
 function c170000170.sucop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetFieldGroup(tp,LOCATION_HAND,0)
