@@ -23,7 +23,7 @@ function c111011901.initial_effect(c)
 end
 function c111011901.filter1(c,e,tp)
 	local rk=c:GetRank()
-	return rk>0 and c:IsFaceup() and Duel.IsExistingMatchingCard(c111011901.filter2,tp,LOCATION_EXTRA,0,1,nil,rk+1,e,tp,c:GetCode(),c)
+	return rk>0 and c:IsFaceup() and c:IsType(TYPE_XYZ) and Duel.IsExistingMatchingCard(c111011901.filter2,tp,LOCATION_EXTRA,0,1,nil,rk+1,e,tp,c:GetCode(),c)
 	and not Duel.IsExistingMatchingCard(c111011901.filter3,tp,LOCATION_MZONE,0,1,nil,rk)
 end
 function c111011901.filter2(c,rk,e,tp,code,mc)

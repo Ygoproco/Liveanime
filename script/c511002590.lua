@@ -12,7 +12,7 @@ function c511002590.initial_effect(c)
 end
 function c511002590.filter(c,e,tp)
 	local rk=c:GetRank()
-	return rk>0 and c:IsFaceup() and c:IsControlerCanBeChanged()
+	return rk>0 and c:IsFaceup() and c:IsControlerCanBeChanged() and c:IsType(TYPE_XYZ) 
 		and Duel.IsExistingMatchingCard(c511002590.spfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp,c,rk+1,c:GetCode())
 end
 function c511002590.spfilter(c,e,tp,mc,rk,code)
