@@ -49,13 +49,6 @@ function c513000135.initial_effect(c)
 		ge1:SetProperty(EFFECT_FLAG_NO_TURN_RESET)
 		ge1:SetOperation(c513000135.chk)
 		Duel.RegisterEffect(ge1,0)
-		--avatar
-		local ge2=Effect.CreateEffect(c)
-		ge2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-		ge2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE)
-		ge2:SetCode(EVENT_ADJUST)
-		ge2:SetOperation(c513000135.avatarop)
-		Duel.RegisterEffect(ge2,0)
 	end
 end
 function c513000135.chk(e,tp,eg,ep,ev,re,r,rp)
@@ -66,37 +59,6 @@ function c513000135.chk(e,tp,eg,ep,ev,re,r,rp)
 		Duel.RegisterFlagEffect(1-tp,421,nil,0,1)
 	end
 end
--------------------------------------------------------------------
-function c513000135.avatarfilter(c)
-	return c:GetOriginalCode()==21208154 and aux.NOT(c:GetFlagEffect(9999999)>0)
-end
-function c513000135.avatarop(e,tp,eg,ev,ep,re,r,rp)
-	local g=Duel.GetMatchingGroup(c513000135.avatarfilter,tp,0xff,0xff,nil)
-	g:ForEach(function(c)
-		c:RegisterFlagEffect(9999999,RESET_EVENT+0x1fe0000,0,1)
-		local atkte=c:GetCardEffect(EFFECT_SET_ATTACK_FINAL)
-		local defte=c:GetCardEffect(EFFECT_SET_DEFENSE_FINAL)
-		atkte:SetValue(c513000135.avaval)
-		defte:SetValue(c513000135.avaval)
-	end)
-end
-function c513000135.avafilter(c)
-	return c:IsFaceup() and c:GetCode()~=21208154
-end
-function c513000135.avaval(e,c)
-	local g=Duel.GetMatchingGroup(c513000135.avafilter,0,LOCATION_MZONE,LOCATION_MZONE,nil)
-	if g:GetCount()==0 then 
-		return 100
-	else
-		local tg,val=g:GetMaxGroup(Card.GetAttack)
-		if val>=9999999 then
-			return val
-		else
-			return val+100
-		end
-	end
-end
--------------------------------------------------------------------
 function c513000135.sumoncon(e,c)
 	if c==nil then return true end
 	return Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>-3 and Duel.GetTributeCount(c)>=3
