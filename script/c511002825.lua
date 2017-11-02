@@ -65,6 +65,7 @@ function c511002825.activate(e,tp,eg,ep,ev,re,r,rp)
 			fop(ce,e,tp,tc,mat2)
 		end
 		tc:CompleteProcedure()
+		tc:RegisterFlagEffect(511002825,RESET_EVENT+0x1fe0000,0,0)
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_SET_ATTACK_FINAL)
@@ -86,15 +87,6 @@ function c511002825.activate(e,tp,eg,ep,ev,re,r,rp)
 		end
 		e2:SetOperation(c511002825.damop)
 		Duel.RegisterEffect(e2,tp)
-	else
-		local cg1=Duel.GetFieldGroup(tp,LOCATION_HAND+LOCATION_MZONE,0)
-		local cg2=Duel.GetFieldGroup(tp,LOCATION_EXTRA,0)
-		if cg1:GetCount()>1 and cg2:IsExists(Card.IsFacedown,1,nil)
-			and Duel.IsPlayerCanSpecialSummon(tp) and not Duel.IsPlayerAffectedByEffect(tp,27581098) then
-			Duel.ConfirmCards(1-tp,cg1)
-			Duel.ConfirmCards(1-tp,cg2)
-			Duel.ShuffleHand(tp)
-		end
 	end
 end
 function c511002825.damcon(e,tp,eg,ep,ev,re,r,rp)
@@ -102,5 +94,7 @@ function c511002825.damcon(e,tp,eg,ep,ev,re,r,rp)
 end
 function c511002825.damop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=e:GetLabelObject()
-	Duel.Damage(tc:GetControler(),tc:GetBaseAttack(),REASON_EFFECT)
+	if tc:GetFlagEffect(511002825)>0 then
+		Duel.Damage(tc:GetControler(),tc:GetBaseAttack(),REASON_EFFECT)
+	end
 end
