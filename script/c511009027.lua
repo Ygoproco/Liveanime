@@ -21,8 +21,8 @@ function c511009027.filter2(c,e,tp,mc,rk,code)
 end
 function c511009027.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local tg=Duel.GetAttackTarget()
-	if chkc then return chkc==tg and c511009027.filter(chkc,e,tp) end
-	if chk==0 then return tg and tg:IsOnField() and tg:IsCanBeEffectTarget(e) and c511009027.filter(tg,e,tp) end
+	if chkc then return chkc==tg and chkc:IsControler(tp) and c511009027.filter(chkc,e,tp) end
+	if chk==0 then return tg and tg:IsOnField() and tg:IsControler(tp) and tg:IsCanBeEffectTarget(e) and c511009027.filter(tg,e,tp) end
 	Duel.SetTargetCard(tg)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
 end
