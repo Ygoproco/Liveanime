@@ -11,34 +11,34 @@ function c511004417.initial_effect(c)
 	e1:SetOperation(c511004417.operation)
 	c:RegisterEffect(e1)
 end
-function c511004417.cost(e,tp,eg,ev,ep,re,r,rp,chk)
+function c511004417.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckReleaseGroup(tp,Card.IsSetCard,1,nil,0x9f) end
 	local g=Duel.SelectReleaseGroup(tp,Card.IsSetCard,1,1,nil,0x9f)
 	Duel.Release(g,REASON_COST)
 end
-function c511004417.condition(e,tp,eg,ev,ep,re,r,rp)
+function c511004417.condition(e,tp,eg,ep,ev,re,r,rp)
 	return ep==tp
 end
-function c511004417.target(e,tp,eg,ev,ep,re,r,rp,chk)
+function c511004417.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,2) and Duel.IsPlayerCanDraw(1-tp,2) end
 	Duel.SetOperationInfo(0,CATEGORY_DRAW,0,0,PLAYER_ALL,2)
 end
-function c511004417.operation(e,tp,eg,ev,ep,re,r,rp)
+function c511004417.operation(e,tp,eg,ep,ev,re,r,rp)
 	if not Duel.IsPlayerCanDraw(tp,2) or not Duel.IsPlayerCanDraw(1-tp,2) then return end
 	local g1=Group.CreateGroup()
 	local g2=Group.CreateGroup()
 	local lose1=false
 	local lose2=false
-	while (not g1:IsExists(Card.IsType,1,nil,TYPE_MONSTER) and not lose1) 
-		or (not g2:IsExists(Card.IsType,1,nil,TYPE_MONSTER) and not lose2) do
+	while not (g1:IsExists(Card.IsType,1,nil,TYPE_MONSTER) or lose1) 
+		or not (g2:IsExists(Card.IsType,1,nil,TYPE_MONSTER) or lose2) do
 		local s1=Duel.GetDecktopGroup(tp,2)
 		local s2=Duel.GetDecktopGroup(1-tp,2)
-		if not g1:IsExists(Card.IsType,1,nil,TYPE_MONSTER) and not lose1 then
+		if not (g1:IsExists(Card.IsType,1,nil,TYPE_MONSTER) or lose1) then
 			g1:Merge(s1)
 			if s1:GetCount()<=1 then lose1=true end
 			Duel.Draw(tp,2,REASON_EFFECT)
 		end
-		if not g2:IsExists(Card.IsType,1,nil,TYPE_MONSTER) and lose2 then
+		if not (g2:IsExists(Card.IsType,1,nil,TYPE_MONSTER) or lose2) then
 			g2:Merge(s2)
 			if s2:GetCount()<=1 then lose2=true end
 			Duel.Draw(1-tp,2,REASON_EFFECT)
@@ -55,7 +55,7 @@ function c511004417.operation(e,tp,eg,ev,ep,re,r,rp)
 	local tc1=g1:GetFirst()
 	while tc1 do
 		if tc1:IsType(TYPE_MONSTER) then
-			lv1=lv1+chkc1:GetLevel()
+			lv1=lv1+tc1:GetLevel()
 		end
 		tc1=g1:GetNext()
 	end
